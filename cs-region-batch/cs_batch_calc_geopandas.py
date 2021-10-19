@@ -14,11 +14,14 @@ import os
 
 import arcpy
 import geopandas as gpd
+import pandas as pd
+from shapely import wkt as shapely_wkt
 arcpy.env.overwriteOutput = True
 
 import csi_params as params
 import landuse_buff_calcs_geopandas as lubuff
 import transit_svc_measure_geopandas as ts
+from pandas_memory_optimization import memory_optimization
 
 
 # clean this up later
@@ -73,6 +76,8 @@ def load_efficient_dbf(in_fc, cols):
     gdf = gpd.GeoDataFrame.from_file(params.fgdb, layer=in_fc, 
             driver="OpenFileGDB")[cols]
 
+    memory_optimization(gdf)
+
     return gdf
 
 def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
@@ -99,7 +104,7 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
     time_sufx = str(dt.datetime.now().strftime('%m%d%Y%H%M'))
     output_fc = "CompleteStreetMap{}".format(time_sufx)
     
-    arcpy.CreateFeatureclass_management(arcpy.env.workspace, output_fc,"POLYLINE", spatial_reference = 2226)
+    arcpy.CreateFeatureclass_management(arcpy.env.workspace, output_fc, "POLYLINE", spatial_reference=2226)
     
     arcpy.AddField_management(output_fc, fld_strtname, "TEXT")
     arcpy.AddField_management(output_fc, fld_spd, "SHORT")
@@ -112,7 +117,7 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
 
     total_net_links = arcpy.GetCount_management(fl_network)[0]
     
-    print("inserting rows...")
+    print(f"inserting rows, starting at {start_time}...")
     # import pdb; pdb.set_trace()
     with arcpy.da.InsertCursor(output_fc, [fld_geom, fld_strtname, fld_spd, fld_csi]) as inscur:
         with arcpy.da.SearchCursor(fl_network, fields_network) as cur:
@@ -130,12 +135,17 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
                 fc_featurecnt = arcpy.GetCount_management(fl_network)[0]
                 # print("{} features in input network FC are selected".format(fc_featurecnt))
 
-                temp_fc_segment = "TEMP_segment"
-                temp_fc_segment_path = os.path.join(arcpy.env.scratchGDB, temp_fc_segment)
+                # temp_fc_segment = "TEMP_segment"
+                # temp_fc_segment_path = os.path.join(arcpy.env.scratchGDB, temp_fc_segment)
+                
                 # import pdb; pdb.set_trace()
-                arcpy.FeatureClassToFeatureClass_conversion(fl_network, arcpy.env.scratchGDB, temp_fc_segment)
-                project_gdf = gpd.GeoDataFrame.from_file(arcpy.env.scratchGDB, layer=temp_fc_segment, 
-                                driver="OpenFileGDB")
+                dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
+                dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
+                project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
+
+                # arcpy.FeatureClassToFeatureClass_conversion(fl_network, arcpy.env.scratchGDB, temp_fc_segment)
+                # project_gdf = gpd.GeoDataFrame.from_file(arcpy.env.scratchGDB, layer=temp_fc_segment, 
+                #                 driver="OpenFileGDB")
                 
                 csi_dict = complete_streets_idx(gdf_parcels, project_gdf, project_type, speedlim, gdf_transit)
                 csi = csi_dict['complete_street_score']
@@ -157,7 +167,7 @@ if __name__ == '__main__':
 
     # input fc of parcel data--must be points!
     # in_pcl_pt_fc = os.path.join(params.fgdb, params.parcel_pt_fc_yr(in_year=2016))
-    in_pcl_pt_fc = params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE"
+    in_pcl_pt_fc = params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE" 
     value_fields = [params.col_area_ac, params.col_k12_enr, params.col_emptot, params.col_du]
     ptype = 'Arterial'
 
