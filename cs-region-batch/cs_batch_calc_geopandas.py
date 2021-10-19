@@ -31,15 +31,7 @@ lu_vals_cols = [params.col_k12_enr, params.col_emptot, params.col_du]
 def complete_streets_idx(gdf_pclpt, gdf_project, project_type, posted_speedlim, gdf_transit_event):
     '''Calculate complete street index (CSI) for project
         CSI = (students/acre + daily transit vehicle stops/acre + BY jobs/acre + BY du/acre) * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
-        '''
-    # col_area_ac
-    # col_k12_enr
-    # col_emptot
-    # col_du
-    # cs_buffdist
-    # cs_threshold_speed
-    # cs_spd_pen_fac
-    
+        ''' 
     
     # don't give complete street score for freeway projects or if sponsor didn't enter speed limit
     if project_type == params.ptype_fwy or posted_speedlim <= 1: 
@@ -52,10 +44,8 @@ def complete_streets_idx(gdf_pclpt, gdf_project, project_type, posted_speedlim, 
         transit_svc_density = list(tran_stops_dict.values())[0]
     
         # get sums of the lu_fac_cols within project buffer area
-        # import pdb; pdb.set_trace()
         lu_vals_obj = lubuff.LandUseBuffCalcs(gdf_pclpt, gdf_project, project_type, lu_fac_cols, params.cs_buffdist)
         lu_vals_dict = lu_vals_obj.point_sum()
-        # print(lu_vals_dict)
     
         #dens_score = (student_dens + trn_svc_dens + job_dens + du_dens)
         if lu_vals_dict[params.col_area_ac] == 0:
@@ -118,34 +108,20 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
     total_net_links = arcpy.GetCount_management(fl_network)[0]
     
     print(f"inserting rows, starting at {start_time}...")
-    # import pdb; pdb.set_trace()
     with arcpy.da.InsertCursor(output_fc, [fld_geom, fld_strtname, fld_spd, fld_csi]) as inscur:
         with arcpy.da.SearchCursor(fl_network, fields_network) as cur:
             for i, row in enumerate(cur):
                 if i % 1000 == 0:
-                    print(f"{i} out of {total_net_links} rows processed")
+                    st_time = dt.datetime.now() - start_time
+                    print(f"{i} out of {total_net_links} rows processed, with {st_time} elapsed.")
                 geom = row[0]
                 stname = row[1]
                 speedlim = row[2]
-                # seglen = row[3]
-                oid = row[4]
-                
-                sql = "{} = {}".format(fld_oid, oid) # BIG PROBLEM = THE LAND USE BUFF CALCS TAKES IN A FEATURE CLASS, NOT A FEATURE SO THIS NEEDS TO BE FIXED
-                arcpy.SelectLayerByAttribute_management(fl_network, "NEW_SELECTION", sql)
-                fc_featurecnt = arcpy.GetCount_management(fl_network)[0]
-                # print("{} features in input network FC are selected".format(fc_featurecnt))
-
-                # temp_fc_segment = "TEMP_segment"
-                # temp_fc_segment_path = os.path.join(arcpy.env.scratchGDB, temp_fc_segment)
                 
                 # import pdb; pdb.set_trace()
                 dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
                 dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
                 project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
-
-                # arcpy.FeatureClassToFeatureClass_conversion(fl_network, arcpy.env.scratchGDB, temp_fc_segment)
-                # project_gdf = gpd.GeoDataFrame.from_file(arcpy.env.scratchGDB, layer=temp_fc_segment, 
-                #                 driver="OpenFileGDB")
                 
                 csi_dict = complete_streets_idx(gdf_parcels, project_gdf, project_type, speedlim, gdf_transit)
                 csi = csi_dict['complete_street_score']
@@ -157,17 +133,14 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
 
     output_path = os.path.join(arcpy.env.workspace, output_fc)
     print(f"Output feature class in {output_path}")
-        
 
 
 if __name__ == '__main__':
-    # import pdb; pdb.set_trace()
     arcpy.env.workspace = r"C:\\PPA_CS_batch_temp\\TEMP_PPA_cs_data.gdb"
 
-
     # input fc of parcel data--must be points!
-    # in_pcl_pt_fc = os.path.join(params.fgdb, params.parcel_pt_fc_yr(in_year=2016))
-    in_pcl_pt_fc = params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE" 
+    # PERFORMANCE TIP - parcel fc should only have parcel points within desired buffer distance of roads, rather than all parcels in region.
+    in_pcl_pt_fc = 'parcel_data_pts_2016_qmi_roads' # params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE" 
     value_fields = [params.col_area_ac, params.col_k12_enr, params.col_emptot, params.col_du]
     ptype = 'Arterial'
 

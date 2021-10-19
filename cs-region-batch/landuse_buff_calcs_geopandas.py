@@ -18,7 +18,6 @@ Get following numbers within 0.5mi of project area:
 """
 import time
 
-import arcpy
 import pandas as pd
 import geopandas as gpd
 
@@ -55,7 +54,6 @@ class LandUseBuffCalcs():
 
     def point_sum(self):
         # arcpy.AddMessage("Aggregating land use data...")
-        # import pdb; pdb.set_trace()
 
         self.selected_pts = self.gdf_pclpt.loc[self.gdf_pclpt.geometry.within(self.selection_buffer) == True]
     

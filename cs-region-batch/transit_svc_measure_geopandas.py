@@ -22,8 +22,6 @@ g_ESRI_variable_3 = 'fl_buff'
 import gc
 import time
 
-import arcpy
-
 import csi_params as params
 
 
@@ -71,15 +69,6 @@ def transit_svc_density(gdf_project, gdf_trnstops, project_type):
         msg = "{}, {}".format(arcpy.GetMessages(2), trace())
         arcpy.AddWarning(msg)
     finally:
-        '''
-        if arcpy.Exists(fl_trnstops): 
-            try:
-                arcpy.Delete_management(fl_trnstops)
-                arcpy.AddMessage("Successfully post-cleaned transit processes...")
-            except:
-                msg = "trying arcpy.Delete_management: {}, {}".format(arcpy.GetMessages(2), trace())
-                arcpy.AddWarning(msg)
-        '''
         return {"TrnVehStop_Acre": trnstops_per_acre}
         n = gc.collect()
 
