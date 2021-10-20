@@ -101,24 +101,3 @@ class LandUseBuffCalcs():
     
         return dict_out
 
-""" 
-if __name__ == '__main__':
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
-
-    # input fc of parcel data--must be points!
-    in_pcl_pt_fc = params.parcel_pt_fc_yr(2016)
-    value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
-                    'BIK_TOT_RES', 'WLK_TOT_RES']
-
-    # input line project for basing spatial selection
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
-    ptype = params.ptype_arterial
-
-    # (self,gdf_pclpt, gdf_project, project_type, val_fields, buffdist, case_field=None, case_excs_list=[])
-    # lubuff_obj = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], 2640)
-    
-    lubuff_obj = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], 2640).buff_totals
-    # print(lubuff_obj)
-
-    #ej_data_arterial = {v: output_dict.pop(k) for k, v in ej_flag_dict.items() if output_dict.get(k) is not None}
- """

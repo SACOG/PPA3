@@ -70,13 +70,14 @@ def load_efficient_dbf(in_fc, cols):
 
     return gdf
 
+
 def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
     start_time = dt.datetime.now()
 
     fld_oid = "OBJECTID"
     fld_geom = "SHAPE@"
     fld_strtname = "FULLSTREET"
-    fld_spd = "SPEED"
+    fld_spd = "SPD_LIMIT"
     fld_len = "SHAPE@LENGTH"
     fld_csi = "CompltStreetIdx"
 
@@ -139,6 +140,7 @@ if __name__ == '__main__':
     arcpy.env.workspace = r"C:\\PPA_CS_batch_temp\\TEMP_PPA_cs_data.gdb"
 
     # input fc of parcel data--must be points!
+    # PERFORMANCE NOTE: With a parcel file containing 670,000 parcels, each line segment takes ~2.67sec to process
     # PERFORMANCE TIP - parcel fc should only have parcel points within desired buffer distance of roads, rather than all parcels in region.
     in_pcl_pt_fc = 'parcel_data_pts_2016_qmi_roads' # params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE" 
     value_fields = [params.col_area_ac, params.col_k12_enr, params.col_emptot, params.col_du]
@@ -146,7 +148,7 @@ if __name__ == '__main__':
 
     # input line project for basing spatial selection
     # NOTE - input files should come from local drive in case network connections fail
-    input_network_fc = 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
+    input_network_fc = 'Centerline_ArterialCollector10132021_spdSpJn' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
     # trnstops_fc = os.path.join(params.fgdb, params.trn_svc_fc)
     trnstops_fc = params.trn_svc_fc
 

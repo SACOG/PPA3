@@ -73,17 +73,3 @@ def transit_svc_density(gdf_project, gdf_trnstops, project_type):
         n = gc.collect()
 
 
-
-
-        
-'''
-if __name__ == '__main__':
-    arcpy.env.workspace = None
-
-    proj_line_fc = None
-    trnstops_fc = 'transit_stoplocn_w_eventcount_2016'
-    ptype = params.ptype_arterial
-
-    output = transit_svc_density(proj_line_fc, trnstops_fc, ptype)
-    print(output)
-'''
