@@ -23,6 +23,20 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 import arcpy
 arcpy.env.overwriteOutput = True
 
+
+def sedf_to_fc_workaround(in_sedf, out_fc_path):
+    """Circuitous method to convert a Spatially-Enabled data frame to feature class
+    SEDF is *supposed* to be convertible directly to feature class, but as of 12/19/2021,
+    there is issue where the resulting feature class is empty, thus for now there is this workaround method.
+    More info at https://community.esri.com/t5/arcgis-api-for-python-questions/converting-spatially-enabled-dataframe-to-feature/m-p/1127417
+    """
+    out_fgdb = os.path.dirname(out_fc_path)
+    out_fc_name = os.path.basename(out_fc_path)
+    
+    # https://developers.arcgis.com/python/api-reference/arcgis.features.toc.html#featureset
+    featureset = in_sedf.spatial.to_featureset()
+    featureset.save(save_location=out_fgdb, out_name=out_fc_name)
+
 class ORSIsochrone:
     def __init__(self, api_file, isoc_type, range_mins_or_mi, trav_mode):
         """Generates an isochrone (time- or distance-based buffer polygon) around
@@ -149,6 +163,7 @@ class ORSIsochrone:
 
         # Go through each batch of 5 points and draw an isochrone around them, then combine all the batches together
         # into 1 geodatframe with all relevant isochrone polygons in it. Next step would then be dissolve all polygons.
+        
         for pts_batch in line_pts_batched:
 
             body = {"locations":pts_batch, "range":[self.isoc_range], "range_type":self.isoc_type}
@@ -161,6 +176,7 @@ class ORSIsochrone:
 
             call = requests.post(f'https://api.openrouteservice.org/v2/isochrones/{self.trav_mode}', json=body, headers=headers)
 
+            # import pdb; pdb.set_trace()
             polygon_json = call.json()['features']
             
             gdf_batch = gpd.GeoDataFrame.from_features(polygon_json) # FYI, as of 12/12/2021, geopandas read_file() does not work due to a fiona compatibility issue.
@@ -169,30 +185,38 @@ class ORSIsochrone:
         
         # 'value' is column that always gets made in ORS API call, and it has same value, so is good for dissolving all polys in GDF into single poly
         gdf_diss = gdf_master.dissolve('value') 
+        # import pdb; pdb.set_trace()
 
         if output_file:
             sedf = pd.DataFrame.spatial.from_geodataframe(gdf_diss)
-            sedf.spatial.to_featureclass(output_file)
+            # sedf.spatial.to_featureclass(output_file) # as of 12/19/2021, this method returns empty featureclass, so using workaround function.
+            sedf_to_fc_workaround(sedf, output_file)
         else:
             return gdf_diss
 
 
 if __name__ == '__main__':
+
+    # =================INPUTS==========================
     in_api_file = input("enter file path of the ORS API text file: ")
-    mode = "driving-car"
-    mode_short = mode.split('-')[0]
-    isoctype = "time"
-    travel_range_mins = 15
+    mode = "foot-walking"  # "driving-car", "foot-walking", "cycling-regular"
+    isoctype = "time" # "time", "distance" 
+    travel_range_mins = 10 # enter time in minutes, distance in miles
 
-    project_line = r"I:\Projects\Darren\PEP\PEP_GIS\PEP_GIS.gdb\test_sr51"
-    isoch_pt_interval = 5280 / 5 # put points every this many feet
-    output_fgdb = r"I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb"
+    project_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'  # r"I:\Projects\Darren\PEP\PEP_GIS\PEP_GIS.gdb\test_sr51"  #  
+    isoch_pts_per_mile = 7 # how close together you want the isochrones' origin points to be along the project line
+    output_fgdb = r"I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb" # file geodatabase where output isochrone FC will go
 
 
+    # =================RUN SCRIPT==========================
     start_time = perf_counter()
     tstamp_str = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
+
+    mode_short = mode.split('-')[0]
     out_fc_name = f"isoch_{mode_short}"
     output_fc = os.path.join(output_fgdb, f"{out_fc_name}{tstamp_str}")
+
+    isoch_pt_interval = 5280 / isoch_pts_per_mile
 
     print("building isochrone...")
     line_iso = ORSIsochrone(api_file=in_api_file, isoc_type=isoctype,
