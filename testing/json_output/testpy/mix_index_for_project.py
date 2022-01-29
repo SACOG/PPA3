@@ -89,7 +89,7 @@ def get_mix_idx(fc_parcel, fc_project, project_type):
     arcpy.AddMessage("Calculating mix index...")
 
     sufx = int(perf()) + 1
-    fl_parcel = os.path.join('memory','fl_parcel{}'.format(sufx))
+    fl_parcel = os.path.join(arcpy.env.scratchGDB,'fl_parcel{}'.format(sufx))
     fl_project = g_ESRI_variable_2
 
     if arcpy.Exists(fl_parcel): arcpy.Delete_management(fl_parcel)
