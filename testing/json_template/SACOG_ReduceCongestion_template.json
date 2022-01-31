@@ -12,14 +12,14 @@
 					"attributes": {
 						"type": "EB",
 						"freeFlowSpeed": 36,
-						"averageCongestedSpeede": 18
+						"averageCongestedSpeed": 18
 					}
 				},
 				{
 					"attributes": {
 						"type": "WB",
 						"freeFlowSpeed": 38,
-						"averageCongestedSpeede": 18
+						"averageCongestedSpeed": 18
 					}
 				}
 			]
@@ -30,19 +30,19 @@
 				{
 					"attributes": {
 						"type": "EB",
-						"AMPeak": 1.35,
-						"PMPeak": 1.35,
-						"middayTT": 1.30,
-						"weekendTT": 1.33
+						"AMPeakTTR": 1.35,
+						"PMPeakTTR": 1.35,
+						"middayTTR": 1.30,
+						"weekendTTR": 1.33
 					}
 				},
 				{
 					"attributes": {
 						"type": "WB",
-						"AMPeak": 1.33,
-						"PMPeak": 1.36,
-						"middayTT": 1.32,
-						"weekendTT": 1.36
+						"AMPeakTTR": 1.33,
+						"PMPeakTTR": 1.36,
+						"middayTTR": 1.32,
+						"weekendTTR": 1.36
 					}
 				}
 			]
