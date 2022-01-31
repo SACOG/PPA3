@@ -18,8 +18,8 @@ import os
 from time import perf_counter as perf
 import arcpy
 
-import ppa_input_params as params
-import ppa_utils as utils
+import base_scripts.ppa_input_params as params
+import base_scripts.ppa_utils as utils
 
 
 def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):

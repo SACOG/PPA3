@@ -452,70 +452,9 @@ class Publish(object):
             gc.collect()
         
         return t_returns
-        
-    
-"""
-    def make_pdf(self):
-        wb = None
-        out_pdf_final_name = "Rpt_{}{}.pdf".format(self.proj_name, self.time_sufx)
-        out_pdf_final = os.path.join(self.out_folder, out_pdf_final_name)
-            
-        if os.path.exists(out_pdf_final):
-            try:
-                os.remove(out_pdf_final)
-            except:
-                out_pdf_final_name = "Rpt{}{}v2.pdf".format(self.proj_name, self.time_sufx)
-                out_pdf_final = os.path.join(self.out_folder, out_pdf_final_name)
-            
-        # make new excel file if it doesn't already exist
-        if not os.path.exists(self.xl_out):
-            self.make_new_excel()        
-            
-        try:            
-            arcpy.AddMessage("Publishing to PDF...")
-            
-            # make excel workbook with project outputs
-            xw.App.visible = True # must be set to True or else it won't work            
-            wb = xw.Book(self.xl_out_path)
-            
-            # make single list of pages that must be in all reports + pages that user selected (selecd_po_sheets)
-            out_sheets = self.sheets_all_rpts + self.selecd_po_sheets
-                
-            l_out_pdfs = [] # will be list of output PDF file names, PDFs in this list will be combined. Need list step for sorting by sheet name A-Z
-            
-            pdf_final = arcpy.mp.PDFDocumentCreate(out_pdf_final) # instantiate arcpy PDFDocumentCreate object
-                
-            # write user-specified sheets to PDFs
-            for s in out_sheets:
-                out_sheet = wb.sheets[s]
-                pdf_out = os.path.join(self.out_folder, 'Sheet_{}_{}.pdf'.format(s, self.time_sufx))
-                out_sheet.api.ExportAsFixedFormat(0, pdf_out)
-                l_out_pdfs.append(pdf_out)
-            
-            l_out_pdfs = sorted(l_out_pdfs) # sort by sheet name so that PDFs append together in correct order.
-            
-            for singlesheet_pdf in l_out_pdfs:
-                pdf_final.appendPages(singlesheet_pdf) # append to master PDF object
-                try:
-                    os.remove(singlesheet_pdf)  # not necessary for online version because scratch folder is temporary
-                except:
-                    pass
-                
-            pdf_final.saveAndClose()
-            
-            t_returns = (params.msg_ok, self.xl_out_path, out_pdf_final) # if successful, return output excel and output PDF
-        except:
-            msg = "{}".format(trace())
-            arcpy.AddMessage(msg)
-            
-            t_returns = (params.msg_fail, msg, self.xl_out_path) # if fail, return error message that PDF didn't make it, but that Excel still made it
-        finally: # always runs, even if 'try' runs successfully.
-            if wb != None:  # only closes wb object if it was instantiated.
-                wb.close()
-            gc.collect()
-            
-        return t_returns
-"""
+
+if __name__ == '__main__':
+    print("Script contains functions only. Do not run this as standalone script.")
 
 
 

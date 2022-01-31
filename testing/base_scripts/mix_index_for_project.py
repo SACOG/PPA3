@@ -22,7 +22,7 @@ import pandas as pd
 import arcpy
 
 import ppa_input_params as params
-import ppa_utils as utils
+import base_scripts.ppa_utils as utils
 
 # =============FUNCTIONS=============================================
 

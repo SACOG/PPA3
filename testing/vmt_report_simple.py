@@ -18,10 +18,10 @@ import pandas as pd
 import arcpy
 arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
-import ppa_input_params as params
-from accessibility_calcs import get_acc_data
-from mix_index_for_project import get_mix_idx
-from landuse_buff_calcs import LandUseBuffCalcs
+import base_scripts.ppa_input_params as params
+from base_scripts.accessibility_calcs import get_acc_data
+from base_scripts.mix_index_for_project import get_mix_idx
+from base_scripts.landuse_buff_calcs import LandUseBuffCalcs
 
 
 # identify project community type
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
     # load json template
-    in_json = r"C:\Users\dconly\GitRepos\PPA3\testing\json_output\SACOG_ReduceVMT_template.json"
+    in_json = r"C:\Users\dconly\GitRepos\PPA3\testing\json_template\SACOG_ReduceVMT_template.json"
     with open(in_json, "r") as j_in:
         json_loaded = json.load(j_in)
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     data_years = [2016, 2040]
 
     # csv table of aggregate values
-    aggval_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
+    aggval_csv = r"C:\Users\dconly\GitRepos\PPA3\testing\base_scripts\Agg_ppa_vals04222020_1017.csv"
 
     #============SELDOM-CHANGED INPUTS===================
 
