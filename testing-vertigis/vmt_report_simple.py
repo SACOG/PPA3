@@ -16,7 +16,7 @@ import os
 import json
 import pandas as pd
 import arcpy
-arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+# arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
 import base_scripts.ppa_input_params as params
 from base_scripts.accessibility_calcs import get_acc_data
@@ -85,23 +85,20 @@ def make_aggval_dict(aggval_df, metric_cols, proj_ctype, yearval=None):
 if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
-    # load json template
-    in_json = r"C:\Users\dconly\GitRepos\PPA3\testing\json_template\SACOG_ReduceVMT_template.json"
-    with open(in_json, "r") as j_in:
-        json_loaded = json.load(j_in)
 
-    output_dir = os.path.join(r"C:\Users\dconly\GitRepos\PPA3\testing\json_output")
+    in_json = "SACOG_ReduceVMT_template.json"
+    output_dir = arcpy.env.scratchFolder  # os.path.join(r"C:\Users\dconly\GitRepos\PPA3\testing\json_output")
 
 
     # specify project line feature class and attributes
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl'
-    project_name = "StocktonBl"
+    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl'
+    project_name = arcpy.GetParameterAsText(1)
 
     ptype = params.ptype_arterial
     data_years = [2016, 2040]
 
-    # csv table of aggregate values
-    aggval_csv = r"C:\Users\dconly\GitRepos\PPA3\testing\base_scripts\Agg_ppa_vals04222020_1017.csv"
+
+    
 
     #============SELDOM-CHANGED INPUTS===================
 
@@ -119,7 +116,22 @@ if __name__ == '__main__':
 
     geographies = [geo_project, geo_ctype, geo_region]
 
+    svr_folder = r'\\arcserver-svr\D\PPA_v2_SVR' # folder registered with server.
+
+    # csv table of aggregate values
+    aggval_csv = r"\\arcserver-svr\D\PPA_v2_SVR\PPA2\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv" # os.path.join(svr_folder, 'Input_Template', 'CSV', 'Agg_ppa_vals04222020_1017.csv')
+    
+    arcpy.env.workspace = params.fgdb # database registered with portal, has data layers that PPA needs
+
     #=================BEGIN SCRIPT===========================
+    
+    #==================setting key parameters
+
+    # load json template
+    in_json_path = r"\\arcserver-svr\D\PPA_v2_SVR\PPA2\Input_Template\JSON\SACOG_ReduceVMT_template.json" # os.path.join(svr_folder, 'Input_Template', 'JSON', in_json)
+    with open(in_json_path, "r") as j_in: # load applicable json template
+        json_loaded = json.load(j_in)
+
 
     # =======================import CSV of aggregate values as dataframe
     df_agg = pd.read_csv(aggval_csv)
@@ -149,7 +161,6 @@ if __name__ == '__main__':
         json_loaded[k_charts]["Jobs and Dwelling"][k_features][i][k_attrs]['jobs'] = jobs
         json_loaded[k_charts]["Jobs and Dwelling"][k_features][i][k_attrs]['dwellingUnits'] = du
 
-    # print(json.dumps(json_loaded, indent=4))
     print("calculated buffer values sucessfully")
 
 
@@ -191,7 +202,6 @@ if __name__ == '__main__':
         json_loaded[k_charts]["Base Year Service Accessibility"][k_features][i] \
             [k_attrs][geo_region] = aggval_dict[k][geo_region] 
 
-    # print(json.dumps(json_loaded, indent=4))
     print("calculated accessibility values sucessfully")
 
 
@@ -223,7 +233,6 @@ if __name__ == '__main__':
             json_loaded[k_charts]["Land Use Diversity"][k_features][i][k_attrs][year_label] = output_dict[geo_type]
             
     print("calculated land use diversity values sucessfully")
-    # print(json.dumps(json_loaded, indent=4))
 
 
     # ============================write out updated json to file
@@ -231,9 +240,12 @@ if __name__ == '__main__':
     out_file_name = f"VMTReport{project_name}{output_sufx}.json"
 
     out_file = os.path.join(output_dir, out_file_name)
+    
     with open(out_file, 'w') as f_out:
         json.dump(json_loaded, f_out, indent=4)
+
+    arcpy.SetParameterAsText(2, out_file)
         
-    print(f"wrote JSON output to {out_file}")
+    arcpy.AddMessage(f"wrote JSON output to {out_file}")
 
 

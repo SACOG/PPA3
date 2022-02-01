@@ -26,7 +26,7 @@ from openpyxl.drawing.image import Image
 import pandas as pd
 import arcpy
 
-import ppa_input_params as params
+import base_scripts.ppa_input_params as params
 
 
 def trace():

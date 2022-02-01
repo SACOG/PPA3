@@ -1,0 +1,51 @@
+{
+    "congestionRatio": {
+        "NORTHBOUND": 0.4863575867975308,
+        "SOUTHBOUND": 0.5245584036388036
+    },
+    "projectAADT": 23000,
+    "charts": {
+        "Free flow vs Congested Speeds": {
+            "title": "Free-flow vs. Congested Speeds",
+            "features": [
+                {
+                    "attributes": {
+                        "type": "NORTHBOUND",
+                        "freeFlowSpeed": 29.12001830253997,
+                        "averageCongestedSpeed": 14.16274182912327
+                    }
+                },
+                {
+                    "attributes": {
+                        "type": "SOUTHBOUND",
+                        "freeFlowSpeed": 28.782254523148556,
+                        "averageCongestedSpeed": 15.09797348578854
+                    }
+                }
+            ]
+        },
+        "Travel Time Reliability Index": {
+            "title": "Travel Time Reliability Index",
+            "features": [
+                {
+                    "attributes": {
+                        "type": "NORTHBOUND",
+                        "AMPeakTTR": 1.3784194466762407,
+                        "PMPeakTTR": 1.4757900890316429,
+                        "middayTTR": 1.376488458887411,
+                        "weekendTTR": 1.409099597539259
+                    }
+                },
+                {
+                    "attributes": {
+                        "type": "SOUTHBOUND",
+                        "AMPeakTTR": 1.4236296182664292,
+                        "PMPeakTTR": 1.4493969231449726,
+                        "middayTTR": 1.4262906792112078,
+                        "weekendTTR": 1.4449589790447237
+                    }
+                }
+            ]
+        }
+    }
+}

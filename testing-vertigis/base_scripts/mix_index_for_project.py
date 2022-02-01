@@ -21,7 +21,7 @@ from time import perf_counter as perf
 import pandas as pd
 import arcpy
 
-import ppa_input_params as params
+import base_scripts.ppa_input_params as params
 import base_scripts.ppa_utils as utils
 
 # =============FUNCTIONS=============================================

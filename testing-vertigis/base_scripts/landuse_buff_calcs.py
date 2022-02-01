@@ -12,12 +12,13 @@ Get following numbers within 0.5mi of project area:
     sum of trips (for each mode)
 
 """
-import time
+import os
+from time import perf_counter as perf
 
 import arcpy
 import pandas as pd
 
-import ppa_input_params as params
+import base_scripts.ppa_input_params as params
 
 class LandUseBuffCalcs():
     '''
@@ -40,7 +41,7 @@ class LandUseBuffCalcs():
     def point_sum(self):
         arcpy.AddMessage("Aggregating land use data...")
         
-        sufx = int(time.clock()) + 1
+        sufx = int(perf()) + 1
         fl_parcel = os.path.join('memory','fl_parcel{}'.format(sufx))
         fl_project = g_ESRI_variable_2
         
@@ -119,21 +120,20 @@ if __name__ == '__main__':
     arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
     # input fc of parcel data--must be points!
-    in_pcl_pt_fc = params.parcel_pt_fc_yr(2016)
-    value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
-                    'BIK_TOT_RES', 'WLK_TOT_RES']
-
     # input line project for basing spatial selection
     project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
     ptype = params.ptype_arterial
+    data_years = [2016, 2040]
+    buffdist_ft = 2640
+    value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
+                    'BIK_TOT_RES', 'WLK_TOT_RES']
 
-    # (self,fc_pclpt, fc_project, project_type, val_fields, buffdist, case_field=None, case_excs_list=[])
-    # lubuff_obj = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], 2640)
+    out_data = {}
+    for data_year in data_years:
+        in_pcl_pt_fc = params.parcel_pt_fc_yr(data_year)
+        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], buffdist_ft).point_sum()
+        out_data[data_year] = year_dict
+
+    print(out_data)
     
-    st = time.perf_counter()
-    elapsed = time.perf_counter() - st
-    lubuff_obj = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], 2640).point_sum()
-    print(lubuff_obj)
-    print(f"analysis completed in {elapsed} seconds.")
 
-    #ej_data_arterial = {v: output_dict.pop(k) for k, v in ej_flag_dict.items() if output_dict.get(k) is not None}
