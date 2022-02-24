@@ -1,0 +1,86 @@
+{
+	"charts": {
+		"Jobs and Dwelling": {
+			"title": "Total Jobs and Dwelling Units within 0.5mi of project",
+			"features": [
+				{
+					"attributes": {
+						"year": "2016",
+						"jobs": 1612,
+						"dwellingUnits": 3147
+					}
+				},
+				{
+					"attributes": {
+						"year": "2040",
+						"jobs": 2303,
+						"dwellingUnits": 4516
+					}
+				}
+			]
+		},
+		"Land Use Diversity": {
+			"title": "Land Use Diversity within 1mi of Project",
+			"features": [
+				{
+					"attributes": {
+						"type": "Project",
+						"diversity 2016": 0.51,
+						"diversity 2040": 0.56
+					}
+				},
+				{
+					"attributes": {
+						"type": "Community Type",
+						"diversity 2016": 0.74,
+						"diversity 2040": 0.74
+					}
+				},
+				{
+					"attributes": {
+						"type": "Region",
+						"diversity 2016": 1.0,
+						"diversity 2040": 0.93
+					}
+				}
+			]
+		},
+		"Base Year Service Accessibility": {
+			"title": "Land Use Diversity within 1mi of Project",
+			"features": [
+				{
+					"attributes": {
+						"type": "30 Min Walk",
+						"Project": 16,
+						"Community Type": 17,
+						"Region": 17
+					}
+				},
+				{
+					"attributes": {
+						"type": "30 Min Biking",
+						"Project": 126,
+						"Community Type": 147,
+						"Region": 140
+					}
+				},
+				{
+					"attributes": {
+						"type": "15 Min Drive",
+						"Project": 483,
+						"Community Type": 553,
+						"Region": 520
+					}
+				},
+				{
+					"attributes": {
+						"type": "45 Min Transit",
+						"Project": 93,
+						"Community Type": 79,
+						"Region": 78
+					}
+				}
+			]
+		}
+	}
+}

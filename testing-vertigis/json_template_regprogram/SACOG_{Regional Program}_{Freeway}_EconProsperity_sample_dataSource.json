@@ -1,0 +1,52 @@
+{
+	"Jobs Access by Car Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/31435829568a45baa25883886897b080/data",
+	"Education Access by Car Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/191ce274b8c34e93a631670ed05dd52f/data",
+	"charts": {
+		"Base Year Job Accessibility": {
+			"title": "Base Year Job Accessibility by Auto from Project",
+			"features": [
+				{
+					"attributes": {
+						"type": "Project",
+						"value": 560595
+					}
+				},
+				{
+					"attributes": {
+						"type": "Community Type",
+						"value": 510068
+					}
+				},
+				{
+					"attributes": {
+						"type": "Region",
+						"value": 475047
+					}
+				}
+			]
+		},
+		"Base Year Auto Access": {
+			"title": "Base Year Auto Access to Education Facilities",
+			"features": [
+				{
+					"attributes": {
+						"type": "Project",
+						"value": 598
+					}
+				},
+				{
+					"attributes": {
+						"type": "Community Type",
+						"value": 526
+					}
+				},
+				{
+					"attributes": {
+						"type": "Region",
+						"value": 493
+					}
+				}
+			]
+		}
+	}
+}
