@@ -1,0 +1,13 @@
+INDEPENDENCE OF GP SERVICES
+All GP services must be publishable and runnable in ESRI online environment independently.
+This means:
+	> GP services cannot call on scripts outside of the GP folder
+	> Even scripts that are used in multiple GP services must
+	  be copied and pasted into each GP service folder
+
+
+POTENTIAL PROCESS FOR UPDATED SHARED SCRIPTS:
+1. Place the script into the "sharemodules" folder
+2. Have a script tool  that loops through all GP service folders and automatically
+	does find/replace with the updated version of the script.
+	***CAREFUL WHEN DOING THIS--MAKE SURE THERE ARE NOT SUBREPORT-SPECIFIC SCRIPTS WITHIN EACH GP SERVICE FOLDER
