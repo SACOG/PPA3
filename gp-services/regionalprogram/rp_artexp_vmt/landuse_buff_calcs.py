@@ -26,7 +26,8 @@ class LandUseBuffCalcs():
     for all parcels within a distance of a project line. Optionally,
     The user can run the point_sum_density() method to get the density (e.g. population density) within the buffer area
     '''
-    def __init__(self,fc_pclpt, fc_project, project_type, val_fields, buffdist, case_field=None, case_excs_list=[]):
+    def __init__(self,fc_pclpt, fc_project, project_type, val_fields, buffered_pcls=False, 
+                buffdist=0, case_field=None, case_excs_list=[]):
         
         # user inputs
         self.fc_pclpt = fc_pclpt
@@ -36,6 +37,7 @@ class LandUseBuffCalcs():
         self.buffdist = buffdist
         self.case_field = case_field
         self.case_excs_list = case_excs_list
+        self.buffered_pcls = buffered_pcls
         
 
     def point_sum(self):
@@ -51,8 +53,10 @@ class LandUseBuffCalcs():
         if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
         arcpy.MakeFeatureLayer_management(self.fc_project, fl_project)    
     
-        buff_dist = 0 if self.project_type == params.ptype_area_agg else self.buffdist
-        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
+        
+        if not self.buffered_pcls:
+            buff_dist = 0 if self.project_type == params.ptype_area_agg else self.buffdist
+            arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
     
         # If there are no points in the buffer (e.g., no collisions on segment, no parcels, etc.),
         # still add those columns, but make them = 0

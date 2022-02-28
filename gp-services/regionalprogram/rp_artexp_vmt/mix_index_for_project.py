@@ -85,7 +85,7 @@ def calc_mix_index(in_df, params_df, hh_col, lu_factor_cols, mix_idx_col):
     return in_df
 
 
-def get_mix_idx(fc_parcel, fc_project, project_type):
+def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
     arcpy.AddMessage("Calculating mix index...")
 
     sufx = int(perf()) + 1
@@ -104,8 +104,10 @@ def get_mix_idx(fc_parcel, fc_project, project_type):
     lu_fac_cols = [params.col_k12_enr, params.col_emptot, params.col_empfood, params.col_empret, params.col_empsvc, params.col_parkac]
     # make parcel feature layer
 
-    buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
-    arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
+    
+    if not buffered_pcls:
+        buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
+        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
 
     summ_df = make_summary_df(fl_parcel, in_cols, lu_fac_cols, params.col_hh, params.park_calc_dict)
 
