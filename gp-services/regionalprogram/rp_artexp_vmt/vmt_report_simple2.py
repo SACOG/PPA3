@@ -18,7 +18,7 @@ from commtype import get_proj_ctype
 from parcel_data import get_buffer_parcels
 from accessibility_calcs import get_acc_data
 from mix_index_for_project import get_mix_idx
-from landuse_buff_calcs import LandUseBuffCalcs
+import chart_job_du_tot
 
 # make dict of region and community type values for specified metric and community type
 def make_aggval_dict(aggval_df, metric_cols, proj_ctype, yearval=None):
@@ -57,10 +57,7 @@ if __name__ == '__main__':
     data_years = [2016, 2040]
 
 
-    
-
     #============SELDOM-CHANGED INPUTS===================
-
     # names in json template
     geo_project = "Project"
     geo_ctype = "Community Type"
@@ -73,9 +70,8 @@ if __name__ == '__main__':
     k_year = "year"
     k_type = "type"
 
-    lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
 
-    geographies = [geo_project, geo_ctype, geo_region]
+    lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
 
     svr_folder = r'\\arcserver-svr\D\PPA_v2_SVR' # folder registered with server.
 
@@ -111,27 +107,10 @@ if __name__ == '__main__':
         parcel_fc_dict[year] = pcl_buff_fc
 
     # ========================calc land use buffer values 
-    value_fields = ['EMPTOT', 'DU_TOT']
-
-    out_data = {}
-    for data_year in data_years:
-        in_pcl_pt_fc = parcel_fc_dict[data_year]
-        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, value_fields, buffered_pcls=True,
-                                        buffdist=lu_buffdist_ft).point_sum()
-        out_data[data_year] = year_dict
-
-    
-    # import pdb; pdb.set_trace()
-
-    # update applicable field values in JSON template
     for i, year in enumerate(data_years):
-        jobs = out_data[year]['EMPTOT']
-        du = out_data[year]['DU_TOT']
-        json_loaded[k_charts]["Jobs and Dwelling"][k_features][i][k_attrs]['year'] = year
-        json_loaded[k_charts]["Jobs and Dwelling"][k_features][i][k_attrs]['jobs'] = jobs
-        json_loaded[k_charts]["Jobs and Dwelling"][k_features][i][k_attrs]['dwellingUnits'] = du
-
-    print("calculated buffer values sucessfully")
+        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
+        chart_job_du_tot.update_json(json_loaded, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
+                                    project_fc=project_fc, project_type=ptype)
 
 
     # =======================calc accessibility numbers and update JSON chart with it
