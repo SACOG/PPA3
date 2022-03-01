@@ -15,7 +15,7 @@ import os
 # ========================================INPUT DATA LAYERS===================================================== 
 server_folder = r'\\arcserver-svr\D\PPA3_SVR\RegionalProgram'
 
-fgdb = os.path.join(server_folder, r"PPA2_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
+fgdb = os.path.join(r"\\arcserver-svr\D\PPA_v2_SVR\PPA2_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
 projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet)
 
 # -------input feature classes, all in fgdb
@@ -51,7 +51,7 @@ def model_links_fc(in_year=2016):
 
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
-aggvals_csv = os.path.join(server_folder, r"CSV\Agg_ppa_vals04222020_1017.csv")
+aggval_csv = os.path.join(server_folder, r"CSV\Agg_ppa_vals04222020_1017.csv")
 # aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type

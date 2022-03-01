@@ -11,7 +11,7 @@ import os
 import json
 import pandas as pd
 import arcpy
-# arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+
 
 import parameters as params
 from commtype import get_proj_ctype
@@ -76,18 +76,17 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
-     # "SACOG_ReduceVMT_template.json"
-    output_dir = arcpy.env.scratchFolder
-    arcpy.env.workspace = params.fgdb
 
     # specify project line feature class and attributes
     project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge' # arcpy.GetParameterAsText(0)  
-    project_name = 'TestStockton' # arcpy.GetParameterAsText(1)
+    project_name = 'TestTruxelBridge' # arcpy.GetParameterAsText(1)
 
     ptype = params.ptype_arterial
     
 
     #=================BEGIN SCRIPT===========================
+    arcpy.env.workspace = params.fgdb
+    output_dir = arcpy.env.scratchFolder
     result_path = make_vmt_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
