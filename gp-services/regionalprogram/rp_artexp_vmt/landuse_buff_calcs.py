@@ -1,24 +1,22 @@
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_parcel'
-g_ESRI_variable_2 = 'fl_project'
-# Esri end of added variables
-
 #land use buffer calcs
 
 """
-Get following numbers within 0.5mi of project area:
+Get following numbers within buffer distance of project line:
     sum of jobs
     sum of dwelling units
     sum of trips (for each mode)
 
 """
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+
 from time import perf_counter as perf
 
 import arcpy
 import pandas as pd
 
-import ppa_input_params as params
+import parameters as params
 
 class LandUseBuffCalcs():
     '''
@@ -45,7 +43,7 @@ class LandUseBuffCalcs():
         
         sufx = int(perf()) + 1
         fl_parcel = os.path.join('memory','fl_parcel{}'.format(sufx))
-        fl_project = g_ESRI_variable_2
+        fl_project = 'fl_project'
         
         if arcpy.Exists(fl_parcel): arcpy.Delete_management(fl_parcel)
         arcpy.MakeFeatureLayer_management(self.fc_pclpt, fl_parcel)

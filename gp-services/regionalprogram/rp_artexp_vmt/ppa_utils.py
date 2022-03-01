@@ -9,10 +9,11 @@
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
-
 import os
-# import pdb
 import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+
+
 import datetime as dt
 import time
 import gc
@@ -26,7 +27,7 @@ from openpyxl.drawing.image import Image
 import pandas as pd
 import arcpy
 
-import ppa_input_params as params
+import parameters as params
 
 
 def trace():

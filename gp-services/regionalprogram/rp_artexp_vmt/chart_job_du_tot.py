@@ -9,6 +9,10 @@ Updated by:
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+
 from landuse_buff_calcs import LandUseBuffCalcs
 import parameters as params
 

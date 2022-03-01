@@ -10,8 +10,11 @@ Updated by:
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
-
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+
+
 from time import perf_counter as perf
 
 import arcpy
@@ -38,10 +41,6 @@ def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, 
 
     arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
     arcpy.conversion.FeatureClassToFeatureClass(fl_parcel, arcpy.env.scratchGDB, out_fc)
-
-    output_cnt = arcpy.GetCount_management(out_fc_path)[0]
-    # arcpy.AddMessage(output_cnt)
-    print(output_cnt)
 
     return out_fc_path
 

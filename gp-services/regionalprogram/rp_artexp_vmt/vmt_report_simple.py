@@ -5,9 +5,12 @@ Approach:
 2 - line-by-line, digit-by-digit populating of JSON file
 3 - get it to work, refactor later as needed.
 """
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+
 import datetime as dt
 from time import perf_counter as perf
-import os
 import json
 import pandas as pd
 import arcpy
@@ -28,7 +31,7 @@ def make_vmt_report_artexp(fc_project, project_name, project_type):
     data_years = [2016, 2040]
 
     with open(in_json, "r") as j_in: # load applicable json template
-        json_loaded = json.load(j_in)
+        loaded_json = json.load(j_in)
 
     # get project community type
     project_commtype = get_proj_ctype(project_fc, params.comm_types_fc)
@@ -43,20 +46,20 @@ def make_vmt_report_artexp(fc_project, project_name, project_type):
 
     # calc land use buffer values 
     for i, year in enumerate(data_years):
-        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-        chart_job_du_tot.update_json(json_loaded, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
+        in_pcl_pt_fc = parcel_fc_dict[year]
+        chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
                                     project_fc=project_fc, project_type=ptype)
 
     # calc accessibility numbers and update JSON chart with it
-    chart_accessibility.update_json(json_loaded=json_loaded, fc_project=project_fc, project_type=ptype,
+    chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=ptype,
                                     project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
                                     k_chart_title="Base Year Service Accessibility")
 
 
     # calc mix index
     for i, year in enumerate(data_years):
-        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-        chart_mixindex.update_json(json_loaded, fc_project=project_fc, fc_parcel=in_pcl_pt_fc,
+        in_pcl_pt_fc = parcel_fc_dict[year]
+        chart_mixindex.update_json(json_loaded=loaded_json, fc_project=project_fc, fc_parcel=in_pcl_pt_fc,
                                     data_year=year, proj_type=ptype, project_commtype=project_commtype,
                                     aggval_csv=params.aggval_csv)
 
@@ -67,7 +70,7 @@ def make_vmt_report_artexp(fc_project, project_name, project_type):
     out_file = os.path.join(output_dir, out_file_name)
     
     with open(out_file, 'w') as f_out:
-        json.dump(json_loaded, f_out, indent=4)
+        json.dump(loaded_json, f_out, indent=4)
 
     return out_file
 
@@ -78,8 +81,8 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge' # arcpy.GetParameterAsText(0)  
-    project_name = 'TestTruxelBridge' # arcpy.GetParameterAsText(1)
+    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS' # arcpy.GetParameterAsText(0)  
+    project_name = 'TestStocktonCS' # arcpy.GetParameterAsText(1)
 
     ptype = params.ptype_arterial
     

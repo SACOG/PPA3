@@ -15,10 +15,14 @@ g_ESRI_variable_2 = 'fl_project'
 # Python Version: 3.x
 # --------------------------------
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+
 from time import perf_counter as perf
 import arcpy
 
-import ppa_input_params as params
+import parameters as params
 import ppa_utils as utils
 
 
