@@ -12,24 +12,13 @@ Python Version: 3.x
 """
 import pandas as pd
 
-import ppa_input_params as params
+import parameters as params
 from accessibility_calcs import get_acc_data
 from get_agg_values import make_aggval_dict
 
 
 
 def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_csv, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
-    # names in json template --consider migrating to parameters file
-    geo_project = "Project"
-    geo_ctype = "Community Type"
-    geo_region = "Region"
-
-    # re-used json keys, so assign to variable --consider migrating to parameters file
-    k_charts = "charts"
-    k_features = "features" # remember, this is a list of dicts
-    k_attrs = "attributes"
-    k_year = "year"
-    k_type = "type"
 
     fc_accessibility_data = params.accdata_fc
 
@@ -48,25 +37,25 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_
 
     # make dict of regional and comm type values
     aggval_dict = make_aggval_dict(aggval_csv, metric_cols=accmetrics_keys, proj_ctype=project_commtype, 
-                    yearkey=k_year, geo_regn=geo_region)
+                    yearkey=params.k_year, geo_regn=params.geo_region)
 
     for i, k in enumerate(list(acc_metrics.keys())):
         
         # update value for "type" (mode of tranpsortation)
-        json_loaded[k_charts][k_chart_title][k_features][i] \
-            [k_attrs][k_type] = acc_metrics[k]
+        json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
+            [params.k_attrs][params.k_type] = acc_metrics[k]
         
         # update value for mode's access from project
-        json_loaded[k_charts][k_chart_title][k_features][i] \
-            [k_attrs][geo_project] = dict_data2[k] 
+        json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
+            [params.k_attrs][params.geo_project] = dict_data2[k] 
         
         # update value for mode's access avg for project comm type
-        json_loaded[k_charts][k_chart_title][k_features][i] \
-            [k_attrs][geo_ctype] = aggval_dict[k][project_commtype] 
+        json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
+            [params.k_attrs][params.geo_ctype] = aggval_dict[k][project_commtype] 
         
         # update value for mode's access avg for region
-        json_loaded[k_charts][k_chart_title][k_features][i] \
-            [k_attrs][geo_region] = aggval_dict[k][geo_region] 
+        json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
+            [params.k_attrs][params.geo_region] = aggval_dict[k][params.geo_region] 
 
     print("calculated accessibility values sucessfully")
 

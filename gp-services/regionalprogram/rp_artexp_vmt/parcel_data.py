@@ -16,7 +16,7 @@ from time import perf_counter as perf
 
 import arcpy
 
-import ppa_input_params as params
+import parameters as params
 
 def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, parcel_cols=None):
     arcpy.AddMessage(f"Generating temp parcel file of parcels in project vicinity or zone for year {data_year}...")
