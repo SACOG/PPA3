@@ -1,8 +1,3 @@
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_accdata'
-g_ESRI_variable_2 = 'fl_project'
-# Esri end of added variables
-
 # --------------------------------
 # Name: accessibility_calcs.py
 # Purpose: PPA accessibility metrics using Sugar-access polygons (default is census block groups)
@@ -23,7 +18,7 @@ from time import perf_counter as perf
 import arcpy
 
 import parameters as params
-import ppa_utils as utils
+from utils import utils
 
 
 def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
@@ -35,7 +30,7 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
     
     sufx = int(perf()) + 1
     fl_accdata = os.path.join('memory','fl_accdata{}'.format(sufx))
-    fl_project = g_ESRI_variable_2
+    fl_project = 'fl_project'
 
     if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)

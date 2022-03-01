@@ -26,7 +26,7 @@ import pandas as pd
 import arcpy
 
 import parameters as params
-import ppa_utils as utils
+from utils import utils
 
 # =============FUNCTIONS=============================================
 

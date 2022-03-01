@@ -81,8 +81,8 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS' # arcpy.GetParameterAsText(0)  
-    project_name = 'TestStocktonCS' # arcpy.GetParameterAsText(1)
+    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge' # arcpy.GetParameterAsText(0)  
+    project_name = 'TestTruxelBridge' # arcpy.GetParameterAsText(1)
 
     ptype = params.ptype_arterial
     
