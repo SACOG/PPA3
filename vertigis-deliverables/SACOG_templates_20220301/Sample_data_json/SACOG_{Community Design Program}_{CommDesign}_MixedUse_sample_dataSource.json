@@ -1,0 +1,30 @@
+{
+	"charts": {
+		"Land Use Diversity": {
+			"title": "Land Use Diversity within 1mi of Project",
+			"features": [
+				{
+					"attributes": {
+						"type": "Project",
+						"diversity 2016": 0.72,
+						"diversity 2040": 0.75
+					}
+				},
+				{
+					"attributes": {
+						"type": "Community Type",
+						"diversity 2016": 0.42,
+						"diversity 2040": 0.47
+					}
+				},
+				{
+					"attributes": {
+						"type": "Region",
+						"diversity 2016": 1.0,
+						"diversity 2040": 0.93
+					}
+				}
+			]
+		}
+	}
+}

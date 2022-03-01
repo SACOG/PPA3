@@ -1,0 +1,21 @@
+{
+	"charts": {
+		"Weekday Transit Trips": {
+			"title": "Weekday Transit Trips on Project Segment",
+			"features": [
+				{
+					"attributes": {
+						"year": "2016",
+						"value": 260.1
+					}
+				},
+				{
+					"attributes": {
+						"year": "2040",
+						"value": 712.8
+					}
+				}
+			]
+		}
+	}
+}
