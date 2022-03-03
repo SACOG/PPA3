@@ -34,11 +34,10 @@ import re
 import datetime as dt
 
 import arcpy
-#from arcgis.features import SpatialDataFrame
 import pandas as pd
 
-import ppa_input_params as params
-import base_scripts.ppa_utils as utils
+import parameters as params
+from utils import utils
 
 arcpy.env.overwriteOutput = True
 
@@ -86,7 +85,7 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         # https://support.esri.com/en/technical-article/000012699
         
         # temporary files
-        scratch_gdb = arcpy.env.scratchGDB
+        scratch_gdb = "memory" # arcpy.env.scratchGDB
         
         temp_intersctpts = os.path.join(scratch_gdb, "temp_intersectpoints")  # r"{}\temp_intersectpoints".format(scratch_gdb)
         temp_intrsctpt_singlpt = os.path.join(scratch_gdb, "temp_intrsctpt_singlpt") # converted from multipoint to single point (1 pt per feature)
@@ -233,8 +232,9 @@ def get_npmrds_data(fc_projline, str_project_type):
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
 
     # create temporar buffer layer, flat-tipped, around TMCs; will be used to split project lines
-    temp_tmcbuff = os.path.join(arcpy.env.scratchGDB, "TEMP_linkbuff_4projsplit")
+    temp_tmcbuff = os.path.join("memory", "TEMP_linkbuff_4projsplit")
     fl_tmc_buff = g_ESRI_variable_9
+    # import pdb; pdb.set_trace()
     arcpy.Buffer_analysis(fl_speed_data, temp_tmcbuff, params.tmc_buff_dist_ft, "FULL", "FLAT")
     arcpy.MakeFeatureLayer_management(temp_tmcbuff, fl_tmc_buff)
 
@@ -264,7 +264,9 @@ if __name__ == '__main__':
     project_line = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
     proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
 
+
     test_dict = get_npmrds_data(project_line, proj_type)
+
     print(test_dict)
 
     elapsed_time = round((perf() - start_time)/60, 1)
