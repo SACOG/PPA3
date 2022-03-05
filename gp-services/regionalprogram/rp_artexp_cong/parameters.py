@@ -81,6 +81,8 @@ geo_region = "Region"
 
 # re-used json keys, so assign to variable
 k_charts = "charts"
+k_name = "name"
+k_value = "value"
 k_features = "features" # remember, this is a list of dicts
 k_attrs = "attributes"
 k_year = "year"
