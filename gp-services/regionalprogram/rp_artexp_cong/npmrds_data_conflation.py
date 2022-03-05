@@ -174,25 +174,25 @@ def simplify_outputs(in_df, proj_len_col):
     df_lencols = in_df[lendir_cols]    
     
     max_dir_len = df_lencols.max(axis = 1)[0] # direction for which project has longest intersect with TMC. assumes just one record in the output
+    max_len_col = df_lencols.idxmax(axis = 1)[0] #return column name of direction with greatest overlap
+    df_lencols2 = df_lencols.drop(max_len_col, axis = 1)
+    secndmax_col = df_lencols2.idxmax(axis = 1)[0] #return col name of direction with second-most overlap (should be reverse of direction with most overlap)
+
+    maxdir = max_len_col[:max_len_col.find(dirlen_suffix)] #direction name without '_calc_len' suffix
+    secdir = secndmax_col[:secndmax_col.find(dirlen_suffix)]
+
+    outcols_max = [c for c in in_df.columns if re.match(maxdir, c)]
+    outcols_sec = [c for c in in_df.columns if re.match(secdir, c)]
+
+    outcols = outcols_max + outcols_sec
     
-    #if there's less than 10% overlap in the 'highest overlap' direction, then say that the project is not on any TMCs (and any TMC data is from cross streets or is insufficient to represent the segment)
-    if (max_dir_len / proj_len) < 0.1:
-        out_df = pd.DataFrame([-1], columns=['SegmentSpeedData'])
-        return out_df.to_dict('records')
-    else:
-        max_len_col = df_lencols.idxmax(axis = 1)[0] #return column name of direction with greatest overlap
-        df_lencols2 = df_lencols.drop(max_len_col, axis = 1)
-        secndmax_col = df_lencols2.idxmax(axis = 1)[0] #return col name of direction with second-most overlap (should be reverse of direction with most overlap)
+    # if there's less than 10% overlap in the 'highest overlap' direction, 
+    # then say that the project is not on any TMCs (and any TMC data is from cross streets or is insufficient to represent the segment)
+    val_nodata = 0 # value that denotes absence of data, or project line happening where there are no data
+    if (max_dir_len / proj_len) < 0.1: 
+        for col in outcols: in_df[col] = val_nodata
 
-        maxdir = max_len_col[:max_len_col.find(dirlen_suffix)] #direction name without '_calc_len' suffix
-        secdir = secndmax_col[:secndmax_col.find(dirlen_suffix)]
-
-        outcols_max = [c for c in in_df.columns if re.match(maxdir, c)]
-        outcols_sec = [c for c in in_df.columns if re.match(secdir, c)]
-
-        outcols = outcols_max + outcols_sec
-
-        return in_df[outcols].to_dict('records')
+    return in_df[outcols].to_dict('records')
     
 def make_df(in_dict):
     re_dirn = re.compile("(.*BOUND).*") # retrieve direction

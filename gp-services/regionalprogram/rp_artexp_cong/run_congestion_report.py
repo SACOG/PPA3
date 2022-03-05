@@ -15,21 +15,18 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import datetime as dt
-from time import perf_counter as perf
 import json
-import pandas as pd
 import arcpy
 
 
 import parameters as params
-from commtype import get_proj_ctype
 from parcel_data import get_buffer_parcels
 import chart_job_du_tot
-import chart_accessibility
-import chart_mixindex
+from chart_congestion import CongestionReport
+import npmrds_data_conflation as npmrds
 
 
-def make_congestion_rpt_artexp(fc_project, project_name, project_type):
+def make_congestion_rpt_artexp(fc_project, project_name, project_type, aadt):
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceCongestion_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -52,15 +49,18 @@ def make_congestion_rpt_artexp(fc_project, project_name, project_type):
         chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
                                     project_fc=project_fc, project_type=ptype)
 
-    # calc numbers for speeds chart
-    # calc numbers for reliability chart
-    # calc congestion ratio values for table
+    # get congestion data
+    congn_data = npmrds.get_npmrds_data(fc_project, project_type)
 
+    cong_rpt_obj = CongestionReport(congn_data, loaded_json)
+    cong_rpt_obj.update_all_congestion_data()
 
+    # update AADT
+    loaded_json["projectAADT"] = aadt
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
-    out_file_name = f"VMTReport{project_name}{output_sufx}.json"
+    out_file_name = f"CongestnRpt{project_name}{output_sufx}.json"
 
     out_file = os.path.join(output_dir, out_file_name)
     
@@ -76,8 +76,9 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    project_name = arcpy.GetParameterAsText(1) # 'TestTruxelBridge'
+    project_fc = arcpy.GetParameterAsText(0) # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'  # 
+    project_name = arcpy.GetParameterAsText(1) # 'TestTruxelBridge' #  
+    proj_aadt = arcpy.GetParameterAsText(2) # 32000 # 
 
     ptype = params.ptype_arterial
     
@@ -85,9 +86,9 @@ if __name__ == '__main__':
     #=================BEGIN SCRIPT===========================
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_congestion_rpt_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_congestion_rpt_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype, aadt=proj_aadt)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(3, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

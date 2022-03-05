@@ -21,12 +21,9 @@ import parameters as params
 
 
 class CongestionReport(object):
-    def __init__(self, in_data, json_template_file):
-        self.raw_data = in_data
-        
-        # load applicable json template
-        with open(json_template_file, "r") as j_in: 
-            self.json_template = json.load(j_in)
+    def __init__(self, in_data, json_template):
+        self.raw_data = in_data # python dictionary, output of separate script that gets speed data/reliability data
+        self.json_template = json_template # JSON python object, not a JSON file path
 
         self.data_dir_names = ['NORTHBOUND', 'SOUTHBOUND', 'EASTBOUND', 'WESTBOUND']
         self.chart_dir_names = ['NB', 'SB', 'EB', 'WB']
@@ -76,7 +73,11 @@ class CongestionReport(object):
             # import pdb; pdb.set_trace()
             data_dirn = {k.split(direcn)[1]:v for k, v in self.raw_data.items() if re.match(direcn, k)} # e.g. {'SOUTHBOUNDffs': 99, ...}
             dir_subdict = {k:v for k, v in data_dirn.items() if k in self.congtags} # return only data for free-flow speed and congested speed
-            dir_subdict[self.tag_congratio] = dir_subdict[self.congspd] / dir_subdict[self.ffs] # add congestion ration as a dict entry
+
+            # add congestion ratio as a dict entry
+            congratio = 0 if dir_subdict[self.ffs] == 0 \
+                else dir_subdict[self.congspd] / dir_subdict[self.ffs]
+            dir_subdict[self.tag_congratio] =  congratio
 
             out_dict[direcn] = dir_subdict
         
@@ -140,8 +141,12 @@ class CongestionReport(object):
             self.json_template[self.tag_congratio][secn_key][params.k_name] = chart_dirname
             self.json_template[self.tag_congratio][secn_key][params.k_value] = update_data[direcn][self.tag_congratio]
 
+    def update_all_congestion_data(self):
+        self.update_cong_chart()
+        self.update_ttr_chart()
+        self.update_cong_ratio()
 
-
+        # return self.json_template
 
 
 if __name__ == '__main__':
@@ -154,12 +159,12 @@ if __name__ == '__main__':
                     'NORTHBOUNDlottr_pmpk': 1.4757900890316429, 'NORTHBOUNDlottr_wknd': 1.409099597539259}
 
     json_f = r"\\arcserver-svr\D\PPA3_SVR\RegionalProgram\JSON\SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceCongestion_sample_dataSource.json"
+    with open(json_f, 'r') as f:
+        j_loaded = json.load(f)
 
-    rpt_obj = CongestionReport(test_out_data, json_f)
+    rpt_obj = CongestionReport(test_out_data, j_loaded)
     print(rpt_obj.parse_congestion())
     print(rpt_obj.parse_reliability())
-    rpt_obj.update_cong_chart()
-    rpt_obj.update_ttr_chart()
-    rpt_obj.update_cong_ratio()
+    rpt_obj.update_all_congestion_data()
     print(json.dumps(rpt_obj.json_template, indent=4))
 
