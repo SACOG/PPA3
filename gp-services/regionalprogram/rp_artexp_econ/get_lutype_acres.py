@@ -20,10 +20,9 @@ g_ESRI_variable_5 = 'fl_intersect'
 # Updated by: <name>
 # Copyright:   (c) SACOG
 # Python Version: 3.x
-#--------------------------------
-import time
+from time import perf_counter as perf
 
-import ppa_input_params as params
+import parameters as params
 
 class GetLandUseArea():
     def __init__(self, fc_project, projtyp, fc_poly_parcels):
@@ -43,7 +42,7 @@ class GetLandUseArea():
         # arcpy.AddMessage("script updated {}".format(int(time.clock()))) # when troubleshooting
         
     
-        sufx = int(time.clock()) + 1
+        sufx = int(perf()) + 1
         fl_parcels = os.path.join(arcpy.env.scratchGDB, 'fl_parcels{}'.format(sufx))
         fl_project = g_ESRI_variable_2
     
@@ -120,7 +119,7 @@ if __name__ == '__main__':
     arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
     parcel_featclass = params.parcel_poly_fc_yr(in_year=2016)  # 'parcel_data_polys_2016'
-    project_featclass = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines_1'
+    project_featclass = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
     lutype_in = 'Agriculture'
 
     out_pcl_data = GetLandUseArea(project_featclass, params.ptype_sgr, parcel_featclass).get_lu_acres(lutype_in)

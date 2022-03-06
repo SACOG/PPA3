@@ -21,6 +21,7 @@ from commtype import get_proj_ctype
 from parcel_data import get_buffer_parcels
 from landuse_buff_calcs import LandUseBuffCalcs
 import chart_accessibility
+import chart_lu_acre_change
 
 
 def make_econ_report_artexp(fc_project, project_name, project_type):
@@ -65,9 +66,10 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
 
     # calc change in ag acreage
     for i, year in enumerate(data_years):
-        in_pcl_pt_fc = parcel_fc_dict[year]
-        chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-                                    project_fc=project_fc, project_type=ptype)
+        arcpy.AddMessage(f"calculating Ag land use acres for {year}")
+        in_pcl_poly_fc = params.parcel_poly_fc_yr(year)
+        chart_lu_acre_change.update_json(json_loaded=loaded_json, data_year=year, order_val=i, fc_poly_parcels=in_pcl_poly_fc,
+                                        project_fc=fc_project, project_type=project_type, in_lu_type='Agriculture')
 
     # access to jobs chart update
     chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
