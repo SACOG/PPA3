@@ -10,9 +10,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import datetime as dt
-from time import perf_counter as perf
 import json
-import pandas as pd
 import arcpy
 
 
@@ -26,7 +24,7 @@ import chart_lu_acre_change
 
 def make_econ_report_artexp(fc_project, project_name, project_type):
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceVMT_sample_dataSource.json")
+    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_EconProsperity_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [2016, 2040]
 
@@ -44,7 +42,7 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
                             buffdist=lu_buffdist_ft, project_type=project_type, data_year=year)
         parcel_fc_dict[year] = pcl_buff_fc
 
-    # calc K-12 enrollment
+    # calc K-12 enrollment in base year
     base_buff_pcl_fc = parcel_fc_dict[data_years[0]]
     year_dict = LandUseBuffCalcs(base_buff_pcl_fc, fc_project, project_commtype, [params.col_k12_enr], 
                 buffered_pcls=True).point_sum()
@@ -56,7 +54,7 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
     out_job_data = []
 
     for i, years in enumerate(data_years):
-        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
+        in_pcl_pt_fc = parcel_fc_dict[year] # use parcels within buffer, not entire region of parcels
         year_dict = LandUseBuffCalcs(in_pcl_pt_fc, fc_project, project_commtype, [params.col_emptot], 
                     buffered_pcls=True).point_sum()
         out_job_data.append(year_dict[params.col_emptot])
@@ -69,7 +67,8 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
         arcpy.AddMessage(f"calculating Ag land use acres for {year}")
         in_pcl_poly_fc = params.parcel_poly_fc_yr(year)
         chart_lu_acre_change.update_json(json_loaded=loaded_json, data_year=year, order_val=i, fc_poly_parcels=in_pcl_poly_fc,
-                                        project_fc=fc_project, project_type=project_type, in_lu_type='Agriculture')
+                                        project_fc=fc_project, project_type=project_type, in_lu_type='Agriculture',
+                                        k_chart_title="Change in Ag acreage")
 
     # access to jobs chart update
     chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
@@ -101,7 +100,7 @@ if __name__ == '__main__':
 
     # specify project line feature class and attributes
     project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    project_name = arcpy.GetParameterAsText(1) # 'TestTruxelBridge'
+    project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
 
     ptype = params.ptype_arterial
     
@@ -109,7 +108,7 @@ if __name__ == '__main__':
     #=================BEGIN SCRIPT===========================
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_vmt_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_econ_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         
