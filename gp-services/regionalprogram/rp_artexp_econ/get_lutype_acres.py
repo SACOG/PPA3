@@ -2,14 +2,6 @@
 import sys, os, arcpy
 # Esri end of added imports
 
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_parcel'
-g_ESRI_variable_2 = 'fl_project'
-g_ESRI_variable_3 = 'fl_buff'
-g_ESRI_variable_4 = os.path.join(arcpy.env.scratchGDB, 'temp_intersect')
-g_ESRI_variable_5 = 'fl_intersect'
-# Esri end of added variables
-
 #--------------------------------
 # Name:get_lutype_acres.py
 # Purpose: Based on parcel polygon intersection with buffer around project segment, get % of acres near project that are of specific land use type
@@ -20,6 +12,7 @@ g_ESRI_variable_5 = 'fl_intersect'
 # Updated by: <name>
 # Copyright:   (c) SACOG
 # Python Version: 3.x
+
 from time import perf_counter as perf
 
 import parameters as params
@@ -33,7 +26,7 @@ class GetLandUseArea():
         self.fc_poly_parcels = fc_poly_parcels
         
         # fixed values
-        self.fc_intersect = g_ESRI_variable_4
+        self.fc_intersect = os.path.join(arcpy.env.scratchGDB, 'temp_intersect')
         
         # derived/calculated objects
         self.buff_pclpoly_intersect()
@@ -44,7 +37,7 @@ class GetLandUseArea():
     
         sufx = int(perf()) + 1
         fl_parcels = os.path.join(arcpy.env.scratchGDB, 'fl_parcels{}'.format(sufx))
-        fl_project = g_ESRI_variable_2
+        fl_project = 'fl_project'
     
         if arcpy.Exists(fl_parcels): arcpy.Delete_management(fl_parcels)
         
@@ -63,7 +56,7 @@ class GetLandUseArea():
             if arcpy.Exists(fc_buff): arcpy.Delete_management(fc_buff)
             arcpy.Buffer_analysis(fl_project, fc_buff, buff_dist)
     
-        fl_buff = g_ESRI_variable_3
+        fl_buff = 'fl_buff'
         arcpy.MakeFeatureLayer_management(fc_buff, fl_buff)
         
     
@@ -89,7 +82,7 @@ class GetLandUseArea():
 
     def get_lu_acres(self, lutype):
         # calculate total area on parcels within buffer (excluding water and rights of way)
-        fl_intersect = g_ESRI_variable_5
+        fl_intersect = 'fl_intersect'
         
         if arcpy.Exists(fl_intersect): arcpy.Delete_management(fl_intersect)
         arcpy.MakeFeatureLayer_management(self.fc_intersect, fl_intersect)
