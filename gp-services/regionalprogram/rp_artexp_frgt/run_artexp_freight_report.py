@@ -26,7 +26,7 @@ import parcel_data
 import landuse_buff_calcs 
 import get_line_overlap as glo
 import get_agg_values as aggvals
-import chart_lu_buffvals_change as chart_buffchg
+import utils.make_map_img as imgmaker
 
 
 def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
@@ -100,7 +100,10 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
 
 
     # generate map image of STAA truck routes and insert link to image
-
+    
+    img_obj = imgmaker.MakeMapImage(fc_project, 'TruckRtes', project_name)
+    map_img_path = img_obj.exportMap()
+    loaded_json["STAA network Image Url"] = map_img_path
 
 
     # write out to new JSON file
