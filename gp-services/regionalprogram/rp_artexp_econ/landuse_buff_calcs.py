@@ -43,16 +43,17 @@ class LandUseBuffCalcs():
         
         sufx = int(perf()) + 1
         fl_parcel = os.path.join('memory','fl_parcel{}'.format(sufx))
-        fl_project = 'fl_project'
-        
+
         if arcpy.Exists(fl_parcel): arcpy.Delete_management(fl_parcel)
         arcpy.MakeFeatureLayer_management(self.fc_pclpt, fl_parcel)
         
-        if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
-        arcpy.MakeFeatureLayer_management(self.fc_project, fl_project)    
-    
-        
         if not self.buffered_pcls:
+            # if a pre-made set of parcels within a buffer was not specified, then
+            # do the parcel selection process here--makes it much slower!
+            fl_project = 'fl_project'
+            if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
+            arcpy.MakeFeatureLayer_management(self.fc_project, fl_project)    
+
             buff_dist = 0 if self.project_type == params.ptype_area_agg else self.buffdist
             arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
     
@@ -127,13 +128,14 @@ if __name__ == '__main__':
     ptype = params.ptype_arterial
     data_years = [2016, 2040]
     buffdist_ft = 2640
-    value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
-                    'BIK_TOT_RES', 'WLK_TOT_RES']
+    # value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
+    #                 'BIK_TOT_RES', 'WLK_TOT_RES']
+    value_fields = ['EMPIND']
 
     out_data = {}
     for data_year in data_years:
         in_pcl_pt_fc = params.parcel_pt_fc_yr(data_year)
-        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], buffdist_ft).point_sum()
+        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, value_fields, buffdist_ft).point_sum()
         out_data[data_year] = year_dict
 
     print(out_data)

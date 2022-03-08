@@ -1,9 +1,13 @@
-
 """
-Approach:
-1 - load all numbers from all reports
-2 - line-by-line, digit-by-digit populating of JSON file
-3 - get it to work, refactor later as needed.
+Name: run_econprosp_report.py
+Purpose: Run economic prosperity subreport for arterial and transit expansion projects
+
+
+Author: Darren Conly
+Last Updated: Mar 2022
+Updated by: 
+Copyright:   (c) SACOG
+Python Version: 3.x
 """
 import os
 import sys

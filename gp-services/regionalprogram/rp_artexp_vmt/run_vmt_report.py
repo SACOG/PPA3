@@ -1,10 +1,16 @@
+"""
+Name: run_vmt_report.py
+Purpose: Run reduce-VMT subreport for arterial and transit expansion projects
 
+
+Author: Darren Conly
+Last Updated: Mar 2022
+Updated by: 
+Copyright:   (c) SACOG
+Python Version: 3.x
 """
-Approach:
-1 - load all numbers from all reports
-2 - line-by-line, digit-by-digit populating of JSON file
-3 - get it to work, refactor later as needed.
-"""
+    
+
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder

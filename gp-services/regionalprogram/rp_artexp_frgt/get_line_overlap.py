@@ -22,12 +22,9 @@ g_ESRI_variable_5 = 'fl_link_buff'
 # Copyright:   (c) SACOG
 # Python Version: <version>
 #--------------------------------
-
-Sample projects used: CAL20466, SAC25062
 '''
 import os
 import datetime as dt
-import time
 
 import arcpy
 

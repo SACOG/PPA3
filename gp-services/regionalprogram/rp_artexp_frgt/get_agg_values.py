@@ -14,7 +14,19 @@ import pandas as pd
 
 def make_aggval_dict(aggval_csv, metric_cols, proj_ctype, yearkey, geo_regn,
                     yearval=None):
-    """ Consider making this its own standalone function"""
+    """_summary_
+
+    Args:
+        aggval_csv (_type_): CSV of all community type and region values for all metrics that need reg/ctype values.
+        metric_cols (_type_): The metrics you need ctype and region values for (E.G., walk accessibility avg, industrial jobs share, etc.)
+        proj_ctype (_type_): project community type
+        yearkey (_type_): year column name in the aggval CSV?
+        geo_regn (_type_): What you want the 'REGION' column to be renamed to--CONSIDER REMOVING
+        yearval (_type_, optional): year for which you want aggregate data. Defaults to None, which will select all years for the specified metric_cols
+
+    Returns:
+        dict: dict of aggregate (region and ctype) values for specified metric_cols for specified yearval (or all available years if yearval not specified)
+    """
 
     df_agg = pd.read_csv(aggval_csv)
     metname_col = "metric_name"
