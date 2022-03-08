@@ -17,9 +17,8 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import pandas as pd
 
 import parameters as params
-from accessibility_calcs import get_acc_data
-from get_agg_values import make_aggval_dict
-
+import accessibility_calcs as acc_calcs
+import get_agg_values as aggvs
 
 
 def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_csv, 
@@ -28,7 +27,7 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_
     fc_accessibility_data = params.accdata_fc
 
     # project level dict of accessibility script outputs
-    dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
+    dict_data = acc_calcs.get_acc_data(fc_project, fc_accessibility_data, project_type) 
 
     # lookup dict between names of data points in raw output and names in JSON file
     acc_metrics = {f'WALKDESTS{destination_type}':'30 Min Walk', f'BIKEDESTS{destination_type}':'30 Min Biking', 
@@ -40,7 +39,7 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_
     dict_data2 = {k:dict_data[k] for k in acc_metrics.keys()}
 
     # make dict of regional and comm type values
-    aggval_dict = make_aggval_dict(aggval_csv, metric_cols=accmetrics_keys, proj_ctype=project_commtype, 
+    aggval_dict = aggvs.make_aggval_dict(aggval_csv, metric_cols=accmetrics_keys, proj_ctype=project_commtype, 
                     yearkey=params.k_year, geo_regn=params.geo_region)
 
     for i, k in enumerate(list(acc_metrics.keys())):

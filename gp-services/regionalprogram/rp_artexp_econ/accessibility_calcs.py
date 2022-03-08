@@ -18,7 +18,7 @@ from time import perf_counter as perf
 import arcpy
 
 import parameters as params
-from utils import utils
+import utils.utils as ut
 
 
 def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
@@ -44,7 +44,7 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
 
     # read accessibility data from selected polygons into a dataframe
     accdata_fields = [params.col_geoid, params.col_acc_ej_ind, params.col_pop] + params.acc_cols_ej
-    accdata_df = utils.esri_object_to_df(fl_accdata, accdata_fields)
+    accdata_df = ut.esri_object_to_df(fl_accdata, accdata_fields)
 
     # get pop-weighted accessibility values for all accessibility columns
 
