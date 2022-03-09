@@ -12,7 +12,7 @@ Python Version: 3.x
 """
 
 import arcpy
-from utils import trace
+import utils as ut
 import parameters as params
 
 def append_proj_to_master_fc(project_fc, proj_attributes_dict, master_fc):
@@ -39,7 +39,7 @@ def append_proj_to_master_fc(project_fc, proj_attributes_dict, master_fc):
         
         t_returns = (params.msg_ok,)
     except:
-        msg = trace()
+        msg = ut.utils.trace()
         t_returns = (msg,)
     
     return t_returns

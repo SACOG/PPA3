@@ -13,16 +13,13 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
-
-# import xlwings as xw
-import openpyxl
-from openpyxl.drawing.image import Image
 import pandas as pd
 import arcpy
 
 import parameters as params
 
 
+# NOTE - this must be copy/pasted into the script it will be used in, otherwise it will reference the wrong script in the traceback message.
 def trace():
     import traceback, inspect
     tb = sys.exc_info()[2]
@@ -78,10 +75,6 @@ def rename_dict_keys(dict_in, new_key_dict):
         else:
             dict_out[v] = 0
     return dict_out
-
-
-
-
 
 
 if __name__ == '__main__':
