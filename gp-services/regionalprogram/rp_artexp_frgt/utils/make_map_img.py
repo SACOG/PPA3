@@ -13,6 +13,8 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
+from pathlib import Path
+from urllib.parse import urljoin
 
 import datetime as dt
 from time import perf_counter as perf
@@ -33,6 +35,18 @@ def trace():
     # Get Python syntax error
     synerror = traceback.format_exc().splitlines()[-1]
     return line, filename, synerror
+
+def set_img_path(svc_url, img_path):
+    # changes root of img_path to be sacog REST url instead of a file path to local drive.
+    # allows the path to be a consumable service
+    imgpath_obj = Path(img_path)
+    svc_url_obj = Path(svc_url)
+    splitter_element = svc_url_obj.parts[-1] # shared element between new root and existing stem
+    stem_start_posn = imgpath_obj.parts.index(splitter_element)
+    stempath = Path(*imgpath_obj.parts[stem_start_posn:]).as_posix() 
+    output = urljoin(svc_url, stempath)
+
+    return output
 
 
 class MakeMapImage(object):
@@ -155,7 +169,10 @@ class MakeMapImage(object):
                     else:
                         arcpy.AddWarning("Map image {} not created. Must be PNG or JPG.".format(out_file))
 
-                    return out_file # path to the map image file
+                    out_svc_url = set_img_path(params.svc_root_url, out_file)
+                    
+
+                    return out_svc_url # path to the map image file
                 except:
                     arcpy.AddMessage("FAILED AND WENT TO EXCEPTION MODE IN PHASE 2")
                     msg = "{}, {}".format(arcpy.GetMessages(2), trace())
@@ -172,6 +189,11 @@ class MakeMapImage(object):
 
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")
+
+    result = set_img_path('https://services.sacog.org/hosting/rest/directories/arcgisjobs', 
+                'C:\\arcgisserver\\directories\\arcgisjobs\\rpartexpfreight_gpserver\\jf2567b51a75144c7914b9ac5ddb2dd47\\scratch')
+
+    print(result)
 
 
 
