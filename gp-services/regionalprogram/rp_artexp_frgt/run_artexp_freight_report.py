@@ -88,7 +88,7 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
         in_pcl_pt_fc = parcel_fc_dict[year]
         pct_ind_jobs = pct_jobs_sector_year(in_pcl_pt_fc, params.col_emptot, params.col_empind)
 
-        loaded_json[params.k_charts][k_chart_title][params.k_features][i][params.k_attrs][params.k_year] = year
+        loaded_json[params.k_charts][k_chart_title][params.k_features][i][params.k_attrs][params.k_year] = str(year) # need to convert to string for chart
         loaded_json[params.k_charts][k_chart_title][params.k_features][i][params.k_attrs][params.k_value] = pct_ind_jobs
 
     

@@ -22,8 +22,10 @@ import parameters as params
 def get_proj_ctype(in_project_fc, commtypes_fc):
     '''Get project community type, based on which community type has most spatial overlap with project'''
     ts = int(perf())
-    temp_intersect_fc = os.path.join(arcpy.env.scratchGDB, f'temp_intersect_fc{ts}')
+    temp_intersect_fc = os.path.join('memory', f'temp_intersect_fc{ts}')
     if arcpy.Exists(temp_intersect_fc): arcpy.Delete_management(temp_intersect_fc)
+
+    
 
     arcpy.Intersect_analysis([in_project_fc, commtypes_fc], temp_intersect_fc, "ALL", 0, "LINE")
     
@@ -32,6 +34,8 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
     in_project_cnt = int(arcpy.GetCount_management(in_project_fc)[0])
     arcpy.AddMessage("project line feature count: {}".format(in_project_cnt))
     arcpy.AddMessage("Project segments after intersecting with comm types: {}".format(intersect_cnt))
+
+    import pdb; pdb.set_trace()
     
     len_field = 'SHAPE@LENGTH'
     fields = ['OBJECTID', len_field, params.col_ctype]
@@ -58,6 +62,14 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
 
 
 if __name__ == '__main__':
-    pass
+    # test_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_HoweAve' # sr3857
+    # test_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge' # sr 2226, cross multiple ctypes
+    test_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson' # sr3857, contained in single ctype
+
+    test_commtypes_fc = r"\\arcserver-svr\D\PPA_v2_SVR\PPA2_GIS_SVR\owner_PPA.sde\comm_type_jurspec_dissolve"
+    # import pdb; pdb.set_trace()
+
+    output = get_proj_ctype(test_fc, test_commtypes_fc)
+    print(output)
 
 
