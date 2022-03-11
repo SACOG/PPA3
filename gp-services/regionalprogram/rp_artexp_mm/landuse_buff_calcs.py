@@ -14,6 +14,8 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 from time import perf_counter as perf
 
 import arcpy
+arcpy.env.overwriteOutput = True
+
 import pandas as pd
 
 import parameters as params

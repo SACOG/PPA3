@@ -60,7 +60,7 @@ def make_mm_report_artexp(fc_project, project_name, project_type):
     # calculate intersections per acre
     k_chart_ixns = "Intersections per acre"
     intxn_keyval = 'Intersxn_34_per_acre'
-    ixn_density_dict = intersection_density.intersection_density(fc_project, params.intersections_base_fc)
+    ixn_density_dict = intersection_density.intersection_density(fc_project, params.intersections_base_fc, project_type)
     ixn_density_project = ixn_density_dict[intxn_keyval]
 
     ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[intxn_keyval], 
@@ -94,12 +94,15 @@ def make_mm_report_artexp(fc_project, project_name, project_type):
     loaded_json[k_chart_bkwy][params.geo_region] = bkwy_regn
 
 
-
     # generate map image of bikeway network
-    
-    img_obj = imgmaker.MakeMapImage(fc_project, "BikeRoutes", project_name)
-    map_img_path = img_obj.exportMap()
-    loaded_json["Bikeway Image Url"] = map_img_path
+    img_obj_bkwy = imgmaker.MakeMapImage(fc_project, "BikeRoutes", project_name)
+    bkwy_img_path = img_obj_bkwy.exportMap()
+    loaded_json["Bikeway Image Url"] = bkwy_img_path
+
+    # generate heat map image of transit service
+    img_obj_trn = imgmaker.MakeMapImage(fc_project, "TransitSvc", project_name)
+    trn_img_path = img_obj_trn.exportMap()
+    loaded_json["Transit Service Density Image Url"] = trn_img_path
 
 
     # write out to new JSON file
@@ -124,8 +127,8 @@ if __name__ == '__main__':
     # project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
 
     # hard values for testing
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS'
-    project_name = 'StocktonCS'
+    project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
+    project_name = 'TestJefferson'
 
     ptype = params.ptype_arterial
     
