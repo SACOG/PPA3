@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 from landuse_buff_calcs import LandUseBuffCalcs
 import parameters as params
 
-def update_json(json_loaded, data_year, order_val, pcl_pt_fc, project_fc, project_type, value_fields=None):
+def update_json(json_loaded, data_year, pcl_pt_fc, project_fc, project_type, value_fields=None):
 
     tagdict = {params.col_sovtrip_res: "Single-occupant vehicle",
             params.col_hovtrip_res: "Carpool",
@@ -35,11 +35,11 @@ def update_json(json_loaded, data_year, order_val, pcl_pt_fc, project_fc, projec
 
     k_chart_name = "Residential Mode Split"
     k_yeartag = f"{params.k_year} {data_year}"
-    for mode in list(tagdict.keys()):
+    for i, mode in enumerate(list(tagdict.keys())):
         mode_label = tagdict[mode]
         mode_share = year_dict[mode] / total_trips
-        json_loaded[params.k_charts][k_chart_name][params.k_features][order_val][params.k_attrs][params.k_type] = mode_label
-        json_loaded[params.k_charts][k_chart_name][params.k_features][order_val][params.k_attrs][k_yeartag] = mode_share
+        json_loaded[params.k_charts][k_chart_name][params.k_features][i][params.k_attrs][params.k_type] = mode_label
+        json_loaded[params.k_charts][k_chart_name][params.k_features][i][params.k_attrs][k_yeartag] = mode_share
 
     print("calculated buffer values sucessfully")
 

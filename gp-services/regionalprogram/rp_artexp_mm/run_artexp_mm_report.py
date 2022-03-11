@@ -14,7 +14,7 @@ Python Version: 3.x
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
-sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
+# sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
 
 import datetime as dt
 import json
@@ -28,7 +28,23 @@ import chart_mode_split
 import intersection_density
 import get_buff_netmiles
 import get_agg_values as aggvals
+import transit_svc_measure
 import utils.make_map_img as imgmaker
+
+def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):
+    """Updates project-level, community-type, and region-level values for simple tables in JSON file."
+    """
+
+    ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[metric_outdictkey], 
+                                                proj_ctype=proj_commtype, yearkey=params.k_year, 
+                                                geo_regn=params.geo_region, yearval=None)
+
+    val_ctyp = ixn_aggdict[metric_outdictkey][proj_commtype]
+    val_regn = ixn_aggdict[metric_outdictkey][params.geo_region]
+
+    json_obj[k_chartname_metric][params.geo_proj_qmi] = proj_level_val
+    json_obj[k_chartname_metric][params.geo_ctype] = val_ctyp
+    json_obj[k_chartname_metric][params.geo_region] = val_regn
 
 
 def make_mm_report_artexp(fc_project, project_name, project_type):
@@ -43,6 +59,7 @@ def make_mm_report_artexp(fc_project, project_name, project_type):
     # get project community type
     project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
 
+
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
     for year in data_years:
@@ -54,8 +71,8 @@ def make_mm_report_artexp(fc_project, project_name, project_type):
     # calc mode split 
     for i, year in enumerate(data_years):
         pcl_fc = parcel_fc_dict[year]
-        chart_mode_split.update_json(json_loaded=loaded_json, data_year=year, order_val=i,
-                                pcl_pt_fc=pcl_fc, project_fc=fc_project, project_type=project_type)
+        chart_mode_split.update_json(json_loaded=loaded_json, data_year=year, pcl_pt_fc=pcl_fc, 
+                                    project_fc=fc_project, project_type=project_type)
 
 
     # calculate intersections per acre
@@ -64,35 +81,27 @@ def make_mm_report_artexp(fc_project, project_name, project_type):
     ixn_density_dict = intersection_density.intersection_density(fc_project, params.intersections_base_fc, project_type)
     ixn_density_project = ixn_density_dict[intxn_keyval]
 
-    ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[intxn_keyval], 
-                                                proj_ctype=project_commtype, yearkey=params.k_year, 
-                                                geo_regn=params.geo_region, yearval=None)
-
-    ixn_commtype = ixn_aggdict[intxn_keyval][project_commtype]
-    ixn_region = ixn_aggdict[intxn_keyval][params.geo_region]
-
-    loaded_json[k_chart_ixns][params.geo_proj_qmi] = ixn_density_project
-    loaded_json[k_chart_ixns][params.geo_ctype] = ixn_commtype
-    loaded_json[k_chart_ixns][params.geo_region] = ixn_region
+    update_tbl_multiple_geos(loaded_json, ixn_density_project, k_chart_ixns, intxn_keyval, project_commtype)
 
     
     # calculate share of centerline miles near project that are bike paths or streets with bike lanes
     k_chart_bkwy = "Bike lanes and paths as share of total road miles"
     bkwymi_keyval = 'pct_roadmi_bikeways'
 
-    bkwy_proj_data = get_buff_netmiles.get_bikeway_mileage_share(fc_project, project_type)
-    bkwy_proj = bkwy_proj_data[bkwymi_keyval]
+    project_bikeway_dict = get_buff_netmiles.get_bikeway_mileage_share(fc_project, project_type)
+    project_bikeway_data = project_bikeway_dict[bkwymi_keyval]
+    update_tbl_multiple_geos(loaded_json, project_bikeway_data, k_chart_bkwy, bkwymi_keyval, project_commtype)
 
-    ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[bkwymi_keyval], 
-                                                proj_ctype=project_commtype, yearkey=params.k_year, 
-                                                geo_regn=params.geo_region, yearval=None)
 
-    bkwy_ctyp = ixn_aggdict[bkwymi_keyval][project_commtype]
-    bkwy_regn = ixn_aggdict[bkwymi_keyval][params.geo_region]
+    # calculate transit vehicle-stops per acre:
+    k_tbl_trn = "Transit vehicle stops per acre"
+    k_trnsvc = 'TrnVehStop_Acre'
 
-    loaded_json[k_chart_bkwy][params.geo_proj_qmi] = bkwy_proj
-    loaded_json[k_chart_bkwy][params.geo_ctype] = bkwy_ctyp
-    loaded_json[k_chart_bkwy][params.geo_region] = bkwy_regn
+    trn_data_prj = transit_svc_measure.transit_svc_density(fc_project, params.trn_svc_fc, project_type)
+    trnsvc_project = trn_data_prj[k_trnsvc]
+
+    update_tbl_multiple_geos(loaded_json, trnsvc_project, k_tbl_trn, k_trnsvc, project_commtype)
+
 
     # generate map image of bikeway network
     img_obj_bkwy = imgmaker.MakeMapImage(fc_project, "BikeRoutes", project_name)

@@ -20,11 +20,11 @@ g_ESRI_variable_3 = 'fl_buff'
 # Python Version: 3.x
 # --------------------------------
 import gc
-import time
+from time import perf_counter as perf
 
 import arcpy
 
-import ppa_input_params as params
+import parameters as params
 
 
 def trace():
@@ -51,7 +51,7 @@ def get_poly_area(poly_fl):
 def transit_svc_density(fc_project, fc_trnstops, project_type):
 
     arcpy.AddMessage("calculating transit service density...")
-    sufx = int(time.clock()) + 1
+    sufx = int(perf()) + 1
     fl_project = g_ESRI_variable_1
     fl_trnstops = os.path.join('memory','trnstp{}'.format(sufx))
 
@@ -109,16 +109,14 @@ def transit_svc_density(fc_project, fc_trnstops, project_type):
 
 
 
-
-        
-'''
 if __name__ == '__main__':
-    arcpy.env.workspace = None
+    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
-    proj_line_fc = None
+    proj_line_fc = 'PPAClientRun_StocktonBlCS'
     trnstops_fc = 'transit_stoplocn_w_eventcount_2016'
     ptype = params.ptype_arterial
 
     output = transit_svc_density(proj_line_fc, trnstops_fc, ptype)
     print(output)
-'''
+
+
