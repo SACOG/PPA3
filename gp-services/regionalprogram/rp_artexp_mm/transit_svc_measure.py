@@ -2,11 +2,6 @@
 import sys, os, arcpy
 # Esri end of added imports
 
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_projline'
-g_ESRI_variable_2 = 'fl_trnstp'
-g_ESRI_variable_3 = 'fl_buff'
-# Esri end of added variables
 
 # --------------------------------
 # Name: transit_svc_measure.py
@@ -52,7 +47,7 @@ def transit_svc_density(fc_project, fc_trnstops, project_type):
 
     arcpy.AddMessage("calculating transit service density...")
     sufx = int(perf()) + 1
-    fl_project = g_ESRI_variable_1
+    fl_project = 'fl_projline'
     fl_trnstops = os.path.join('memory','trnstp{}'.format(sufx))
 
     try:
@@ -70,7 +65,7 @@ def transit_svc_density(fc_project, fc_trnstops, project_type):
             fc_buff = r"memory\temp_buff_qmi"
             arcpy.Buffer_analysis(fl_project, fc_buff, params.trn_buff_dist)
 
-        fl_buff = g_ESRI_variable_3
+        fl_buff = 'fl_buff'
 
         if arcpy.Exists(fl_buff): arcpy.Delete_management(fl_buff)
         arcpy.MakeFeatureLayer_management(fc_buff, fl_buff)

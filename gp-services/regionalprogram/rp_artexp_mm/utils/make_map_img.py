@@ -173,7 +173,7 @@ class MakeMapImage(object):
                     else:
                         arcpy.AddWarning("Map image {} not created. Must be PNG or JPG.".format(out_file))
 
-                    out_svc_url = set_img_path(params.svc_root_url, out_file)
+                    out_svc_url = set_img_path(params.svc_root_url[0], out_file)
                     
 
                     return out_svc_url # path to the map image file

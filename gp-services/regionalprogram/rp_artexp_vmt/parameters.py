@@ -72,13 +72,16 @@ mapimg_configs_csv = os.path.join(TEMP_ppa2_svr_path, r"PPA2\Input_Template\CSV\
 map_placement_csv = os.path.join(TEMP_ppa2_svr_path, r"PPA2\Input_Template\CSV\map_report_key.csv") # configs for inserting maps into Excel reports
 map_img_format = "png" #jpg, png, svg, etc.
 
-svc_root_url = 'https://services.sacog.org/hosting/rest/directories/arcgisjobs' # root url, used for map images
+# root url, used for map images
+# FYI, it's represented as a list item instead of a string because Arc Pro gives an error 00068 if it's represented as a string.
+svc_root_url = ['https://services.sacog.org/hosting/rest/directories/arcgisjobs'] 
 
 # ===================================OUTPUT JSON TEMPLATE DATA=========================================================
 json_templates_dir = os.path.join(server_folder, "JSON")
 
 # names in json template
 geo_project = "Project"
+geo_proj_qmi = "Within 0.25mi"
 geo_ctype = "Community Type"
 geo_region = "Region"
 

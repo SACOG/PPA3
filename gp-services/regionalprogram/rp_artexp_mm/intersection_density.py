@@ -2,11 +2,6 @@
 import sys, os, arcpy
 # Esri end of added imports
 
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_projline'
-g_ESRI_variable_2 = 'fl_intersxn'
-g_ESRI_variable_3 = 'fl_buff'
-# Esri end of added variables
 
 # --------------------------------
 # Name: transit_svc_measure.py
@@ -53,8 +48,8 @@ def get_poly_area(poly_fl):
 def intersection_density(fc_project, fc_intersxns, project_type):
     arcpy.AddMessage("Calculating intersection density...")
     
-    fl_project = g_ESRI_variable_1
-    fl_intersxns = os.path.join('memory',g_ESRI_variable_2)
+    fl_project = 'fl_projline'
+    fl_intersxns = 'fl_intersxn'
 
 
     try:

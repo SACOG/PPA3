@@ -2,11 +2,6 @@
 import sys, os, arcpy
 # Esri end of added imports
 
-# Esri start of added variables
-g_ESRI_variable_1 = 'memory\\temp_buff_qmi'
-g_ESRI_variable_2 = 'fl_buff'
-g_ESRI_variable_3 = 'memory\\temp_intersect_fc'
-# Esri end of added variables
 
 # --------------------------------
 # Name:get_buff_netmiles.py
@@ -31,18 +26,15 @@ def netmiles_in_buffer(fc_project, fc_network, project_type):
     if project_type == params.ptype_area_agg:
         fc_poly_buff = fc_project
     else:
-        fc_poly_buff = g_ESRI_variable_1
+        fc_poly_buff = os.path.join('memory', 'temp_buff_qmi')
         arcpy.Buffer_analysis(fc_project, fc_poly_buff, params.bikeway_buff)
 
-    fl_poly = g_ESRI_variable_2
+    fl_poly = 'fl_buff'
 
     if arcpy.Exists(fl_poly): arcpy.Delete_management(fl_poly)
     arcpy.MakeFeatureLayer_management(fc_poly_buff, fl_poly)    
 
-    # if not arcpy.Exists(fl_poly):
-    #     utils.make_fl_conditional(fc_poly_buff, fl_poly)
-
-    temp_intersect_fc = g_ESRI_variable_3
+    temp_intersect_fc = os.path.join('memory', 'temp_intersect_fc')
 
     #run intersect of network lines against buffer
     arcpy.Intersect_analysis([fc_network, fc_poly_buff], temp_intersect_fc)
