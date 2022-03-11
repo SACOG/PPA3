@@ -124,12 +124,12 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    # project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    # project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
+    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
+    project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
 
     # hard values for testing
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS'
-    project_name = 'StocktonCS'
+    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS'
+    # project_name = 'StocktonCS'
 
     ptype = params.ptype_arterial
     
