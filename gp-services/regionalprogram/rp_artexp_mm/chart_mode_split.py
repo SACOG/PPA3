@@ -13,7 +13,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
-from landuse_buff_calcs import LandUseBuffCalcs
+import landuse_buff_calcs
 import parameters as params
 
 def update_json(json_loaded, data_year, pcl_pt_fc, project_fc, project_type, value_fields=None):
@@ -26,7 +26,7 @@ def update_json(json_loaded, data_year, pcl_pt_fc, project_fc, project_type, val
 
     value_fields = list(tagdict.keys()) + [params.col_persntrip_res]
 
-    year_dict = LandUseBuffCalcs(pcl_pt_fc, project_fc, project_type, value_fields, 
+    year_dict = landuse_buff_calcs.LandUseBuffCalcs(pcl_pt_fc, project_fc, project_type, value_fields, 
                                 buffered_pcls=True).point_sum()
 
     # update applicable field values in JSON template
