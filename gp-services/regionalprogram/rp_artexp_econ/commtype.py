@@ -34,8 +34,6 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
     in_project_cnt = int(arcpy.GetCount_management(in_project_fc)[0])
     arcpy.AddMessage("project line feature count: {}".format(in_project_cnt))
     arcpy.AddMessage("Project segments after intersecting with comm types: {}".format(intersect_cnt))
-
-    import pdb; pdb.set_trace()
     
     len_field = 'SHAPE@LENGTH'
     fields = ['OBJECTID', len_field, params.col_ctype]

@@ -14,6 +14,7 @@ Python Version: 3.x
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
 
 import datetime as dt
 import json
@@ -93,7 +94,6 @@ def make_mm_report_artexp(fc_project, project_name, project_type):
     loaded_json[k_chart_bkwy][params.geo_ctype] = bkwy_ctyp
     loaded_json[k_chart_bkwy][params.geo_region] = bkwy_regn
 
-
     # generate map image of bikeway network
     img_obj_bkwy = imgmaker.MakeMapImage(fc_project, "BikeRoutes", project_name)
     bkwy_img_path = img_obj_bkwy.exportMap()
@@ -123,12 +123,12 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    # project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    # project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
+    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
+    project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
 
     # hard values for testing
-    project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
-    project_name = 'TestJefferson'
+    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
+    # project_name = 'TestJefferson'
 
     ptype = params.ptype_arterial
     
