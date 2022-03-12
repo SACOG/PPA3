@@ -1,7 +1,7 @@
 {
 	"charts": {
 		"Jobs and Dwelling": {
-			"title": "Total Jobs and Dwelling Units within 0.5mi of project",
+			"title": "Total Jobs and Dwelling Units within 0.5mi of Project",
 			"features": [
 				{
 					"attributes": {
@@ -46,38 +46,38 @@
 			]
 		},
 		"Base Year Service Accessibility": {
-			"title": "Land Use Diversity within 1mi of Project",
+			"title": "Base Year Service Accessibility",
 			"features": [
 				{
 					"attributes": {
 						"type": "30 Min Walk",
-						"project": 16,
-						"community Type": 17,
-						"region": 17
+						"Project": 16,
+						"Community Type": 17,
+						"Region": 17
 					}
 				},
 				{
 					"attributes": {
 						"type": "30 Min Biking",
-						"project": 126,
-						"community Type": 147,
-						"region": 140
+						"Project": 126,
+						"Community Type": 147,
+						"Region": 140
 					}
 				},
 				{
 					"attributes": {
 						"type": "15 Min Drive",
-						"project": 483,
-						"community Type": 553,
-						"region": 520
+						"Project": 483,
+						"Community Type": 553,
+						"Region": 520
 					}
 				},
 				{
 					"attributes": {
 						"type": "45 Min Transit",
-						"project": 93,
-						"community Type": 79,
-						"region": 78
+						"Project": 93,
+						"Community Type": 79,
+						"Region": 78
 					}
 				}
 			]

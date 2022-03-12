@@ -1,19 +1,19 @@
 {
 	"Intersections per acre": {
 		"Within 0.25mi": 0.1,
-		"Within community": 0.12,
-		"Within region": 0.01
+		"Community Type": 0.12,
+		"Region": 0.01
 	},
 	"Bike lanes and paths as share of total road miles": {
 		"Within 0.25mi": 0.18,
-		"Within community": 0.19,
-		"Within region": 0.11
+		"Community Type": 0.19,
+		"Region": 0.11
 	},
 	"Bikeway Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/31435829568a45baa25883886897b080/data",
 	"Transit vehicle stops per acre": {
 		"Within 0.25mi": 0.31,
-		"Within community": 0.53,
-		"Within region": 0.07
+		"Community Type": 0.53,
+		"Region": 0.07
 	},
 	"Transit Service Density Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/191ce274b8c34e93a631670ed05dd52f/data",
 	"charts": {
