@@ -146,7 +146,7 @@ if __name__ == '__main__':
     # specify project line feature class and attributes
     project_fc = arcpy.GetParameterAsText(0)  
     project_name = arcpy.GetParameterAsText(1)  
-    project_aadt = arcpy.GetParameterAsText(2) 
+    project_aadt = int(arcpy.GetParameterAsText(2))
 
     # hard values for testing
     # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl'
