@@ -76,7 +76,7 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
     loaded_json["Collision heat map Image Url"] = colln_img_path
     
     # calculate collisions per 100MVMT within all geos
-    kv_coll_rate = "FATAL_COLLISNS_PER_100MVMT"
+    kv_coll_rate = "TOT_COLLISNS_PER_100MVMT"
     k_tblname_collrate = "Collisions per 100 million VMT"
     colln_rate_proj = collision_data_project[kv_coll_rate]
     update_tbl_multiple_geos(json_obj=loaded_json, proj_level_val=colln_rate_proj,

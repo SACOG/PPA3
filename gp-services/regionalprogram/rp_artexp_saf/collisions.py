@@ -2,15 +2,6 @@
 import sys, os, arcpy
 # Esri end of added imports
 
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_polygon'
-g_ESRI_variable_2 = 'fl_model_links'
-g_ESRI_variable_3 = 'fl_selection_poly'
-g_ESRI_variable_4 = 'fl_centerline'
-g_ESRI_variable_5 = 'proj_fl'
-g_ESRI_variable_6 = 'collision_fl'
-# Esri end of added variables
-
 # --------------------------------
 # Name:collisions.py
 # Purpose: calculate collision data for PPA tool based on geocoded TIMS data (tims.berkeley.edu)
@@ -22,7 +13,7 @@ g_ESRI_variable_6 = 'collision_fl'
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
-import time
+from time import perf_counter as perf
 import arcpy
 
 import parameters as params
@@ -37,9 +28,8 @@ def get_model_link_sums(fc_polygon, fc_model_links):
     metrics. E.g. daily VMT for all selected intersectin model links, total lane miles on intersecting
     links, etc.'''
 
-    sufx = int(time.clock()) + 1
-    fl_polygon = os.path.join('memory','fl_polygon{}'.format(sufx))
-    fl_model_links = os.path.join('memory','fl_model_links{}'.format(sufx))
+    fl_polygon = 'fl_polygon'
+    fl_model_links = 'fl_model_links'
     
     if arcpy.Exists(fl_polygon): arcpy.Delete_management(fl_polygon)
     arcpy.MakeFeatureLayer_management(fc_polygon, fl_polygon)
@@ -64,9 +54,9 @@ def get_model_link_sums(fc_polygon, fc_model_links):
 def get_centerline_miles(selection_poly_fc, centerline_fc):
     '''Calculate centerline miles for all road links whose center is within a polygon,
     such as a buffer around a road segment, or community type, trip shed, etc.'''
-    sufx = int(time.clock()) + 1
-    fl_selection_poly = os.path.join('memory','fl_selection_poly{}'.format(sufx))
-    fl_centerline = os.path.join('memory','fl_centerline{}'.format(sufx))
+
+    fl_selection_poly = 'fl_selection_poly'
+    fl_centerline = 'fl_centerline'
     
     if arcpy.Exists(fl_selection_poly): arcpy.Delete_management(fl_selection_poly)
     arcpy.MakeFeatureLayer_management(selection_poly_fc, fl_selection_poly)
@@ -97,9 +87,9 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
 
     fc_model_links = params.model_links_fc()
 
-    sufx = int(time.clock()) + 1
-    fl_project = g_ESRI_variable_5
-    fl_colln_pts = os.path.join('memory','fl_colln_pts{}'.format(sufx))
+    sufx = int(perf()) + 1
+    fl_project = 'proj_fl'
+    fl_colln_pts = 'fl_colln_pts'
     
     if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)
