@@ -1,6 +1,6 @@
 """
 Name: run_congestion_report.py
-Purpose: calculate numbers for the reduce-VMT subreport and produce applicable charts.
+Purpose: calculate numbers for the congestion subreport and produce applicable charts.
 
 
 Author: Darren Conly

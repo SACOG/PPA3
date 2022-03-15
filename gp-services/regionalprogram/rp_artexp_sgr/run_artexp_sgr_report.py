@@ -1,6 +1,6 @@
 """
-Name: run_artexp_freight_report.py
-Purpose: Freight perf subreport for arterial or transit expansion projects
+Name: run_artexp_sgr_report.py
+Purpose: State-of-good-repair subreport for arterial or transit expansion projects
 
 
 Author: Darren Conly

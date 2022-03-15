@@ -1,6 +1,6 @@
 """
-Name: run_artexp_freight_report.py
-Purpose: Freight perf subreport for arterial or transit expansion projects
+Name: run_artexp_safety_report.py
+Purpose: Safety need subreport for arterial or transit expansion projects
 
 
 Author: Darren Conly
