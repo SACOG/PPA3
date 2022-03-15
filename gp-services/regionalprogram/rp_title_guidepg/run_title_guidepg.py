@@ -34,11 +34,16 @@ def make_title_guidepg_regpgm(project_name, project_fc):
         loaded_json = json.load(j_in)
 
     # calculate total project length
+    # NOTE 3/15/2022: on a test project on Jefferson Bl between Lake Washington and Linden,
+        # Arc Pro's measuring tool says it's 0.25mi, but this script estiamtes same line to be
+        # 0.19mi. As a test, daftlogic.com's distance calculator said distance is also 0.19mi.
     tot_len_ft = 0
-    with arcpy.da.SearchCursor(project_fc, 'SHAPE@LENGTH') as cur:
+    sr_sacog = arcpy.SpatialReference(params.projexn_wkid_sacog)
+    with arcpy.da.SearchCursor(project_fc, 'SHAPE@LENGTH', spatial_reference=sr_sacog) as cur:
         for row in cur:
             seglen = row[0]
             tot_len_ft += seglen
+
     
     tot_len_mi = tot_len_ft / params.ft2mile
 
@@ -76,6 +81,7 @@ if __name__ == '__main__':
     proj_name = arcpy.GetParameterAsText(1)
 
     # hard values for testing
+    # proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
     # proj_name = "TestSGR"
 
     ptype = params.ptype_arterial
