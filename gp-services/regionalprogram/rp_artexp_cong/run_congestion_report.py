@@ -20,9 +20,9 @@ import arcpy
 
 
 import parameters as params
-from parcel_data import get_buffer_parcels
+import parcel_data
 import chart_job_du_tot
-from chart_congestion import CongestionReport
+import chart_congestion
 import npmrds_data_conflation as npmrds
 
 
@@ -39,7 +39,7 @@ def make_congestion_rpt_artexp(fc_project, project_name, project_type, aadt):
     parcel_fc_dict = {}
     for year in data_years:
         in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-        pcl_buff_fc = get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
+        pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
                             buffdist=lu_buffdist_ft, project_type=project_type, data_year=year)
         parcel_fc_dict[year] = pcl_buff_fc
 
@@ -52,7 +52,7 @@ def make_congestion_rpt_artexp(fc_project, project_name, project_type, aadt):
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
 
-    cong_rpt_obj = CongestionReport(congn_data, loaded_json)
+    cong_rpt_obj = chart_congestion.CongestionReport(congn_data, loaded_json)
     cong_rpt_obj.update_all_congestion_data()
 
     # update AADT
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     # specify project line feature class and attributes
     project_fc = arcpy.GetParameterAsText(0) # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'  # 
     project_name = arcpy.GetParameterAsText(1) # 'TestTruxelBridge' #  
-    proj_aadt = arcpy.GetParameterAsText(2) # 32000 # 
+    proj_aadt = int(arcpy.GetParameterAsText(2)) # 32000 # 
 
     ptype = params.ptype_arterial
     

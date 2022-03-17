@@ -37,7 +37,7 @@ import arcpy
 import pandas as pd
 
 import parameters as params
-from utils import utils
+import utils.utils as ut
 
 arcpy.env.overwriteOutput = True
 
@@ -125,7 +125,7 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         
         # convert the selected records into a numpy array then a pandas dataframe
         flds_df = [fld_shp_len] + speed_data_fields 
-        df_spddata = utils.esri_object_to_df(fl_splitproj_w_tmcdata, flds_df)
+        df_spddata = ut.esri_object_to_df(fl_splitproj_w_tmcdata, flds_df)
 
         # remove project pieces with no speed data so their distance isn't included in weighting
         df_spddata = df_spddata.loc[pd.notnull(df_spddata[speed_data_fields[0]])].astype(float)
