@@ -114,7 +114,7 @@ class ORSIsochrone:
 
         # make temporary feature class of points at regular intervales along lines
         # FYI, time permitting, the shapely library has some options for doing this that *might* be faster than ESRI tool
-        temp_pt_fc = os.path.join(arcpy.env.scratchGDB, "TEMP_pts")
+        temp_pt_fc = os.path.join("memory", "TEMP_pts")  # arcpy.env.scratchGDB
         arcpy.management.GeneratePointsAlongLines(line_fc, 
                                                 temp_pt_fc, "DISTANCE", 
                                                 Distance=f"{interval_ft} feet", 
@@ -199,13 +199,13 @@ if __name__ == '__main__':
 
     # =================INPUTS==========================
     in_api_file = input("enter file path of the ORS API text file: ")
-    mode = "foot-walking"  # "driving-car", "foot-walking", "cycling-regular"
+    mode = "cycling-regular"  # "driving-car", "foot-walking", "cycling-regular"
     isoctype = "time" # "time", "distance" 
     travel_range_mins = 10 # enter time in minutes, distance in miles
 
-    project_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'  # r"I:\Projects\Darren\PEP\PEP_GIS\PEP_GIS.gdb\test_sr51"  #  
+    project_line = r'I:\Projects\Darren\TrailsAnalysis\TrailsAnalysis.gdb\TEST_MorrisonCrkSample'  # r"I:\Projects\Darren\PEP\PEP_GIS\PEP_GIS.gdb\test_sr51"  #  
     isoch_pts_per_mile = 7 # how close together you want the isochrones' origin points to be along the project line
-    output_fgdb = r"I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb" # file geodatabase where output isochrone FC will go
+    output_fgdb = r"I:\Projects\Darren\TrailsAnalysis\TrailsAnalysis.gdb" # file geodatabase where output isochrone FC will go
 
 
     # =================RUN SCRIPT==========================

@@ -1,0 +1,23 @@
+{
+	"charts": {
+		"Jobs and Dwelling": {
+			"title": "Jobs and Dwelling Units within 0.5mi of project location",
+			"features": [
+				{
+					"attributes": {
+						"year": "2016",
+						"jobs": 10612,
+						"dwellingUnits": 7339
+					}
+				},
+				{
+					"attributes": {
+						"year": "2040",
+						"jobs": 10994,
+						"dwellingUnits": 10226
+					}
+				}
+			]
+		}
+	}
+}

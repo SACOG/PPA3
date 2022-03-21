@@ -1,0 +1,44 @@
+{
+	"charts": {
+		"Residential Mode Split": {
+			"title": "Residential Mode Split within 0.5mi of Project Location",
+			"features": [
+				{
+					"attributes": {
+						"type": "Single-occupant vehicle trips",
+						"value 2016": 0.33,
+						"value 2040": 0.29
+					}
+				},
+				{
+					"attributes": {
+						"type": "Carpool trips",
+						"value 2016": 0.30,
+						"value 2040": 0.29
+					}
+				},
+				{
+					"attributes": {
+						"type": "Transit trips",
+						"value 2016": 0.05,
+						"value 2040": 0.08
+					}
+				},
+				{
+					"attributes": {
+						"type": "Biking trips",
+						"value 2016": 0.08,
+						"value 2040": 0.07
+					}
+				},
+				{
+					"attributes": {
+						"type": "Walking trips",
+						"value 2016": 0.23,
+						"value 2040": 0.28
+					}
+				}
+			]
+		}
+	}
+}

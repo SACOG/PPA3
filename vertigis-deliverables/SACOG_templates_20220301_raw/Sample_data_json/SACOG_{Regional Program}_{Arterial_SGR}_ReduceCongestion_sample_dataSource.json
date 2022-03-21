@@ -1,0 +1,57 @@
+{
+	"congestionRatio": {
+		"first": {
+			"name": "EB",
+			"value": 0.5
+		},
+		"second": {
+			"name": "WB",
+			"value": 0.48
+		}
+	},
+	"projectAADT": 32900,
+	"charts": {
+		"Free flow vs Congested Speeds": {
+			"title": "Free-flow vs. Congested Speeds",
+			"features": [
+				{
+					"attributes": {
+						"type": "EB",
+						"freeFlowSpeed": 36,
+						"averageCongestedSpeede": 18
+					}
+				},
+				{
+					"attributes": {
+						"type": "WB",
+						"freeFlowSpeed": 38,
+						"averageCongestedSpeede": 18
+					}
+				}
+			]
+		},
+		"Travel Time Reliability Index": {
+			"title": "Travel Time Reliability Index",
+			"features": [
+				{
+					"attributes": {
+						"type": "EB",
+						"AMPeak": 1.35,
+						"PMPeak": 1.35,
+						"middayTT": 1.3,
+						"weekendTT": 1.33
+					}
+				},
+				{
+					"attributes": {
+						"type": "WB",
+						"AMPeak": 1.33,
+						"PMPeak": 1.36,
+						"middayTT": 1.32,
+						"weekendTT": 1.36
+					}
+				}
+			]
+		}
+	}
+}
