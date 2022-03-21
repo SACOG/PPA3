@@ -1,6 +1,6 @@
 """
 Name: run_econprosp_report.py
-Purpose: Run economic prosperity subreport for arterial and transit expansion projects
+Purpose: Run economic prosperity subreport for arterial and transit SGR projects
 
 
 Author: Darren Conly
@@ -28,7 +28,7 @@ import chart_lu_acre_change
 
 def make_econ_report_artexp(fc_project, project_name, project_type):
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_EconProsperity_sample_dataSource.json")
+    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_EconProsperity_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [2016, 2040]
 
