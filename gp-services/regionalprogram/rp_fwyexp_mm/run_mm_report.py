@@ -1,6 +1,6 @@
 """
-Name: run_vmt_report.py
-Purpose: Run reduce-VMT subreport for freeway expansion projects
+Name: run_mm_report.py
+Purpose: Run encourage-multimodal-travel subreport for freeway expansion projects
 
 
 Author: Darren Conly
@@ -26,9 +26,9 @@ import parameters as params
 import link_occup_data
 
 
-def make_vmt_report_fwyexp(fc_project, project_name, project_type):
+def make_mm_report_fwyexp(fc_project, project_name, project_type):
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_ReduceVMT_sample_dataSource.json")
+    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Multimodal_sample_dataSource.json")
     data_years = [2016, 2040]
 
     with open(in_json, "r") as j_in: # load applicable json template
@@ -48,16 +48,6 @@ def make_vmt_report_fwyexp(fc_project, project_name, project_type):
             [params.k_attrs][params.k_year] = year
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
             [params.k_attrs][params.k_value] =  proj_trantrips
-
-
-        # update vehicle occupancy values
-        proj_vehocc = out_dict["avg_2way_vehocc"]
-        cname_vehocc = "Average Weekday Vehicle Occupancy"
-
-        loaded_json[params.k_charts][cname_vehocc][params.k_features][i] \
-            [params.k_attrs][params.k_year] = year
-        loaded_json[params.k_charts][cname_vehocc][params.k_features][i] \
-            [params.k_attrs][params.k_value] =  proj_vehocc       
 
 
 
@@ -92,7 +82,7 @@ if __name__ == '__main__':
     #=================BEGIN SCRIPT===========================
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_vmt_report_fwyexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_mm_report_fwyexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         
