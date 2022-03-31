@@ -2,7 +2,7 @@
 	"Jobs Access by Car Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/31435829568a45baa25883886897b080/data",
 	"Education Access by Car Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/191ce274b8c34e93a631670ed05dd52f/data",
 	"charts": {
-		"Base Year Job Accessibility": {
+		"Access to jobs": {
 			"title": "Base Year Job Accessibility by Auto from Project",
 			"features": [
 				{
@@ -25,7 +25,7 @@
 				}
 			]
 		},
-		"Base Year Auto Access": {
+		"Education Facility": {
 			"title": "Base Year Auto Access to Education Facilities",
 			"features": [
 				{
