@@ -18,14 +18,14 @@
 					"attributes": {
 						"type": "EB",
 						"freeFlowSpeed": 36,
-						"averageCongestedSpeede": 18
+						"averageCongestedSpeed": 18
 					}
 				},
 				{
 					"attributes": {
 						"type": "WB",
 						"freeFlowSpeed": 38,
-						"averageCongestedSpeede": 18
+						"averageCongestedSpeed": 18
 					}
 				}
 			]
@@ -38,8 +38,8 @@
 						"type": "EB",
 						"AMPeak": 1.35,
 						"PMPeak": 1.35,
-						"middayTT": 1.3,
-						"weekendTT": 1.33
+						"midday": 1.3,
+						"weekend": 1.33
 					}
 				},
 				{
@@ -47,8 +47,8 @@
 						"type": "WB",
 						"AMPeak": 1.33,
 						"PMPeak": 1.36,
-						"middayTT": 1.32,
-						"weekendTT": 1.36
+						"midday": 1.32,
+						"weekend": 1.36
 					}
 				}
 			]
