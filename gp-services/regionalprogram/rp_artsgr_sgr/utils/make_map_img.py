@@ -9,7 +9,6 @@
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
-
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
@@ -113,9 +112,6 @@ class MakeMapImage(object):
         try:
             # create temporary copy of APRX to not have conflicts if 2+ runs done at same time.
             aprx_temp_path = os.path.join(arcpy.env.scratchFolder, "TEMP{}.aprx".format(int(perf()) + 1)) 
-
-            if os.path.exists(aprx_temp_path): arcpy.Delete_management(aprx_temp_path)
-
             aprx_template_obj = arcpy.mp.ArcGISProject(self.aprx_path)
             aprx_template_obj.saveACopy(aprx_temp_path)
             
