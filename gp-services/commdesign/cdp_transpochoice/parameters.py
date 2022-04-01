@@ -13,7 +13,7 @@ Python Version: 3.x
 import os
 
 # ========================================INPUT DATA LAYERS===================================================== 
-server_folder = r'\\arcserver-svr\D\PPA3_SVR\RegionalProgram'
+server_folder = r'\\arcserver-svr\D\PPA3_SVR\CommunityDesign'
 
 
 fgdb = os.path.join(r"\\arcserver-svr\D\PPA_v2_SVR\PPA2_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
