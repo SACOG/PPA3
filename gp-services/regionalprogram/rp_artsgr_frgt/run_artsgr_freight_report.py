@@ -42,7 +42,7 @@ def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
     return pct_jobs_sector
 
 
-def make_econ_report_artexp(fc_project, project_name, project_type):
+def make_frgt_report_artexp(fc_project, project_name, project_type):
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_Freight_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     #=================BEGIN SCRIPT===========================
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_econ_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_frgt_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         
