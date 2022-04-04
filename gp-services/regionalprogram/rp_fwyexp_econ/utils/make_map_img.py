@@ -68,7 +68,6 @@ class MakeMapImage(object):
         self.img_format = params.map_img_format # jpg, png, etc.
         self.aprx_path = params.aprx_path
         self.proj_line_template_fc = os.path.join(params.fgdb, params.proj_line_template_fc)
-        self.proj_template_fl = "fl_projline_template"
 
         # generate map config attributes
         self.get_map_config_params()
@@ -119,14 +118,9 @@ class MakeMapImage(object):
             
             #then manipulate the temporary copy of the APRX
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
-            
 
             #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-
-            # IMPORTANT - stupid ESRI arbitrariness requires running the DeleteFeature tool on a feature layer, not feature class
-            # even though documentation says you can run on feature class.
-            arcpy.MakeFeatureLayer_management(self.proj_line_template_fc, self.proj_template_fl)
-            arcpy.DeleteFeatures_management(self.proj_template_fl) # delete whatever features were in the display layer
+            arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
             
             arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
 

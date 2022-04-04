@@ -9,6 +9,7 @@
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
+
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
@@ -42,9 +43,13 @@ def set_img_path(svc_url, img_path):
     imgpath_obj = Path(img_path)
     svc_url_obj = Path(svc_url)
     splitter_element = svc_url_obj.parts[-1] # shared element between new root and existing stem
-    stem_start_posn = imgpath_obj.parts.index(splitter_element)
-    stempath = Path(*imgpath_obj.parts[stem_start_posn:]).as_posix() 
-    output = urljoin(svc_url, stempath)
+
+    if splitter_element in imgpath_obj.parts:
+        stem_start_posn = imgpath_obj.parts.index(splitter_element)
+        stempath = Path(*imgpath_obj.parts[stem_start_posn:]).as_posix() 
+        output = urljoin(svc_url, stempath)
+    else:
+        output = "Error when joining root service URL to image URL. Please check root URL and image URL paths."
 
     return output
 
@@ -113,10 +118,10 @@ class MakeMapImage(object):
             
             #then manipulate the temporary copy of the APRX
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
-            
 
             #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.DeleteFeatures_management(self.proj_line_template_fc) # delete whatever features were in the display layer
+            arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
+            
             arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
 
             # activate layout and pan to the desired extent and make image of it.
@@ -169,7 +174,7 @@ class MakeMapImage(object):
                     else:
                         arcpy.AddWarning("Map image {} not created. Must be PNG or JPG.".format(out_file))
 
-                    out_svc_url = set_img_path(params.svc_root_url, out_file)
+                    out_svc_url = set_img_path(params.svc_root_url[0], out_file)
                     
 
                     return out_svc_url # path to the map image file

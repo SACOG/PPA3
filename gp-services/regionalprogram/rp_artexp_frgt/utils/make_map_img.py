@@ -118,10 +118,10 @@ class MakeMapImage(object):
             
             #then manipulate the temporary copy of the APRX
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
-            
 
             #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.DeleteFeatures_management(self.proj_line_template_fc) # delete whatever features were in the display layer
+            arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
+            
             arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
 
             # activate layout and pan to the desired extent and make image of it.

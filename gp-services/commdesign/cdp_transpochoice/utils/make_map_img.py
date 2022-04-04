@@ -113,18 +113,15 @@ class MakeMapImage(object):
         try:
             # create temporary copy of APRX to not have conflicts if 2+ runs done at same time.
             aprx_temp_path = os.path.join(arcpy.env.scratchFolder, "TEMP{}.aprx".format(int(perf()) + 1)) 
-
-            if os.path.exists(aprx_temp_path): arcpy.Delete_management(aprx_temp_path)
-
             aprx_template_obj = arcpy.mp.ArcGISProject(self.aprx_path)
             aprx_template_obj.saveACopy(aprx_temp_path)
             
             #then manipulate the temporary copy of the APRX
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
-            
 
             #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.DeleteFeatures_management(self.proj_line_template_fc) # delete whatever features were in the display layer
+            arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
+            
             arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
 
             # activate layout and pan to the desired extent and make image of it.
