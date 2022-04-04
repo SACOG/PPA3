@@ -68,6 +68,7 @@ class MakeMapImage(object):
         self.img_format = params.map_img_format # jpg, png, etc.
         self.aprx_path = params.aprx_path
         self.proj_line_template_fc = os.path.join(params.fgdb, params.proj_line_template_fc)
+        self.proj_template_fl = "fl_projline_template"
 
         # generate map config attributes
         self.get_map_config_params()
@@ -121,30 +122,13 @@ class MakeMapImage(object):
             
 
             #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.DeleteFeatures_management(self.proj_line_template_fc) # delete whatever features were in the display layer
-            arcpy.AddMessage(f"{arcpy.GetCount_management(self.proj_line_template_fc)[0]} features in line template feature class after running delete features")
+
+            # IMPORTANT - stupid ESRI arbitrariness requires running the DeleteFeature tool on a feature layer, not feature class
+            # even though documentation says you can run on feature class.
+            arcpy.MakeFeatureLayer_management(self.proj_line_template_fc, self.proj_template_fl)
+            arcpy.DeleteFeatures_management(self.proj_template_fl) # delete whatever features were in the display layer
             
             arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
-            arcpy.AddMessage(f"After appending, now have {arcpy.GetCount_management(self.proj_line_template_fc)[0]} features in the line template feature class")
-
-            geoms_project_fc = []
-            with arcpy.da.SearchCursor(self.project_fc, ['SHAPE@']) as cur:
-                for row in cur:
-                    geoms_project_fc.append(row[0])
-
-            geoms_template_fc = []
-            with arcpy.da.SearchCursor(self.proj_line_template_fc, ['SHAPE@']) as cur:
-                for row in cur:
-                    geoms_template_fc.append(row[0])
-
-            arcpy.AddMessage(f"{len(geoms_project_fc)} geometries items in the project line fc.")
-            arcpy.AddMessage(f"{len(geoms_template_fc)} geometries items in the project line TEMPLATE fc.")
-            arcpy.AddMessage(f"And when running GetCount on line template fc, you have {arcpy.GetCount_management(self.proj_line_template_fc)[0]} features")
-
-            match_check = geoms_template_fc[0] == geoms_project_fc[0]
-            arcpy.AddMessage(f"project line fc put in the same as the first item in the line fc template? {match_check}")
-
-                             
 
             # activate layout and pan to the desired extent and make image of it.
             layouts_aprx = [l.name for l in aprx.listLayouts()] # makes sure there's a corresponding layout in the APRX file to the layout in the CSV
@@ -184,16 +168,11 @@ class MakeMapImage(object):
 
                     out_file = os.path.join(arcpy.env.scratchFolder, self.out_map_img)
 
-                    out_file_exists = os.path.exists(out_file)
-
-                    arcpy.AddMessage(f"{out_file} exists? f{out_file_exists}")
-
                     if(os.path.exists(out_file)):
                         try:
                             os.remove(out_file)
-                            arcpy.AddMessage(f"{out_file} DELETED")
                         except:
-                            arcpy.AddMessage(f"{out_file} NOT DELETED") 
+                            pass 
                     if self.img_format.lower() == 'png':
                         lyt.exportToPNG(out_file)
                     elif self.img_format.lower() == 'jpg':
