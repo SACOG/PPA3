@@ -1,6 +1,6 @@
 """
-Name: run_cd_existassets_rpt.py
-Purpose: Existing assets subreport for community design projects
+Name: run_cd_natresource_rpt.py
+Purpose: Natural resource assets subreport for community design projects
 
 
 Author: Darren Conly
@@ -22,39 +22,41 @@ import arcpy
 
 
 import parameters as params
-import commtype
-import chart_accessibility
 import urbanization_metrics as urbmet
+import parcel_data
 
 
-def cd_existassets_rpt(project_fc, project_name, ptype):
+def cd_natresource_rpt(project_fc, project_name, ptype):
     # sometimes the scratch gdb folder becomes just a folder, so need to re-create to ensure no errors
     if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
+    data_years = [2016, 2040]
+    lu_buffdist_ft = params.buff_nat_resources
 
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Community Design Program}_{CommDesign}_ExistingAssets_sample_dataSource.json")
+    in_json = os.path.join(params.json_templates_dir, "SACOG_{Community Design Program}_{CommDesign}_NaturePreservation_sample_dataSource.json")
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
 
-    # get project community type
-    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)    
+    # get parcels within buffer of project, make FC of them
+    parcel_fc_dict = {}
+    for year in data_years:
+        in_pcl_pt_fc = params.parcel_poly_fc_yr(year)
+        pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=project_fc,
+                            buffdist=lu_buffdist_ft, project_type=ptype, data_year=year)
+        parcel_fc_dict[year] = pcl_buff_fc
 
-    # get service accessibility numbers
-    chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=ptype,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
-                                    k_chart_title="Accessibility to Services")      
-
-    # Tag if project is in an infill or greenfield area                          
-    k_status = "Project location infill status"
-    urban_status_dict = urbmet.projarea_infill_status(fc_project=project_fc, comm_types_fc=params.comm_types_fc)
-
-    urban_status = [v for k, v in urban_status_dict.items()][0]
-
-    loaded_json[k_status] = urban_status
+    # calculate change in acres of natural resources 
+    k_chartname = "Change in Total Natural Resource Acres"
+    for i, year in enumerate(data_years):
+        fc_pcl_poly = parcel_fc_dict[year]
+        nat_rsrc_dict = urbmet.nat_resources(fc_project=project_fc, projtyp=ptype, fc_pcl_poly=fc_pcl_poly)
+        nat_rsrc_ac = [v for k, v in nat_rsrc_dict.items()][0]
+        loaded_json[params.k_charts][k_chartname][params.k_features][i][params.k_attrs][params.k_year] = str(year)
+        loaded_json[params.k_charts][k_chartname][params.k_features][i][params.k_attrs][params.k_value] = nat_rsrc_ac
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
-    out_file_name = f"CDExistAssets{project_name}{output_sufx}.json"
+    out_file_name = f"CDNatResources{project_name}{output_sufx}.json"
 
     out_file = os.path.join(output_dir, out_file_name)
     
@@ -83,7 +85,7 @@ if __name__ == '__main__':
     #=================BEGIN SCRIPT===========================
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = cd_existassets_rpt(project_fc=project_fc, project_name=project_name, ptype=ptype)
+    result_path = cd_natresource_rpt(project_fc=project_fc, project_name=project_name, ptype=ptype)
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         

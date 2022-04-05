@@ -1,0 +1,44 @@
+{
+	"charts": {
+		"Residential Mode Split": {
+			"title": "Residential Mode Split within 0.5mi of Project Location",
+			"features": [
+				{
+					"attributes": {
+						"type": "Single-occupant vehicle",
+						"year 2016": 0.41,
+						"year 2040": 0.39
+					}
+				},
+				{
+					"attributes": {
+						"type": "Carpool",
+						"year 2016": 0.48,
+						"year 2040": 0.48
+					}
+				},
+				{
+					"attributes": {
+						"type": "Tansit",
+						"year 2016": 0.01,
+						"year 2040": 0.02
+					}
+				},
+				{
+					"attributes": {
+						"type": "Biking",
+						"year 2016": 0.02,
+						"year 2040": 0.03
+					}
+				},
+				{
+					"attributes": {
+						"type": "Walking",
+						"year 2016": 0.06,
+						"year 2040": 0.07
+					}
+				}
+			]
+		}
+	}
+}

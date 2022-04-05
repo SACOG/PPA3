@@ -1,0 +1,42 @@
+{
+	"Project location infill status": "Infill Project",
+	"charts": {
+		"Accessibility to Services": {
+			"title": "Accessibility to Services",
+			"features": [
+				{
+					"attributes": {
+						"type": "30 Min Walk",
+						"Project": 16,
+						"Community Type": 17,
+						"Region": 17
+					}
+				},
+				{
+					"attributes": {
+						"type": "30 Min Biking",
+						"Project": 126,
+						"Community Type": 147,
+						"Region": 140
+					}
+				},
+				{
+					"attributes": {
+						"type": "15 Min Drive",
+						"Project": 483,
+						"Community Type": 553,
+						"Region": 520
+					}
+				},
+				{
+					"attributes": {
+						"type": "45 Min Transit",
+						"Project": 93,
+						"Community Type": 79,
+						"Region": 78
+					}
+				}
+			]
+		}
+	}
+}
