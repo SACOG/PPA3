@@ -45,7 +45,7 @@ def make_mm_report_fwyexp(fc_project, project_name, project_type):
     
         # update transit trips values
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
-            [params.k_attrs][params.k_year] = year
+            [params.k_attrs][params.k_year] = str(year)
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
             [params.k_attrs][params.k_value] =  proj_trantrips
 
