@@ -120,9 +120,9 @@ class MakeMapImage(object):
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
 
             #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
+            # arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
             
-            arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
+            # arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
 
             # activate layout and pan to the desired extent and make image of it.
             layouts_aprx = [l.name for l in aprx.listLayouts()] # makes sure there's a corresponding layout in the APRX file to the layout in the CSV
@@ -135,6 +135,21 @@ class MakeMapImage(object):
                         
                         try:
                             lyr = map.listLayers(self.proj_line_layer)[0] # return layer object--based on layer name, not FC path
+                            sref_lyr = arcpy.Describe(lyr).spatialReference
+                            arcpy.management.DefineProjection(self.project_fc, sref_lyr)
+
+                            template_connprop = lyr.connectionProperties
+                            project_fc_connprop = {'dataset': os.path.basename(self.project_fc), 
+                                                'workspace_factory': 'File Geodatabase', 
+                                                'connection_info': {'database': os.path.dirname(self.project_fc)}}
+                            import pdb; pdb.set_trace()
+                            print(f"project fc = {self.project_fc}")
+                            arcpy.AddMessage(f"project fc connprop = {project_fc_connprop}")
+                            lyr.updateConnectionProperties(template_connprop, project_fc_connprop) # https://community.esri.com/t5/python-questions/arcpy-layer-updateconnectionproperties-not-working/td-p/519982
+                            new_conn_db = lyr.connectionProperties['connection_info']['database']
+                            
+                            arcpy.AddMessage(f"updated connection DB for line layer: {new_conn_db}")
+
                             fl = "fl{}".format(int(perf()))
                             if arcpy.Exists(fl):
                                 try:
