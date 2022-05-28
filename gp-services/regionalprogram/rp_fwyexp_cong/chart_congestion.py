@@ -98,6 +98,7 @@ class CongestionReport(object):
 
     def update_cong_chart(self):
         # update chart of congested and free-flow speeds
+        # import pdb; pdb.set_trace()
         update_data = self.parse_congestion()
         for i, direcn in enumerate(sorted(update_data.keys())): # ensure that x axis labels are in consistent order across reports
             chart_dirname = self.dirname_dict[direcn] # example: 'SOUTHBOUND' becomes 'SB'

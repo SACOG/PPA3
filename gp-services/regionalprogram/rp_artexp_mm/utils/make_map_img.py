@@ -119,11 +119,6 @@ class MakeMapImage(object):
             #then manipulate the temporary copy of the APRX
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
 
-            #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.management.TruncateTable(self.proj_line_template_fc) # delete whatever features were in the display layer
-            
-            arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
-
             # activate layout and pan to the desired extent and make image of it.
             layouts_aprx = [l.name for l in aprx.listLayouts()] # makes sure there's a corresponding layout in the APRX file to the layout in the CSV
             if self.map_layout in layouts_aprx:
@@ -131,10 +126,39 @@ class MakeMapImage(object):
                     lyt = aprx.listLayouts(self.map_layout)[0]
                     map = aprx.listMaps(self.map_name)[0]
                     
-                    if self.proj_line_layer != "":  # if there's a feat class for project line
+                    if self.proj_line_layer != "":  # ensure there's a feat class for project line
                         
                         try:
+                            # Concept: the line template layer in the APRX has its data source updated with the feature class of
+                            # the project line, rather than truncating and inserting line feature into same source data set.
+                            # Goal is to reduce likelihood of project lines getting mapped to wrong runs.
+
                             lyr = map.listLayers(self.proj_line_layer)[0] # return layer object--based on layer name, not FC path
+
+
+                            # This step is twofold: ensures project line project is correct, but
+                            # also converts it from feature set to feature class that can be
+                            # plugged into APRX
+                            sref_lyr = arcpy.Describe(lyr).spatialReference
+                            project_fc_sref = arcpy.Describe(self.project_fc).spatialReference
+
+                            project_fc2 = os.path.join(arcpy.env.scratchGDB, f"pl_prj{int(perf()) + 1}")
+                            arcpy.management.Project(self.project_fc, project_fc2, sref_lyr)
+                            self.project_fc = project_fc2
+
+                            # get the connection properties of the project line feature class
+                            project_fc_info = arcpy.Describe(self.project_fc)
+                            project_fc_connprop = {'dataset': project_fc_info.baseName, 
+                                                'workspace_factory': 'File Geodatabase', 
+                                                'connection_info': {'database': project_fc_info.path}}
+
+                            # update the connection properties of the APRX line layer to connect to the input project line FC
+                            arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
+                            arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
+                            lyr.updateConnectionProperties(lyr.connectionProperties, project_fc_connprop) # https://community.esri.com/t5/python-questions/arcpy-layer-updateconnectionproperties-not-working/td-p/519982
+                            
+                            arcpy.AddMessage(f"updated connection DB for line layer: {lyr.connectionProperties}")
+
                             fl = "fl{}".format(int(perf()))
                             if arcpy.Exists(fl):
                                 try:
