@@ -81,7 +81,7 @@ if __name__ == '__main__':
     proj_name = arcpy.GetParameterAsText(1)
 
     # hard values for testing
-    # proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'
+    # proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84'
     # proj_name = "TestSGR"
 
     ptype = params.ptype_arterial

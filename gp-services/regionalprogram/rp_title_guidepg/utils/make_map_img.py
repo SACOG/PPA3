@@ -136,27 +136,28 @@ class MakeMapImage(object):
                             lyr = map.listLayers(self.proj_line_layer)[0] # return layer object--based on layer name, not FC path
 
 
-                            # Check if project FC is correct projection; project to correct if needed.
+                            # This step is twofold: ensures project line project is correct, but
+                            # also converts it from feature set to feature class that can be
+                            # plugged into APRX
                             sref_lyr = arcpy.Describe(lyr).spatialReference
                             project_fc_sref = arcpy.Describe(self.project_fc).spatialReference
-                            
-                            if sref_lyr.name != project_fc_sref.name:
-                                project_fc2 = os.path.join(arcpy.env.scratchGDB, "project_fc_projected")
-                                arcpy.management.Project(self.project_fc, project_fc2, sref_lyr)
-                                self.project_fc = project_fc2
 
-                            # get the connectio properties of the project line feature class
+                            project_fc2 = os.path.join(arcpy.env.scratchGDB, f"pl_prj{int(perf()) + 1}")
+                            arcpy.management.Project(self.project_fc, project_fc2, sref_lyr)
+                            self.project_fc = project_fc2
+
+                            # get the connection properties of the project line feature class
                             project_fc_info = arcpy.Describe(self.project_fc)
                             project_fc_connprop = {'dataset': project_fc_info.baseName, 
                                                 'workspace_factory': 'File Geodatabase', 
                                                 'connection_info': {'database': project_fc_info.path}}
 
                             # update the connection properties of the APRX line layer to connect to the input project line FC
+                            arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
+                            arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
                             lyr.updateConnectionProperties(lyr.connectionProperties, project_fc_connprop) # https://community.esri.com/t5/python-questions/arcpy-layer-updateconnectionproperties-not-working/td-p/519982
                             
-                            # new_conn_db = lyr.connectionProperties['connection_info']['database']
-                            
-                            # arcpy.AddMessage(f"updated connection DB for line layer: {new_conn_db}")
+                            arcpy.AddMessage(f"updated connection DB for line layer: {lyr.connectionProperties}")
 
                             fl = "fl{}".format(int(perf()))
                             if arcpy.Exists(fl):
