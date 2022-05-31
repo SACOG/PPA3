@@ -82,7 +82,7 @@ class MakeMapImage(object):
         self.out_map_img = f"{self.map_name}.{self.imgtyp}"
      
             
-    def expandExtent2D(self, ext, ratio):
+    def expand_ext_2d(self, ext, ratio):
         '''Adjust zoom extent for map of project segment
         ext = input extent object
         ratio = how you want to change extent. Ratio > 1 zooms away from project line; <1 zooms in to project line
@@ -167,16 +167,25 @@ class MakeMapImage(object):
                                     pass 
                             arcpy.MakeFeatureLayer_management(lyr, fl, where_clause=self.map_sql)  # make feature layer of project line
                             ext = ""
-                            with arcpy.da.SearchCursor(fl, ["Shape@"]) as rows:
-                                for row in rows:
-                                    geom = row[0]
-                                    ext = geom.extent
+                            
+                            # method for getting extent for the first element in the project line layer
+                            # this method doesn't work if there are multiple features in the line layer
+                            # with arcpy.da.SearchCursor(fl, ["Shape@"]) as rows:
+                            #     for row in rows:
+                            #         geom = row[0]
+                            #         ext = geom.extent
                                     
-                                    ext_ratio = 1.33
-                                    ext_zoom = self.expandExtent2D(ext, ext_ratio)
-                                    break
+                            #         ext_ratio = 1.33
+                            #         ext_zoom = self.expand_ext_2d(ext, ext_ratio)
+                            #         break
+
+                            # method for getting extent of the entire line layer, instead of just the first feature in the line layer.
+                            mf = lyt.listElements('MAPFRAME_ELEMENT')[0] # get the mapframe from the layout (i.e., the object showing the map)
+                            ext = mf.getLayerExtent(lyr) # tight map extent of the project line layer
+                            ext_ratio = 1.33
+                            ext_zoom = self.expand_ext_2d(ext, ext_ratio) # zooms out from project line a bit to show more context around the project
+
                             if ext_zoom != "":  # zoom to project line feature
-                                mf = lyt.listElements('MAPFRAME_ELEMENT')[0]
                                 mf.camera.setExtent(ext_zoom)
                                 mf.panToExtent(ext_zoom)
 

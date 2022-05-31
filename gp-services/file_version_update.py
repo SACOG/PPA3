@@ -27,12 +27,12 @@ file_to_copy = r"C:\Users\dconly\GitRepos\PPA3\gp-services\regionalprogram\rp_ti
 # name of file you want to replace--should normally be same name as the file you're copying
 file_name_to_replace = "make_map_img.py"
 
-dest_root_dir = r'C:\Users\dconly\GitRepos\PPA3\gp-services\commdesign'
+dest_root_dir = r'C:\Users\dconly\GitRepos\PPA3\gp-services\regionalprogram'
 subfolder = r'utils' # r'utils' # folder within each folder, if needed
 
 # among folders listed, specify which folders you want to update, based on first letters in file name
 # is case-sensitive
-prefix = 'cdp' 
+prefix = 'rp' 
 
 #============RUN SCRIPT===============
 root_items = os.listdir(dest_root_dir)
