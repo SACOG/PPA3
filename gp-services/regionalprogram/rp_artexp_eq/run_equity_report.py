@@ -81,8 +81,8 @@ def make_equity_rpt_artexp(fc_project, project_name, project_type):
     update_tbl_multiple_geos(json_obj=loaded_json, proj_level_val=project_pct_ej, k_chartname_metric=k_chartname,
                             metric_outdictkey=k_metric, proj_commtype=project_commtype)
 
-    # update total population
-    loaded_json["Population"] = pop_tot
+    # update total EJ population -- NOTE that the JSON tag should be changed from "Population" to "EJ Population"
+    loaded_json["Population"] = pop_ej
 
     # access to jobs chart update
     chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
