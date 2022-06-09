@@ -34,7 +34,9 @@ def get_wtdavg_truckdata(in_df, col_name):
     len_cols = ['{}_calc_len'.format(dirn) for dirn in params.directions_tmc]
     val_cols = ['{}{}'.format(dirn, col_name) for dirn in params.directions_tmc]
 
+    usable_cols = list(in_df.columns)
     wtd_dict = dict(zip(len_cols, val_cols))
+    wtd_dict = {k: v for k, v in wtd_dict.items() if v in usable_cols}
 
     wtd_val_sum = 0
     dist_sum = 0

@@ -33,7 +33,7 @@ def make_freight_rept_fwyexp(fc_project, project_name, project_type):
 
     
     # calculate share of project miles that are on an STAA truck route
-    loaded_json["Project on Federally Recognized STAA"] = 1.0 # All freeways in the SACOG region are STAA truck routes.
+    loaded_json["Project on Federally Recognized STAA"] = 1.0 # All freeways in the SACOG region are STAA truck routes. 1.0 = 100%
 
     # calculate share of traffic volume that is trucks
     output_data = truckdata.get_tmc_truck_data(fc_projline=fc_project, str_project_type=project_type)
@@ -58,12 +58,12 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1) 
 
     # hard values for testing
-    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS'
-    # project_name = 'StocktonCS'
+    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
+    # project_name = 'test'
 
     ptype = params.ptype_fwy
     
