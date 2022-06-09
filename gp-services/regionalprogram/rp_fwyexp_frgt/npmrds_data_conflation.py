@@ -5,9 +5,12 @@ import sys, os, arcpy
 # Esri start of added variables
 g_ESRI_variable_1 = 'fl_splitprojlines'
 g_ESRI_variable_2 = 'fl_splitproj_w_tmcdata'
+g_ESRI_variable_3 = "{} = '{}'"
+g_ESRI_variable_4 = '{} IS NOT NULL'
 g_ESRI_variable_5 = os.path.join(arcpy.env.packageWorkspace,'index')
 g_ESRI_variable_6 = 'fl_project'
 g_ESRI_variable_7 = 'fl_speed_data'
+g_ESRI_variable_8 = '{} IN {}'
 g_ESRI_variable_9 = 'fl_tmc_buff'
 # Esri end of added variables
 
@@ -79,12 +82,13 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
             out_row_dict[fld_totprojlen] = row[0]
     
     for direcn in dirxn_list:
+
         # https://support.esri.com/en/technical-article/000012699
         
         # temporary files
         scratch_gdb = "memory" # arcpy.env.scratchGDB
         
-        temp_intersctpts = os.path.join(scratch_gdb, "temp_intersectpoints")  # points at which project line crosses TMC buffer boundaries
+        temp_intersctpts = os.path.join(scratch_gdb, "temp_intersectpoints")  # r"{}\temp_intersectpoints".format(scratch_gdb)
         temp_intrsctpt_singlpt = os.path.join(scratch_gdb, "temp_intrsctpt_singlpt") # converted from multipoint to single point (1 pt per feature)
         temp_splitprojlines = os.path.join(scratch_gdb, "temp_splitprojlines") # fc of project line split up to match TMC buffer extents
         temp_splitproj_w_tmcdata = os.path.join(scratch_gdb, "temp_splitproj_w_tmcdata") # fc of split project lines with TMC data on them
@@ -96,69 +100,85 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         arcpy.SelectLayerByLocation_management(fl_tmcs_buffd, "INTERSECT", fl_proj)
         
         # select TMCs that intersect the project and are in indicated direction
-        sql_sel_tmcxdir = f"{tmc_dir_field} = '{direcn}'"
+        sql_sel_tmcxdir = g_ESRI_variable_3.format(tmc_dir_field, direcn)
         arcpy.SelectLayerByAttribute_management(fl_tmcs_buffd, "SUBSET_SELECTION", sql_sel_tmcxdir)
-        
-        # split the project line at the boundaries of the TMC buffer, creating points where project line intersects TMC buffer boundaries
-        arcpy.Intersect_analysis([fl_proj, fl_tmcs_buffd],temp_intersctpts,"","","POINT")
-        arcpy.MultipartToSinglepart_management (temp_intersctpts, temp_intrsctpt_singlpt)
-        
-        # split project line into pieces at points where it intersects buffer, with 10ft tolerance
-        # (not sure why 10ft tolerance needed but it is, zero tolerance results in some not splitting)
-        arcpy.SplitLineAtPoint_management(fl_proj, temp_intrsctpt_singlpt,
-                                          temp_splitprojlines, "10 Feet")
-        arcpy.MakeFeatureLayer_management(temp_splitprojlines, fl_splitprojlines)
-        
-        # get TMC speeds onto each piece of the split project line via spatial join
-        arcpy.SpatialJoin_analysis(temp_splitprojlines, fl_tmcs_buffd, temp_splitproj_w_tmcdata,
-                                   "JOIN_ONE_TO_ONE", "KEEP_ALL", "#", "HAVE_THEIR_CENTER_IN", "30 Feet")
-                                   
-        # convert to fl and select records where "check field" col val is not none
-        arcpy.MakeFeatureLayer_management(temp_splitproj_w_tmcdata, fl_splitproj_w_tmcdata)
-        
-        check_field = speed_data_fields[0]  # choose first speed value field for checking--if it's null, then don't include those rows in aggregation
-        sql_notnull = f'{check_field} IS NOT NULL'
-        arcpy.SelectLayerByAttribute_management(fl_splitproj_w_tmcdata, "NEW_SELECTION", sql_notnull)
-        
-        # convert the selected records into a numpy array then a pandas dataframe
-        flds_df = [fld_shp_len] + speed_data_fields 
-        df_spddata = ut.esri_object_to_df(fl_splitproj_w_tmcdata, flds_df)
 
-        # remove project pieces with no speed data so their distance isn't included in weighting
-        df_spddata = df_spddata.loc[pd.notnull(df_spddata[speed_data_fields[0]])].astype(float)
+        out_dict_len_field = f"{direcn}_calc_len"
+        if int(arcpy.GetCount_management(fl_tmcs_buffd)[0]) == 0:
+            out_row_dict[out_dict_len_field] = 0
+        else:
+            # split the project line at the boundaries of the TMC buffer, creating points where project line intersects TMC buffer boundaries
+            arcpy.Intersect_analysis([fl_proj, fl_tmcs_buffd],temp_intersctpts,"","","POINT")
+            arcpy.MultipartToSinglepart_management (temp_intersctpts, temp_intrsctpt_singlpt)
+            
+            # split project line into pieces at points where it intersects buffer, with 10ft tolerance
+            # (not sure why 10ft tolerance needed but it is, zero tolerance results in some not splitting)
+            arcpy.SplitLineAtPoint_management(fl_proj, temp_intrsctpt_singlpt,
+                                            temp_splitprojlines, "10 Feet")
+            arcpy.MakeFeatureLayer_management(temp_splitprojlines, fl_splitprojlines)
+            
+            # get TMC speeds onto each piece of the split project line via spatial join
+            arcpy.SpatialJoin_analysis(temp_splitprojlines, fl_tmcs_buffd, temp_splitproj_w_tmcdata,
+                                    "JOIN_ONE_TO_ONE", "KEEP_ALL", "#", "HAVE_THEIR_CENTER_IN", "30 Feet")
+                                    
+            # convert to fl and select records where "check field" col val is not none
+            arcpy.MakeFeatureLayer_management(temp_splitproj_w_tmcdata, fl_splitproj_w_tmcdata)
+            
+            check_field = speed_data_fields[0]  # choose first speed value field for checking--if it's null, then don't include those rows in aggregation
+            sql_notnull = g_ESRI_variable_4.format(check_field)
+            arcpy.SelectLayerByAttribute_management(fl_splitproj_w_tmcdata, "NEW_SELECTION", sql_notnull)
+            
+            # convert the selected records into a numpy array then a pandas dataframe
+            flds_df = [fld_shp_len] + speed_data_fields 
+            df_spddata = ut.esri_object_to_df(fl_splitproj_w_tmcdata, flds_df)
+
+            # remove project pieces with no speed data so their distance isn't included in weighting
+            df_spddata = df_spddata.loc[pd.notnull(df_spddata[speed_data_fields[0]])].astype(float)
+            
+            # remove rows where there wasn't enough NPMRDS data to get a valid speed or reliability reading
+            df_spddata = df_spddata.loc[df_spddata[flds_df].min(axis=1) > 0]
+
+
+            # if there are no TMCs for the current direction, then that intersection length must be zero too
+            # if int(arcpy.GetCount_management(fl_tmcs_buffd)[0]) == 0:
+            #     dir_len = 0
+            # else:
+            #     dir_len = df_spddata[fld_shp_len].sum() #sum of lengths of project segments that intersect TMCs in the specified direction
+            
+            dir_len = df_spddata[fld_shp_len].sum()
+            out_row_dict[out_dict_len_field] = dir_len #"calc" length because it may not be same as project length
+            
+            
+            # go through and do conflation calculation for each TMC-based data field based on correct method of aggregation
+            for field, calcmthd in fields_calc_dict.items():
+                if calcmthd == params.calc_inv_avg: # See PPA documentation on how to calculated "inverted speed average" method
+                    sd_dict = get_wtd_speed(df_spddata, field, direcn, fld_shp_len)
+                    out_row_dict.update(sd_dict)
+                elif calcmthd == params.calc_distwt_avg:
+                    fielddir = "{}{}".format(direcn, field)  # add direction tag to field names
+                    # if there's speed data, get weighted average value.
+                    linklen_w_speed_data = df_spddata[fld_shp_len].sum()
+                    if linklen_w_speed_data > 0: #wgtd avg = sum(piece's data * piece's len)/(sum of all piece lengths)
+                        avg_data_val = (df_spddata[field]*df_spddata[fld_shp_len]).sum() \
+                                        / df_spddata[fld_shp_len].sum()
         
-        # remove rows where there wasn't enough NPMRDS data to get a valid speed or reliability reading
-        df_spddata = df_spddata.loc[df_spddata[flds_df].min(axis=1) > 0]
-        
-        dir_len = df_spddata[fld_shp_len].sum() #sum of lengths of project segments that intersect TMCs in the specified direction
-        out_row_dict["{}_calc_len".format(direcn)] = dir_len #"calc" length because it may not be same as project length
-        
-        
-        # go through and do conflation calculation for each TMC-based data field based on correct method of aggregation
-        for field, calcmthd in fields_calc_dict.items():
-            if calcmthd == params.calc_inv_avg: # See PPA documentation on how to calculated "inverted speed average" method
-                sd_dict = get_wtd_speed(df_spddata, field, direcn, fld_shp_len)
-                out_row_dict.update(sd_dict)
-            elif calcmthd == params.calc_distwt_avg:
-                fielddir = "{}{}".format(direcn, field)  # add direction tag to field names
-                # if there's speed data, get weighted average value.
-                linklen_w_speed_data = df_spddata[fld_shp_len].sum()
-                if linklen_w_speed_data > 0: #wgtd avg = sum(piece's data * piece's len)/(sum of all piece lengths)
-                    avg_data_val = (df_spddata[field]*df_spddata[fld_shp_len]).sum() \
-                                    / df_spddata[fld_shp_len].sum()
-    
-                    out_row_dict[fielddir] = avg_data_val
+                        out_row_dict[fielddir] = avg_data_val
+                    else:
+                        out_row_dict[fielddir] = df_spddata[field].mean() #if no length, just return mean speed? Maybe instead just return 'no data avaialble'? Or -1 to keep as int?
+                        continue
                 else:
-                    out_row_dict[fielddir] = df_spddata[field].mean() #if no length, just return mean speed? Maybe instead just return 'no data avaialble'? Or -1 to keep as int?
                     continue
-            else:
-                continue
 
     #cleanup
     fcs_to_delete = [temp_intersctpts, temp_intrsctpt_singlpt, temp_splitprojlines, temp_splitproj_w_tmcdata]
     for fc in fcs_to_delete:
         arcpy.Delete_management(fc)
-    return pd.DataFrame([out_row_dict])
+
+    output_df = pd.DataFrame([out_row_dict])
+
+    # import pdb; pdb.set_trace()
+    
+    return output_df
     
     
 def simplify_outputs(in_df, proj_len_col):
@@ -222,7 +242,7 @@ def get_npmrds_data(fc_projline, str_project_type):
     # make flat-ended buffers around TMCs that intersect project
     arcpy.SelectLayerByLocation_management(fl_speed_data, "WITHIN_A_DISTANCE", fl_projline, params.tmc_select_srchdist, "NEW_SELECTION")
     if str_project_type == 'Freeway':
-        sql = f'{params.col_roadtype} IN {params.roadtypes_fwy}'
+        sql = g_ESRI_variable_8.format(params.col_roadtype, params.roadtypes_fwy)
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
     else:
         sql = "{} NOT IN {}".format(params.col_roadtype, params.roadtypes_fwy)
@@ -231,7 +251,6 @@ def get_npmrds_data(fc_projline, str_project_type):
     # create temporar buffer layer, flat-tipped, around TMCs; will be used to split project lines
     temp_tmcbuff = os.path.join("memory", "TEMP_linkbuff_4projsplit")
     fl_tmc_buff = g_ESRI_variable_9
-    # import pdb; pdb.set_trace()
     arcpy.Buffer_analysis(fl_speed_data, temp_tmcbuff, params.tmc_buff_dist_ft, "FULL", "FLAT")
     arcpy.MakeFeatureLayer_management(temp_tmcbuff, fl_tmc_buff)
 
