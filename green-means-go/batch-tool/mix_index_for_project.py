@@ -19,6 +19,7 @@ g_ESRI_variable_2 = 'fl_project'
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+import math
 
 
 from time import perf_counter as perf
@@ -118,6 +119,8 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
     out_df = calc_mix_index(summ_df, params.params_df, params.col_hh, lu_fac_cols, params.mix_idx_col)
 
     out_val = out_df[params.mix_idx_col][0]
+    if math.isnan(out_val): out_val = -1
+
     return {params.mix_idx_col: out_val}
 
 # ===============================SCRIPT=================================================

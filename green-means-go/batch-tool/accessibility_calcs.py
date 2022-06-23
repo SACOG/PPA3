@@ -60,8 +60,9 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
         arcpy.Delete_management(fl_accdata)
         arcpy.MakeFeatureLayer_management(fc_intersect, fl_accdata)
 
-    else:
-        arcpy.SelectLayerByLocation_management(fl_accdata, "HAVE_THEIR_CENTER_IN", fl_project, # "INTERSECT"
+    else: # if the project is a line, just get uncropped data from all accessibility polys that intersect it
+        # as future note, consider doing buffer then using pro-rate-by-area approach around buffer.
+        arcpy.SelectLayerByLocation_management(fl_accdata, "INTERSECT", fl_project, #
                                                 params.bg_search_dist, "NEW_SELECTION")
 
     # read accessibility data from selected polygons (or temp fc of intersected polygons if project is a polygon) into a dataframe
@@ -95,7 +96,10 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
                 
             out_dict[col] = out_wtd_acc
 
-    arcpy.Delete_management(fc_intersect)
+    # clean up
+    for fc in [fc_temp_accdata_seln, fc_intersect]:
+        arcpy.Delete_management(fc)
+
     return out_dict
 
 
