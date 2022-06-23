@@ -17,6 +17,7 @@ Python Version: 3.x
 import datetime as dt
 import os
 import csv
+from time import perf_counter as perf
 
 import arcpy
 import pandas as pd
@@ -129,6 +130,10 @@ if __name__ == '__main__':
     out_csv = f'gmg_batch_results{sufx}.csv'
     out_path = os.path.join(output_dir, out_csv)
 
+    st = perf()
+
     get_gmg_batch_data(fc_zones, out_path)
 
-    print(f"Success! Output file is {out_path}")
+    duration = round((perf() - st)/60, 1)
+
+    print(f"Finished in {duration} mins! Output file is {out_path}")

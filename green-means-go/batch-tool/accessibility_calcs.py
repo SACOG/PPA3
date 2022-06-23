@@ -17,6 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from time import perf_counter as perf
 import arcpy
 
+from agg_by_proplarea import get_areapropl_values
 import parameters as params
 from utils import utils
 
@@ -39,11 +40,31 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
     arcpy.MakeFeatureLayer_management(fc_accdata, fl_accdata)
 
     # select polygons that intersect with the project line
-    searchdist = 0 if project_type == params.ptype_area_agg else params.bg_search_dist
-    arcpy.SelectLayerByLocation_management(fl_accdata, "HAVE_THEIR_CENTER_IN", fl_project, # "INTERSECT"
-                                            searchdist, "NEW_SELECTION")
+    # searchdist = 0 if project_type == params.ptype_area_agg else params.bg_search_dist
 
-    # read accessibility data from selected polygons into a dataframe
+    if project_type == params.ptype_area_agg:
+        # if the project is a polygon, then do area-pro-rated, intersect-based computation of population
+
+        # to speed things up, only run intersect on polys that touch the project polygon
+        fc_temp_accdata_seln = os.path.join(arcpy.env.scratchGDB, "TEMP_locnseln_accdata")
+        arcpy.SelectLayerByLocation_management(fl_accdata, "INTERSECT", fl_project, # "INTERSECT"
+                                                params.bg_search_dist, "NEW_SELECTION")
+
+        arcpy.CopyFeatures_management(fl_accdata, fc_temp_accdata_seln)
+
+        # compute pro-rated-by-area values
+        fc_intersect = os.path.join(arcpy.env.scratchGDB, "TEMP_intersect_fc")
+        get_areapropl_values(target_fc=fc_project, intersect_fc=fc_temp_accdata_seln, 
+                            fields_to_compute=[params.col_pop], output_fc=fc_intersect)
+
+        arcpy.Delete_management(fl_accdata)
+        arcpy.MakeFeatureLayer_management(fc_intersect, fl_accdata)
+
+    else:
+        arcpy.SelectLayerByLocation_management(fl_accdata, "HAVE_THEIR_CENTER_IN", fl_project, # "INTERSECT"
+                                                params.bg_search_dist, "NEW_SELECTION")
+
+    # read accessibility data from selected polygons (or temp fc of intersected polygons if project is a polygon) into a dataframe
     accdata_fields = [params.col_geoid, params.col_acc_ej_ind, params.col_pop] + params.acc_cols_ej
     accdata_df = utils.esri_object_to_df(fl_accdata, accdata_fields)
 
@@ -74,6 +95,7 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
                 
             out_dict[col] = out_wtd_acc
 
+    arcpy.Delete_management(fc_intersect)
     return out_dict
 
 
