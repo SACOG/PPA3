@@ -58,16 +58,17 @@ def get_zone_data(polygon_fl_selection, data_year):
 
 
     # calculate land use diversity index
-    parcels = os.path.join(params.fgdb, params.parcel_pt_fc_yr(data_year))
-    lu_mix_index = mixidx.get_mix_idx(fc_parcel=parcels, fc_project=temp_zone_fc, 
-                                    project_type=proj_type, buffered_pcls=False)
+    # 6/27/2022 - OMITTING FOR NOW, BUT KEEPING FUNCTION IN in case used in future uses.
+    # parcels = os.path.join(params.fgdb, params.parcel_pt_fc_yr(data_year))
+    # lu_mix_index = mixidx.get_mix_idx(fc_parcel=parcels, fc_project=temp_zone_fc, 
+    #                                 project_type=proj_type, buffered_pcls=False)
 
     # calculate percent of total road miles that are C2 bike lanes or C1 paths
     bikewy_mi = bikebuffmi.get_bikeway_mileage_share(project_fc=temp_zone_fc, proj_type=proj_type)
 
     # combine and return as single dict
     # import pdb; pdb.set_trace()
-    for d in [comm_typ, acc_data, lu_mix_index, bikewy_mi]:
+    for d in [comm_typ, acc_data, bikewy_mi]: # [comm_typ, acc_data, lu_mix_index, bikewy_mi]
         output_data.update(d)
 
     return output_data
