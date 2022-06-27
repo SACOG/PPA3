@@ -25,6 +25,7 @@ import pandas as pd
 import accessibility_calcs as acc
 import get_buff_netmiles as bikebuffmi
 import mix_index_for_project as mixidx
+import get_zone_comm_type as get_ctyp
 import parameters as params
 
 arcpy.overwriteOutput = True
@@ -45,6 +46,11 @@ def get_zone_data(polygon_fl_selection, data_year):
 
 
     output_data = {}
+
+    # get community type of zone
+    comm_types = os.path.join(params.fgdb, params.comm_types_fc)
+    comm_typ = get_ctyp.get_comm_type(temp_zone_fc, comm_types, params.col_ctype)
+
     # calculate accessibility to jobs and services
     acc_layer = os.path.join(params.fgdb, params.accdata_fc)
     acc_data = acc.get_acc_data(fc_project=temp_zone_fc, fc_accdata=acc_layer, 
@@ -61,7 +67,7 @@ def get_zone_data(polygon_fl_selection, data_year):
 
     # combine and return as single dict
     # import pdb; pdb.set_trace()
-    for d in [acc_data, lu_mix_index, bikewy_mi]:
+    for d in [comm_typ, acc_data, lu_mix_index, bikewy_mi]:
         output_data.update(d)
 
     return output_data
@@ -121,7 +127,7 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
 
 if __name__ == '__main__':
     # SHP or FC of green zone polygons
-    fc_zones = r'I:\Projects\Darren\PPA3_GIS\PPA3_GreenMeansGo.gdb\GreenZones2021'
+    fc_zones = r'I:\Projects\Darren\PPA3_GIS\PPA3_GreenMeansGo.gdb\GreenZones2021_sample'
     output_dir = r'I:\Projects\Darren\PPA3_GIS\CSV\GMG'
 
 #=============================RUN SCRIPT=================================
