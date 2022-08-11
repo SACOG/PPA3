@@ -77,6 +77,17 @@ def rename_dict_keys(dict_in, new_key_dict):
     return dict_out
 
 
+def log_row_to_table(dest_table, data_row_dict):
+    data_fields = list(data_row_dict.keys())
+    data_values = list(data_row_dict.values())
+
+    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+        cur.insertRow(data_values)
+        
+    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+
+
+
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")
 

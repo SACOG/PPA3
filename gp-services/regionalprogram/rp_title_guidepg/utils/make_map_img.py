@@ -153,8 +153,8 @@ class MakeMapImage(object):
                                                 'connection_info': {'database': project_fc_info.path}}
 
                             # update the connection properties of the APRX line layer to connect to the input project line FC
-                            arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
-                            arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
+                            # arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
+                            # arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
                             lyr.updateConnectionProperties(lyr.connectionProperties, project_fc_connprop) # https://community.esri.com/t5/python-questions/arcpy-layer-updateconnectionproperties-not-working/td-p/519982
                             
                             arcpy.AddMessage(f"updated connection DB for line layer: {lyr.connectionProperties}")

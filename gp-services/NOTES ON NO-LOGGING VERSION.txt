@@ -1,5 +1,0 @@
-The "no logging" version of the GP tasks is the "minimum viable product" for PPA version 3.
-It replicates most PPA2 GP tasks, but importantly, does *not* log runs in any tables.
-
-All scripts within the "no logging" version of the GP services *will work* for running/generating reports,
-but they do not log/archive run results.

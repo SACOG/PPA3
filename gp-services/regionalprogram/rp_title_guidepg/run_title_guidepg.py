@@ -24,6 +24,7 @@ import arcpy
 import parameters as params
 import commtype
 import utils.make_map_img as imgmaker
+import utils.utils as utils
 
 
 def make_title_guidepg_regpgm(project_name, project_fc):
@@ -58,6 +59,27 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     map_img_path = img_obj.exportMap()
     loaded_json["Image Url"] = map_img_path
 
+    
+
+    # write to applicable log table
+
+    # get shape of project **might want to package as function to make this part cleaner
+    # if more than 1 feature in project FC, then dissolve and get geom of dissolved FC
+    if int(arcpy.GetCount_management(project_fc)[0]) > 1:
+        proj_fc_diss = os.path.join(arcpy.env.scratchGDB, "projline_dissolve")
+        arcpy.Dissolve_management(project_fc, proj_fc_diss)
+        project_fc = proj_fc_diss
+
+    with arcpy.da.SearchCursor(project_fc, ["SHAPE@"]) as scur:
+        for row in scur:
+            proj_shape = row[0]
+
+    data_to_log = {"SHAPE@": proj_shape, "comm_type": project_commtype, 
+                "len_mi": tot_len_mi}
+
+    log_table = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\project_master_test'
+    utils.log_row_to_table(log_table, data_to_log)
+
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -77,12 +99,12 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    proj_line = arcpy.GetParameterAsText(0)
-    proj_name = arcpy.GetParameterAsText(1)
+    # proj_line = arcpy.GetParameterAsText(0)
+    # proj_name = arcpy.GetParameterAsText(1)
 
     # hard values for testing
-    # proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84'
-    # proj_name = "TestSGR"
+    proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84'
+    proj_name = "TestSGR"
 
     ptype = params.ptype_arterial
     
