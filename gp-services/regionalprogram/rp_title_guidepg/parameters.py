@@ -35,7 +35,13 @@ reg_artcollcline_fc = 'ArterialCollector_2019' # road centerlines but for collec
 reg_bikeway_fc = 'BikeRte_C1_C2_C4_2019' # 'BikeRte_C1_C2_C4_2017'
 
 proj_line_template_fc = 'Project_Line_Template' # has symbology that the project line will use.
-all_projects_fc = "All_PPA_Projects2020" # feature class to which all run projects are added--NEED UPDATE FOR PPA3
+
+
+# tables that results will be logged to--critical for making roll-ups and analyzing past project results
+log_fgdb = r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs.gdb"
+log_master = 'project_master'
+log_rp_artexp_vmt = 'rp_artexp_vmt'
+
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
 def parcel_pt_fc_yr(in_year=2016):

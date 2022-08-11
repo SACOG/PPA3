@@ -77,15 +77,20 @@ def rename_dict_keys(dict_in, new_key_dict):
     return dict_out
 
 
-def log_row_to_table(dest_table, data_row_dict):
+def log_row_to_table(data_row_dict, dest_table=None):
+    """Writes row of values to table. Fields are data_row_dict keys, and the values
+    written are the values from data_row_dict's values."""
+
+    if not dest_table:
+        dest_table = os.path.join(params.log_fgdb, params.log_master)
+
     data_fields = list(data_row_dict.keys())
     data_values = list(data_row_dict.values())
 
     with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
         cur.insertRow(data_values)
-        
-    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 
+    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 
 
 if __name__ == '__main__':
