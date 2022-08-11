@@ -11,6 +11,7 @@ Copyright:   (c) SACOG
 Python Version: 3.x
 """
 import os
+from arcpy import env
 
 # ========================================INPUT DATA LAYERS===================================================== 
 server_folder = r'\\arcserver-svr\D\PPA3_SVR\RegionalProgram'
@@ -39,6 +40,7 @@ proj_line_template_fc = 'Project_Line_Template' # has symbology that the project
 
 # tables that results will be logged to--critical for making roll-ups and analyzing past project results
 log_fgdb = r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs.gdb"
+pickle_uid = os.path.join(env.scratchGDB, "project_uid.pkl") # pickle file containing integer unique ID that will be used for all tables
 log_master = 'project_master'
 log_rp_artexp_vmt = 'rp_artexp_vmt'
 

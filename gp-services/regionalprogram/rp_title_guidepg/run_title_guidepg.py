@@ -12,6 +12,7 @@ Python Version: 3.x
     
 
 import os
+import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 # sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
@@ -20,6 +21,7 @@ import datetime as dt
 import json
 
 import arcpy
+arcpy.env.overwriteOutput = True
 
 import parameters as params
 import commtype
@@ -71,9 +73,9 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     loaded_json["Project Community Type"] = project_commtype
 
     # insert project map
-    img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
-    map_img_path = img_obj.exportMap()
-    loaded_json["Image Url"] = map_img_path
+    # img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
+    # map_img_path = img_obj.exportMap()
+    # loaded_json["Image Url"] = map_img_path
 
 
     # get shape of project 
@@ -82,9 +84,10 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     # write to applicable log table
     data_to_log = {"SHAPE@": proj_shape, "comm_type": project_commtype, 
                 "len_mi": tot_len_mi}
-
-    utils.log_row_to_table(data_to_log)
-
+    project_uid = utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
+    
+    # use the new OBJECTID generated as the lookup key between master and subreport tables.
+    with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid)
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
