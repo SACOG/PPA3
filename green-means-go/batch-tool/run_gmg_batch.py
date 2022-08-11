@@ -128,7 +128,7 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
 
 if __name__ == '__main__':
     # SHP or FC of green zone polygons
-    fc_zones = r'I:\Projects\Darren\PPA3_GIS\PPA3_GreenMeansGo.gdb\GreenZones2021_sample'
+    fc_zones = r'I:\Projects\Darren\PPA3_GIS\PPA3_GreenMeansGo.gdb\GreenZones_20220809'
     output_dir = r'I:\Projects\Darren\PPA3_GIS\CSV\GMG'
 
 #=============================RUN SCRIPT=================================
