@@ -11,7 +11,7 @@
 import arcpy, os
 
 # Inputs
-allstreetlyr = r'I:\Projects\Darren\PPA3_GIS\winuser@GISData.sde\GISData.GISOWNER.RegionalCenterline\GISData.GISOWNER.Regional_Centerline_March_2022'
+allstreetlyr = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\RegionalCenterline_Oct2021'
 output = "I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\intersections_2022"
 # Enter as True or False
 RemoveTwoWayInts = True
@@ -33,7 +33,7 @@ arcpy.DeleteIdentical_management(Int1_lyr, "Shape")
 print("spatial-joining street network layer onto intersections layer...")
 Int2_lyr = arcpy.SpatialJoin_analysis(Int1_lyr, allstreetlyr, os.path.join(arcpy.env.scratchGDB, "Int2_lyr"),"JOIN_ONE_TO_ONE")
 whereclause3 = ""
-if len(RemoveTwoWayInts) > 0:
+if RemoveTwoWayInts:
     arcpy.AddMessage("Removing Two Way Intersections")
     whereclause3 = '''"Join_Count" <> 2'''
 Int3_lyr = arcpy.MakeFeatureLayer_management(Int2_lyr, os.path.join(arcpy.env.scratchGDB, "Int3_lyr"), whereclause3)
