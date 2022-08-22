@@ -284,28 +284,28 @@ class MakeGTFSGISData(object):
         
 
         # write to point feature class
-        fc_stop_pts = "GTFSstops_{}{}".format(self.agency_formatted, self.data_year)
+        self.fc_stop_pts = "GTFSstops_{}{}".format(self.agency_formatted, self.data_year)
 
-        if (arcpy.Exists(fc_stop_pts)):
-            arcpy.Delete_management(fc_stop_pts)
+        if (arcpy.Exists(self.fc_stop_pts)):
+            arcpy.Delete_management(self.fc_stop_pts)
         	
         #add feature class fields
-        arcpy.CreateFeatureclass_management(self.workspace, fc_stop_pts,"POINT","","","", self.sacog_projexn)
-        arcpy.AddField_management(fc_stop_pts, self.f_stopid, "TEXT", "", "", 40)
-        arcpy.AddField_management(fc_stop_pts, self.f_agencyname , "TEXT", "", "", 40)
-        arcpy.AddField_management(fc_stop_pts, self.f_svc_id , "TEXT", "", "", 50)
-        arcpy.AddField_management(fc_stop_pts, self.f_tripcnt_day, "SHORT",)
-        arcpy.AddField_management(fc_stop_pts, self.f_lines_stop , "TEXT", "", "", 140)
+        arcpy.CreateFeatureclass_management(self.workspace, self.fc_stop_pts,"POINT","","","", self.sacog_projexn)
+        arcpy.AddField_management(self.fc_stop_pts, self.f_stopid, "TEXT", "", "", 40)
+        arcpy.AddField_management(self.fc_stop_pts, self.f_agencyname , "TEXT", "", "", 40)
+        arcpy.AddField_management(self.fc_stop_pts, self.f_svc_id , "TEXT", "", "", 50)
+        arcpy.AddField_management(self.fc_stop_pts, self.f_tripcnt_day, "SHORT",)
+        arcpy.AddField_management(self.fc_stop_pts, self.f_lines_stop , "TEXT", "", "", 140)
         
         data_records = df_stops_out.to_dict('records') # [{colA:val1, ColB: val1},{ColA:val2, ColB:val2}...]
 
         data_fields = [col for col in df_stops_out.columns]
-        output_fields = [f.name for f in arcpy.ListFields(fc_stop_pts) if f.name in data_fields]
+        output_fields = [f.name for f in arcpy.ListFields(self.fc_stop_pts) if f.name in data_fields]
         
-        stoppnt_cur = arcpy.da.InsertCursor(fc_stop_pts,[self.f_esri_shape] + output_fields)
+        stoppnt_cur = arcpy.da.InsertCursor(self.fc_stop_pts,[self.f_esri_shape] + output_fields)
         # pdb.set_trace()
 
-        print("writing stop points to feature class {}...".format(fc_stop_pts))
+        print("writing stop points to feature class {}...".format(self.fc_stop_pts))
         for row in data_records:
 
             lat = row[self.f_stoplat]
