@@ -31,30 +31,56 @@ import geopandas as gpd
 from isodate import strftime
 import pandas as pd
 
+def build_bg_df(fc_blk_grp, csvs_bg_data=[]):
+    dir_bgs = os.path.dirname(fc_blk_grp)
+    name_bgs = os.path.basename(fc_blk_grp)
 
-def initial_sjoin(fc_pcl_pts, fc_blk_grp, bg_data_fields=[]):
+    f_bg_geoid = 'GEOID10'
+    f_geom = 'geometry'
+
+    flds_bgs = [f_bg_geoid, f_geom]
+
+    print(f"loading {fc_blk_grp}...")
+    gdf_bgs = gpd.read_file(dir_bgs, layer=name_bgs, driver="OpenFileGDB")[flds_bgs]
+
+    dtype_id_gdf = gdf_bgs[f_bg_geoid].dtype
+    
+    if len(csvs_bg_data) > 0:
+        for in_csv in csvs_bg_data:
+            df = pd.read_csv(in_csv)
+            dtyp_id_csv = df[f_bg_geoid].dtype
+            
+            if dtyp_id_csv == dtype_id_gdf:
+                df_out = gdf_bgs.merge(df, on=f_bg_geoid)
+            elif dtype_id_gdf == 'O':
+                gdf_bgs[f_bg_geoid] = gdf_bgs[f_bg_geoid].astype(dtyp_id_csv)
+                df_out = gdf_bgs.merge(df, on=f_bg_geoid)
+            else:
+                raise Exception(f"Join failed due to mismatched data types. {in_csv} has {f_bg_geoid} dtype of {dtyp_id_csv}, " \
+                    f"while bg geodatframe {f_bg_geoid} field has dtype of {dtype_id_gdf}")
+    else:
+        df_out = gdf_bgs
+
+    return df_out
+        
+
+def initial_sjoin(fc_pcl_pts, gdf_bgs):
 
     dir_pcls = os.path.dirname(fc_pcl_pts)
     name_pcls = os.path.basename(fc_pcl_pts)
 
-    dir_bgs = os.path.dirname(fc_blk_grp)
-    name_bgs = os.path.basename(fc_blk_grp)
+
 
     # field names
     f_pcl_id = 'PARCELID'
     f_pcl_du = 'DU_TOT'
-    f_bg_geoid = 'GEOID10'
     f_geom = 'geometry' 
 
     flds_pclpts = [f_pcl_id, f_pcl_du, f_geom]
-    flds_bgs = [f_bg_geoid, f_geom] + bg_data_fields
 
     # load parcel to geodataframe
     print(f"loading {fc_pcl_pts}...")
     gdf_parcels = gpd.read_file(dir_pcls, layer=name_pcls, driver="OpenFileGDB")[flds_pclpts]
-
-    print(f"loading {fc_blk_grp}...")
-    gdf_bgs = gpd.read_file(dir_bgs, layer=name_bgs, driver="OpenFileGDB")[flds_bgs]
 
     # spatial join filtered parcel points with block groups, to get block group ID tagged to each parcel point
     print(f"spatial joining...")
@@ -71,22 +97,22 @@ def make_final_output_file(in_gdf, fc_pcl_polys, output_fc):
     f_geom = "geometry"
     f_parcelid = 'PARCELID'
     f_bg_geoid = 'GEOID10'
+    f_du_tot = 'DU_TOT'
     flds_pclpolys = [f_parcelid, f_geom]
 
     # load polyong parcel data
     print(f"loading {fc_pcl_polys}...")
     gdf_pclpolys = gpd.read_file(dir_pclpolys, layer=name_pclpolys, driver="OpenFileGDB")[flds_pclpolys]
 
-    del in_gdf[f_geom]
+    del in_gdf[f_geom], in_gdf[f_du_tot]
 
     # join point parcel data (with block group ID) to polygon parcel data via parcelid attribute
     print(f"joining parcel point data to parcel poly layer via {f_parcelid}")
     gdf_jn = in_gdf.merge(gdf_pclpolys, how='inner', on=f_parcelid)
 
-
-    # dissolve parcels by 
+    # dissolve parcels by block group ID
     print(f"dissolving by {f_bg_geoid}...")
-    gdf_out = gdf_jn.dissolve(by=f_bg_geoid, aggfunc='mean')
+    gdf_out = gdf_jn.dissolve(by=f_bg_geoid, aggfunc='mean') 
 
     # free up some memory
     del gdf_jn
@@ -108,7 +134,9 @@ if __name__ == '__main__':
     
 
     bg_polys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Census_BlockGroups2010_region'
+    bg_data_csv = r"I:\Projects\Darren\PPA3_GIS\CSV\ACS5YR\ACS2019PovertyXBG.csv"
     bg_year = 2010
+    
 
     # bg_polys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Census_BlockGroups2020_region'
     # bg_year = 2020
@@ -121,5 +149,6 @@ if __name__ == '__main__':
     out_fc_name = f"blockgrp_areaswppl{bg_year}_{time_sufx}"
     out_fc_path = os.path.join(output_dir, out_fc_name)
 
-    df_1 = initial_sjoin(pclpts, bg_polys)
+    df_bgs = build_bg_df(bg_polys, csvs_bg_data=[bg_data_csv])
+    df_1 = initial_sjoin(pclpts, df_bgs)
     make_final_output_file(df_1, pclpolys, out_fc_path)
