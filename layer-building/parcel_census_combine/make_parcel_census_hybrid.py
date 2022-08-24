@@ -31,21 +31,8 @@ import geopandas as gpd
 from isodate import strftime
 import pandas as pd
 
-def do_additional_sjoin(target_gdf, fc_to_join, fields_to_join):
-    dir_fc_join = os.path.dirname(fc_to_join)
-    name_fc_join = os.path.basename(fc_to_join)
 
-    f_geom = 'geometry'
-    fields_to_join.append(f_geom)
-
-    df_to_join = gpd.read_file(dir_fc_join, layer=name_fc_join, driver="OpenFileGDB")[fields_to_join]
-
-    output_df = gpd.sjoin(target_gdf, df_to_join, how='left', op='intersects')
-
-    return output_df
-
-
-def initial_sjoin(fc_pcl_pts, fc_blk_grp):
+def initial_sjoin(fc_pcl_pts, fc_blk_grp, bg_data_fields=[]):
 
     dir_pcls = os.path.dirname(fc_pcl_pts)
     name_pcls = os.path.basename(fc_pcl_pts)
@@ -60,7 +47,7 @@ def initial_sjoin(fc_pcl_pts, fc_blk_grp):
     f_geom = 'geometry' 
 
     flds_pclpts = [f_pcl_id, f_pcl_du, f_geom]
-    flds_bgs = [f_bg_geoid, f_geom]
+    flds_bgs = [f_bg_geoid, f_geom] + bg_data_fields
 
     # load parcel to geodataframe
     print(f"loading {fc_pcl_pts}...")
@@ -71,29 +58,26 @@ def initial_sjoin(fc_pcl_pts, fc_blk_grp):
 
     # spatial join filtered parcel points with block groups, to get block group ID tagged to each parcel point
     print(f"spatial joining...")
-    gdf_pcls_w_bgid = gpd.sjoin(gdf_parcels, gdf_bgs, how='left', op='intersects') \
-        .loc[gdf_pcls_w_bgid[f_pcl_du] > 0] # and only keep parcels with dwelling units
-    print("spatial join successful.\n")
+    gdf_parcels = gdf_parcels.loc[gdf_parcels[f_pcl_du] > 0] # only want inhabited parcels
+    gdf_pcls_w_bgid = gpd.sjoin(gdf_parcels, gdf_bgs, how='left', op='intersects')
 
     return gdf_pcls_w_bgid
 
 def make_final_output_file(in_gdf, fc_pcl_polys, output_fc):
-    
+
     dir_pclpolys = os.path.dirname(fc_pcl_polys)
     name_pclpolys = os.path.basename(fc_pcl_polys)
 
     f_geom = "geometry"
     f_parcelid = 'PARCELID'
     f_bg_geoid = 'GEOID10'
-    flds_pclpolys = [f_parcelid, f_bg_geoid, f_geom]
+    flds_pclpolys = [f_parcelid, f_geom]
 
     # load polyong parcel data
     print(f"loading {fc_pcl_polys}...")
     gdf_pclpolys = gpd.read_file(dir_pclpolys, layer=name_pclpolys, driver="OpenFileGDB")[flds_pclpolys]
 
     del in_gdf[f_geom]
-
-    import pdb; pdb.set_trace()
 
     # join point parcel data (with block group ID) to polygon parcel data via parcelid attribute
     print(f"joining parcel point data to parcel poly layer via {f_parcelid}")
@@ -102,22 +86,26 @@ def make_final_output_file(in_gdf, fc_pcl_polys, output_fc):
 
     # dissolve parcels by 
     print(f"dissolving by {f_bg_geoid}...")
-    gdf_out = gdf_jn.dissolve(by=f_bg_geoid, aggfunc='sum')
+    gdf_out = gdf_jn.dissolve(by=f_bg_geoid, aggfunc='mean')
 
     # free up some memory
     del gdf_jn
 
     # convert to esri sedf to enable export to esri feature class
     print(f"exporting to {output_fc}")
-    sedf_out = pd.DataFrame.spatial.from_featureclass(gdf_out)
+    sedf_out = pd.DataFrame.spatial.from_geodataframe(gdf_out)
     sedf_out.spatial.to_featureclass(output_fc)
     print("success!")
 
     
 
 if __name__ == '__main__':
-    pclpts = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_pts_2016'
-    pclpolys = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_polys_2016'
+    # pclpts = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_pts_2016'
+    pclpts = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\parcel_data_pt_sample'
+
+    # pclpolys = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_polys_2016'
+    pclpolys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\parcel_data_polys_sample'
+    
 
     bg_polys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Census_BlockGroups2010_region'
     bg_year = 2010
@@ -129,10 +117,9 @@ if __name__ == '__main__':
 
     # ============RUN SCRIPT==================
 
-    time_sufx = strftime(dt.now(), "%Y%M%D_%H:%M")
-    out_fc_name = f"pcl_intersectBG{bg_year}_{time_sufx}"
+    time_sufx = strftime(dt.now(), "%Y%M%d_%H%M")
+    out_fc_name = f"blockgrp_areaswppl{bg_year}_{time_sufx}"
     out_fc_path = os.path.join(output_dir, out_fc_name)
 
     df_1 = initial_sjoin(pclpts, bg_polys)
-    # df_2 = do_additional_sjoin(df_1, bgs_2020, fields_to_join=['GEOID10'])
-    make_final_output_file(df_1, pclpolys)
+    make_final_output_file(df_1, pclpolys, out_fc_path)
