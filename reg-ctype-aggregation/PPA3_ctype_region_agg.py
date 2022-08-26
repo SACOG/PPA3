@@ -1,10 +1,10 @@
 # --------------------------------
-# Name: PPA2_masterTest.py
+# Name: PPA3_ctype_region_agg.py
 # Purpose: testing master script to call can combine all PPA modules
 #
 #
 # Author: Darren Conly
-# Last Updated: <date>
+# Last Updated: Sep 2022
 # Updated by: <name>
 # Copyright:   (c) SACOG
 # Python Version: 3.x
@@ -14,9 +14,9 @@ import datetime as dt
 import arcpy
 import pandas as pd
 
-import ppa_input_params as params
+import parameters as params
 import accessibility_calcs as acc
-import collisions as coll
+import collisions_ExclLocalFromPolyAgg as coll
 import get_buff_netmiles as bufnet
 import intersection_density as intsxn
 from landuse_buff_calcs import LandUseBuffCalcs
@@ -29,7 +29,7 @@ def get_poly_avg(input_poly_fc):
     # as of 11/26/2019, each of these outputs are dictionaries
     pcl_pt_data = params.parcel_pt_fc_yr()
     
-    accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
+    # accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
     collision_data = coll.get_collision_data(input_poly_fc, params.ptype_area_agg, params.collisions_fc, 0)
     mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg)
     intsecn_dens = intsxn.intersection_density(input_poly_fc, params.intersections_base_fc, params.ptype_area_agg)
@@ -133,17 +133,17 @@ def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, test_r
 
 
 if __name__ == '__main__':
-    time_sufx = str(dt.datetime.now().strftime('%m%d%Y_%H%M'))
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    time_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
+    arcpy.env.workspace = params.fgdb # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
     arcpy.OverwriteOutput = True
     base_year = 2016
     future_year = 2040
     
     # fc of community type polygons
     ctype_fc = params.comm_types_fc
-    output_csv = r'Q:\ProjectLevelPerformanceAssessment\PPAv2\PPA2_0_code\PPA2\Input_Template\CSV\Agg_ppa_vals{}.csv'.format(time_sufx)
+    output_csv = r'C:\Users\dconly\GitRepos\PPA3\reg-ctype-aggregation\CSV_output\Agg_ppa_vals{}.csv'.format(time_sufx)
     
-    test_run = False
+    test_run = True
     
     # ------------------RUN SCRIPT-----------------------------------------
     
