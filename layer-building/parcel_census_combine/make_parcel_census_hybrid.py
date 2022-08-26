@@ -35,7 +35,7 @@ def build_bg_df(fc_blk_grp, csvs_bg_data=[]):
     dir_bgs = os.path.dirname(fc_blk_grp)
     name_bgs = os.path.basename(fc_blk_grp)
 
-    f_bg_geoid = 'GEOID10'
+    f_bg_geoid = 'GEOID'
     f_geom = 'geometry'
 
     flds_bgs = [f_bg_geoid, f_geom]
@@ -96,7 +96,7 @@ def make_final_output_file(in_gdf, fc_pcl_polys, output_fc):
 
     f_geom = "geometry"
     f_parcelid = 'PARCELID'
-    f_bg_geoid = 'GEOID10'
+    f_bg_geoid = 'GEOID'
     f_du_tot = 'DU_TOT'
     flds_pclpolys = [f_parcelid, f_geom]
 
@@ -126,27 +126,24 @@ def make_final_output_file(in_gdf, fc_pcl_polys, output_fc):
     
 
 if __name__ == '__main__':
-    # pclpts = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_pts_2016'
-    pclpts = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\parcel_data_pt_sample'
+    pclpts = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_pts_2016'
+    # pclpts = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\parcel_data_pt_sample'
 
-    # pclpolys = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_polys_2016'
-    pclpolys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\parcel_data_polys_sample'
+    pclpolys = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_polys_2016'
+    # pclpolys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\parcel_data_polys_sample'
     
 
-    bg_polys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Census_BlockGroups2010_region'
-    bg_data_csv = r"I:\Projects\Darren\PPA3_GIS\CSV\ACS5YR\ACS2019PovertyXBG.csv"
-    bg_year = 2010
-    
-
-    # bg_polys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Census_BlockGroups2020_region'
-    # bg_year = 2020
+    bg_polys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Census_BlockGroups2020_region'
+    bg_data_csv = r"I:\Projects\Darren\PPA3_GIS\CSV\Census2020\BGRaceDataCensus2020.csv"
+    bg_data_desc = 'RaceEth'
+    bg_year = 2020
 
     output_dir = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
 
     # ============RUN SCRIPT==================
 
     time_sufx = strftime(dt.now(), "%Y%M%d_%H%M")
-    out_fc_name = f"blockgrp_areaswppl{bg_year}_{time_sufx}"
+    out_fc_name = f"blockgrp_{bg_data_desc}{bg_year}_{time_sufx}"
     out_fc_path = os.path.join(output_dir, out_fc_name)
 
     df_bgs = build_bg_df(bg_polys, csvs_bg_data=[bg_data_csv])

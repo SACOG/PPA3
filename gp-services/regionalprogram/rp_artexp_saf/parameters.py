@@ -258,7 +258,10 @@ fac_hov3 = 1/0.3 # inverse of 0.3, which is factor for converting HOV3+ person t
 
 
 # ============================COLLISION DATA PARAMETERS===========================
-col_fwytag = "fwy_yn"
+col_fwytag = "FwyTag"
+ind_fwytag_fwy = 1
+ind_fwytag_art = 2
+
 col_nkilled = "NUMBER_KILLED"
 col_bike_ind = 'BICYCLE_ACCIDENT'
 col_ped_ind = 'PEDESTRIAN_ACCIDENT'

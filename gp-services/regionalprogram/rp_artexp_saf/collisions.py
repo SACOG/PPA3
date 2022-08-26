@@ -121,11 +121,11 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     
     # filter so that fwy collisions don't get tagged to non-freeway projects, and vice-versa
     if project_type == params.ptype_fwy:
-        df_collndata = df_collndata.loc[df_collndata[params.col_fwytag] == 1]
+        df_collndata = df_collndata.loc[df_collndata[params.col_fwytag] == params.ind_fwytag_fwy]
     elif project_type == params.ptype_area_agg:
         pass  # for aggregating at polygon level, like region or community type, we want all collisions on all roads
     else:
-        df_collndata = df_collndata.loc[df_collndata[params.col_fwytag] == 0]
+        df_collndata = df_collndata.loc[df_collndata[params.col_fwytag] != params.ind_fwytag_fwy]
 
     total_collns = df_collndata.shape[0]
     fatal_collns = df_collndata.loc[df_collndata[params.col_nkilled] > 0].shape[0]
