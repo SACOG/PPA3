@@ -16,7 +16,7 @@ import os
 server_folder = r'\\arcserver-svr\D\PPA3_SVR\RegionalProgram'
 
 
-fgdb = os.path.join(r"\\arcserver-svr\D\PPA_v2_SVR\PPA2_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
+fgdb = os.path.join(r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
 projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet)
 
 # -------input feature classes, all in fgdb
@@ -66,10 +66,10 @@ ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
 # ===================================OUTPUT APRX TEMPLATE DATA=========================================================
 
 # params related to inserting maps into report--WILL NEED TO UPDATE FOR PPA3
-TEMP_ppa2_svr_path = r'\\arcserver-svr\D\PPA_v2_SVR'
-aprx_path = os.path.join(TEMP_ppa2_svr_path, r"PPA2_GIS_SVR\PPA2_GIS_SVR_v2.aprx")
-mapimg_configs_csv = os.path.join(TEMP_ppa2_svr_path, r"PPA2\Input_Template\CSV\map_img_config.csv") # configs for making maps imgs
-map_placement_csv = os.path.join(TEMP_ppa2_svr_path, r"PPA2\Input_Template\CSV\map_report_key.csv") # configs for inserting maps into Excel reports
+TEMP_ppa2_svr_path = r'\\arcserver-svr\D\PPA3_SVR'
+aprx_path = os.path.join(TEMP_ppa2_svr_path, r"PPA3_GIS_SVR\PPA3_GIS_SVR.aprx")
+mapimg_configs_csv = os.path.join(server_folder, r"CSV\map_img_config.csv") # configs for making maps imgs
+map_placement_csv = os.path.join(server_folder, r"CSV\map_report_key.csv") # configs for inserting maps into Excel reports
 map_img_format = "png" #jpg, png, svg, etc.
 
 # root url, used for map images
