@@ -30,7 +30,7 @@ intersections_base_fc = 'intersections_2021'
 comm_types_fc = 'comm_type_jurspec_dissolve'
 
 reg_centerline_fc = 'RegionalCenterline_Oct2021'
-reg_artcollcline_fc = # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
+reg_artcollcline_fc = None # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
 
 reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
 
