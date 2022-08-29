@@ -272,6 +272,8 @@ col_ped_ind = 'PEDESTRIAN_ACCIDENT'
 
 ind_val_true = 'Y'
 
+tags_ptypes = {ptype_fwy:'_fwy', ptype_arterial:'_nonfwy', ptype_sgr:'_nonfwy'}
+
 colln_searchdist = 75 # in feet, might have projection-related issues in online tool-how was this resolved in PPA1?
 years_of_collndata = 5
 

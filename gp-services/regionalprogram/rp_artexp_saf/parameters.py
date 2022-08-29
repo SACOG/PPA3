@@ -5,7 +5,7 @@ Purpose: Stores all input parameter values for SACOG Project Performance Assessm
         
           
 Author: Darren Conly
-Last Updated: Mar 2022
+Last Updated: Aug 2022
 Updated by: <name>
 Copyright:   (c) SACOG
 Python Version: 3.x
@@ -30,7 +30,7 @@ intersections_base_fc = 'intersections_2021'
 comm_types_fc = 'comm_type_jurspec_dissolve'
 
 reg_centerline_fc = 'RegionalCenterline_Oct2021'
-reg_artcollcline_fc = None # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
+reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
 
 reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
 
@@ -38,21 +38,24 @@ proj_line_template_fc = 'Project_Line_Template' # has symbology that the project
 all_projects_fc = "All_PPA_Projects2020" # feature class to which all run projects are added--NEED UPDATE FOR PPA3
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
-def parcel_pt_fc_yr(in_year=2016):
+base_year = 2016
+future_year = 2040
+
+def parcel_pt_fc_yr(in_year=base_year):
     return "parcel_data_pts_{}".format(in_year)
 
 
-def parcel_poly_fc_yr(in_year=2016):
+def parcel_poly_fc_yr(in_year=base_year):
     return "parcel_data_polys_{}".format(in_year)
 
 
-def model_links_fc(in_year=2016):
+def model_links_fc(in_year=base_year):
     return "model_links_{}".format(in_year)
 
 
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
-aggval_csv = os.path.join(server_folder, r"CSV\Agg_ppa_vals04222020_1017.csv")
+aggval_csv = os.path.join(server_folder, r"CSV\Agg_ppa_vals20220829_1258.csv")
 # aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
@@ -61,7 +64,6 @@ ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
 ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
-
 
 # ===================================OUTPUT APRX TEMPLATE DATA=========================================================
 
@@ -98,6 +100,7 @@ k_type = "type"
 # ===================================CONVERSION FACTORS=========================================================
 ft2acre = 43560 # convert square feet to acres
 ft2mile = 5280
+ann_factor = 320 # multiplier to get approximate annual value based on "typical weekday"
 # ===================================ACCESSIBILITY PARAMETERS=========================================================
 
 # Accessibility columns
@@ -268,12 +271,14 @@ col_ped_ind = 'PEDESTRIAN_ACCIDENT'
 
 ind_val_true = 'Y'
 
+tags_ptypes = {ptype_fwy:'_fwy', ptype_arterial:'_nonfwy', ptype_sgr:'_nonfwy'}
+
 colln_searchdist = 75 # in feet, might have projection-related issues in online tool-how was this resolved in PPA1?
 years_of_collndata = 5
 
 # ============================TRANSIT SERVICE DENSITY PARAMETERS===========================
 trn_buff_dist = 1320 # feet, search distance for transit stops from project line
-col_transit_events = "COUNT_trip_id" #if transit feature class is point file dissolved by stop location, this
+col_transit_events = "tripcnt_day" #if transit feature class is point file dissolved by stop location, this
                                     #col is number of times per day that transit vehicle served each stop
 
 
@@ -292,6 +297,8 @@ cs_spd_pen_fac = 0.04 # speed penalty factor
 
 intersxn_dens_buff = 1320 # distance in feet
 bikeway_buff = 1320 # distance in feet
+
+col_intxn_lnks = 'LINKS'
 
 # ============================URBANIZATION PARAMETERS===========================
 

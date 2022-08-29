@@ -16,7 +16,7 @@ import pandas as pd
 
 import parameters as params
 import accessibility_calcs as acc
-import collisions_ExclLocalFromPolyAgg as coll
+import collisions as coll
 import get_buff_netmiles as bufnet
 import intersection_density as intsxn
 from landuse_buff_calcs import LandUseBuffCalcs
@@ -39,18 +39,21 @@ def get_poly_avg(input_poly_fc):
     tran_stop_density = trn_svc.transit_svc_density(input_poly_fc, params.trn_svc_fc, params.ptype_area_agg)
 
     emp_ind_wtot = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg,
-                                    [params.col_empind, params.col_emptot], 0, buffered_pcls=True).point_sum()
+                                    [params.col_empind, params.col_emptot], buffered_pcls=True).point_sum()
     emp_ind_pct = {'EMPIND_jobshare': emp_ind_wtot[params.col_empind] / emp_ind_wtot[params.col_emptot] \
                    if emp_ind_wtot[params.col_emptot] > 0 else 0}
 
+                #    (self,fc_pclpt, fc_project, project_type, val_fields, buffered_pcls=False, 
+                # buffdist=0, case_field=None, case_excs_list=[])
+
     pop_x_ej = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, [params.col_pop_ilut],
-                                0, params.col_ej_ind, buffered_pcls=True).point_sum()
+                                buffered_pcls=True, case_field=params.col_ej_ind).point_sum()
     pop_tot = sum(pop_x_ej.values())
     key_yes_ej = max(list(pop_x_ej.keys()))
     pct_pop_ej = {'Pct_PopEJArea': pop_x_ej[key_yes_ej] / pop_tot if pop_tot > 0 else 0}
 
     job_pop_dens = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, \
-                                            [params.col_du, params.col_emptot], 0, buffered_pcls=True).point_sum_density()
+                                            [params.col_du, params.col_emptot], buffered_pcls=True).point_sum_density()
         
     # total_dens = {"job_du_perNetAcre": sum(job_pop_dens.values())}
 
@@ -144,7 +147,7 @@ if __name__ == '__main__':
     ctype_fc = params.comm_types_fc
     output_csv = r'C:\Users\dconly\GitRepos\PPA3\reg-ctype-aggregation\CSV_output\Agg_ppa_vals{}.csv'.format(time_sufx)
     
-    test_run = True
+    test_run = False
     
     # ------------------RUN SCRIPT-----------------------------------------
     

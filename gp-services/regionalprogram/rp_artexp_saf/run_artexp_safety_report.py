@@ -31,6 +31,8 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
     """Updates project-level, community-type, and region-level values for simple tables in JSON file."
     """
 
+
+
     ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[metric_outdictkey], 
                                                 proj_ctype=proj_commtype, yearkey=params.k_year, 
                                                 geo_regn=params.geo_region, yearval=None)
@@ -53,9 +55,15 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
     # get project community type
     project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
 
+    # project type tag to append to metric field name
+    project_metric_tag = params.tags_ptypes[project_type]
+
 
     # get dict of collision data
     collision_data_project = collisions.get_collision_data(fc_project, project_type, params.collisions_fc, proj_aadt)
+
+    # update dict keys to reflect project location (freeway or non-freeway)
+    collision_data_project = {f"{k}{project_metric_tag}":v for k, v in collision_data_project.items()}
 
     # output example
     #     out_dict = {"TOT_COLLISNS": total_collns, "TOT_COLLISNS_PER_100MVMT": colln_rate_per_vmt,
@@ -63,9 +71,8 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
     #             "PCT_FATAL_COLLISNS": pct_fatal_collns, "BIKEPED_COLLISNS": bikeped_collns, 
     #             "BIKEPED_COLLISNS_PER_CLMILE": bikeped_colln_clmile, "PCT_BIKEPED_COLLISNS": pct_bikeped_collns}
 
-
     # calculate total collisions
-    k_tot_collisions = "TOT_COLLISNS"
+    k_tot_collisions = f"TOT_COLLISNS{project_metric_tag}"
     tot_collns = collision_data_project[k_tot_collisions]
     loaded_json["Total collisions"] = tot_collns
 
@@ -76,7 +83,7 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
     loaded_json["Collision heat map Image Url"] = colln_img_path
     
     # calculate collisions per 100MVMT within all geos
-    kv_coll_rate = "TOT_COLLISNS_PER_100MVMT"
+    kv_coll_rate = f"TOT_COLLISNS_PER_100MVMT{project_metric_tag}"
     k_tblname_collrate = "Collisions per 100 million VMT"
     colln_rate_proj = collision_data_project[kv_coll_rate]
     update_tbl_multiple_geos(json_obj=loaded_json, proj_level_val=colln_rate_proj,
@@ -85,7 +92,7 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
 
 
     # Bike ped collision rate per cline mile within all geos
-    kv_coll_bkpd = "BIKEPED_COLLISNS_PER_CLMILE"
+    kv_coll_bkpd = f"BIKEPED_COLLISNS_PER_CLMILE{project_metric_tag}"
     k_tblname_collbkpd = "Bike and Ped Collisions per Project Centerline"
     colln_bkpd_proj = collision_data_project[kv_coll_bkpd]
     update_tbl_multiple_geos(json_obj=loaded_json, proj_level_val=colln_bkpd_proj,
@@ -94,8 +101,8 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
 
 
     # chart of bike/ped and fatal collisions within all geos
-    type_lkp_dict = {"PCT_FATAL_COLLISNS": "Pct of collisions that are fatal",
-                    "PCT_BIKEPED_COLLISNS": "Pct of collisions with bike/ped"}
+    type_lkp_dict = {f"PCT_FATAL_COLLISNS{project_metric_tag}": "Pct of collisions that are fatal",
+                    f"PCT_BIKEPED_COLLISNS{project_metric_tag}": "Pct of collisions with bike/ped"}
 
     typekeys = list(type_lkp_dict.keys())
 
@@ -149,9 +156,9 @@ if __name__ == '__main__':
     project_aadt = int(arcpy.GetParameterAsText(2))
 
     # hard values for testing
-    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl'
-    # project_name = 'TestStockton'
-    # project_aadt = 27000
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
+    # project_name = 'TestI5'
+    # project_aadt = 180000
 
     ptype = params.ptype_arterial
     

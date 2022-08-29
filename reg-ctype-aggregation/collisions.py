@@ -110,7 +110,7 @@ def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
                 f"PCT_FATAL_COLLISNS": pct_fatal_collns, f"BIKEPED_COLLISNS": bikeped_collns, 
                 f"BIKEPED_COLLISNS_PER_CLMILE": bikeped_colln_clmile, f"PCT_BIKEPED_COLLISNS": pct_bikeped_collns}
 
-    out_dict_roadtyp_tag = {f"{k}_{factyp_tag}":v for k, v in out_dict.items()}
+    out_dict_roadtyp_tag = {f"{k}{factyp_tag}":v for k, v in out_dict.items()}
 
     output_df = pd.DataFrame(pd.Series(out_dict, index=list(out_dict.keys()))).reset_index()
     output_df[params.col_fwytag] = factyp_tag
@@ -167,8 +167,10 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     df_collndata_nonfwy = df_collndata.loc[df_collndata[params.col_fwytag] != params.ind_fwytag_fwy]
 
     if project_type == params.ptype_area_agg:
-        out_dict = final_agg(df_collndata_fwy, ann_vmt_fwy, proj_len_mi, "fwy")
-        odict_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, "nonfwy")
+        tag_fwy = params.tags_ptypes[params.ptype_fwy]
+        tag_nonfwy = params.tags_ptypes[params.ptype_arterial]
+        out_dict = final_agg(df_collndata_fwy, ann_vmt_fwy, proj_len_mi, tag_fwy)
+        odict_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, tag_nonfwy)
 
         out_dict.update(odict_nonfwy)
         # import pdb; pdb.set_trace()
