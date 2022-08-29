@@ -110,10 +110,12 @@ def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
                 f"PCT_FATAL_COLLISNS": pct_fatal_collns, f"BIKEPED_COLLISNS": bikeped_collns, 
                 f"BIKEPED_COLLISNS_PER_CLMILE": bikeped_colln_clmile, f"PCT_BIKEPED_COLLISNS": pct_bikeped_collns}
 
+    out_dict_roadtyp_tag = {f"{k}_{factyp_tag}":v for k, v in out_dict.items()}
+
     output_df = pd.DataFrame(pd.Series(out_dict, index=list(out_dict.keys()))).reset_index()
     output_df[params.col_fwytag] = factyp_tag
 
-    return output_df
+    return out_dict_roadtyp_tag
 
 def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     '''Inputs:
@@ -128,7 +130,6 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
 
     fc_model_links = params.model_links_fc()
 
-    sufx = int(perf()) + 1
     fl_project = 'proj_fl'
     fl_colln_pts = 'fl_colln_pts'
     
@@ -156,21 +157,21 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     else:
         ann_proj_vmt = project_adt * proj_len_mi * params.ann_factor
 
-    # get collision totals
+    # get collision totals, separate tables for each facility tpe
     searchdist = 0 if project_type == params.ptype_area_agg else params.colln_searchdist
     arcpy.SelectLayerByLocation_management(fl_colln_pts, 'WITHIN_A_DISTANCE', fl_project, searchdist)
     colln_cols =[params.col_fwytag, params.col_nkilled, params.col_bike_ind, params.col_ped_ind]
     
     df_collndata = ut.esri_object_to_df(fl_colln_pts, colln_cols)
-
     df_collndata_fwy = df_collndata.loc[df_collndata[params.col_fwytag] == params.ind_fwytag_fwy]
     df_collndata_nonfwy = df_collndata.loc[df_collndata[params.col_fwytag] != params.ind_fwytag_fwy]
 
     if project_type == params.ptype_area_agg:
-        df_fwy = final_agg(df_collndata_fwy, ann_vmt_fwy, proj_len_mi, "fwy")
-        df_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, "nonfwy")
+        out_dict = final_agg(df_collndata_fwy, ann_vmt_fwy, proj_len_mi, "fwy")
+        odict_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, "nonfwy")
 
-        import pdb; pdb.set_trace()
+        out_dict.update(odict_nonfwy)
+        # import pdb; pdb.set_trace()
         # out_dict = odict_fwy.update(odict_nonfwy)
     elif project_type == params.ptype_fwy:
         out_dict = final_agg(df_collndata_fwy, ann_proj_vmt, proj_len_mi, "")

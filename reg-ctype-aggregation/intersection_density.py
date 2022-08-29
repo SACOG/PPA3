@@ -79,7 +79,7 @@ def intersection_density(fc_project, fc_intersxns, project_type):
         arcpy.SelectLayerByLocation_management(fl_intersxns, "INTERSECT", fl_buff, 0, "NEW_SELECTION")
 
         intsxn_34 = 0
-        col_link_cnt = "LINKS"
+        col_link_cnt = params.col_intxn_lnks
 
         with arcpy.da.SearchCursor(fl_intersxns, [col_link_cnt]) as cur:
             for row in cur:

@@ -38,15 +38,18 @@ proj_line_template_fc = 'Project_Line_Template' # has symbology that the project
 all_projects_fc = "All_PPA_Projects2020" # feature class to which all run projects are added--NEED UPDATE FOR PPA3
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
-def parcel_pt_fc_yr(in_year=2016):
+base_year = 2016
+future_year = 2040
+
+def parcel_pt_fc_yr(in_year=base_year):
     return "parcel_data_pts_{}".format(in_year)
 
 
-def parcel_poly_fc_yr(in_year=2016):
+def parcel_poly_fc_yr(in_year=base_year):
     return "parcel_data_polys_{}".format(in_year)
 
 
-def model_links_fc(in_year=2016):
+def model_links_fc(in_year=base_year):
     return "model_links_{}".format(in_year)
 
 
@@ -274,7 +277,7 @@ years_of_collndata = 5
 
 # ============================TRANSIT SERVICE DENSITY PARAMETERS===========================
 trn_buff_dist = 1320 # feet, search distance for transit stops from project line
-col_transit_events = "COUNT_trip_id" #if transit feature class is point file dissolved by stop location, this
+col_transit_events = "tripcnt_day" #if transit feature class is point file dissolved by stop location, this
                                     #col is number of times per day that transit vehicle served each stop
 
 
@@ -293,6 +296,8 @@ cs_spd_pen_fac = 0.04 # speed penalty factor
 
 intersxn_dens_buff = 1320 # distance in feet
 bikeway_buff = 1320 # distance in feet
+
+col_intxn_lnks = 'LINKS'
 
 # ============================URBANIZATION PARAMETERS===========================
 

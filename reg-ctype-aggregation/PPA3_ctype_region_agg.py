@@ -20,6 +20,7 @@ import collisions_ExclLocalFromPolyAgg as coll
 import get_buff_netmiles as bufnet
 import intersection_density as intsxn
 from landuse_buff_calcs import LandUseBuffCalcs
+from parcel_data import get_buffer_parcels
 import mix_index_for_project as mixidx
 
 import transit_svc_measure as trn_svc
@@ -27,28 +28,29 @@ import transit_svc_measure as trn_svc
 
 def get_poly_avg(input_poly_fc):
     # as of 11/26/2019, each of these outputs are dictionaries
-    pcl_pt_data = params.parcel_pt_fc_yr()
+    pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
+                        project_type=params.ptype_area_agg, data_year=params.base_year, parcel_cols=None)
     
-    # accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
+    accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
     collision_data = coll.get_collision_data(input_poly_fc, params.ptype_area_agg, params.collisions_fc, 0)
-    mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg)
+    mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg, buffered_pcls=True)
     intsecn_dens = intsxn.intersection_density(input_poly_fc, params.intersections_base_fc, params.ptype_area_agg)
     bikeway_covg = bufnet.get_bikeway_mileage_share(input_poly_fc, params.ptype_area_agg)
     tran_stop_density = trn_svc.transit_svc_density(input_poly_fc, params.trn_svc_fc, params.ptype_area_agg)
 
     emp_ind_wtot = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg,
-                                    [params.col_empind, params.col_emptot], 0).point_sum()
+                                    [params.col_empind, params.col_emptot], 0, buffered_pcls=True).point_sum()
     emp_ind_pct = {'EMPIND_jobshare': emp_ind_wtot[params.col_empind] / emp_ind_wtot[params.col_emptot] \
                    if emp_ind_wtot[params.col_emptot] > 0 else 0}
 
     pop_x_ej = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, [params.col_pop_ilut],
-                                0, params.col_ej_ind).point_sum()
+                                0, params.col_ej_ind, buffered_pcls=True).point_sum()
     pop_tot = sum(pop_x_ej.values())
     key_yes_ej = max(list(pop_x_ej.keys()))
     pct_pop_ej = {'Pct_PopEJArea': pop_x_ej[key_yes_ej] / pop_tot if pop_tot > 0 else 0}
 
     job_pop_dens = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, \
-                                            [params.col_du, params.col_emptot], 0).point_sum_density()
+                                            [params.col_du, params.col_emptot], 0, buffered_pcls=True).point_sum_density()
         
     # total_dens = {"job_du_perNetAcre": sum(job_pop_dens.values())}
 
@@ -60,7 +62,6 @@ def get_poly_avg(input_poly_fc):
     return out_dict
 
 def poly_avg_futyears(input_poly_fc, data_year): #IDEALLY could make this part of get_poly_avg as single function with variable number of input args
-    pcl_pt_data = params.parcel_pt_fc_yr(data_year)
     mix_data = mixidx.get_mix_idx(params.parcel_pt_fc_yr(data_year), input_poly_fc, params.ptype_area_agg)    
     return mix_data
 
@@ -136,8 +137,8 @@ if __name__ == '__main__':
     time_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     arcpy.env.workspace = params.fgdb # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
     arcpy.OverwriteOutput = True
-    base_year = 2016
-    future_year = 2040
+    base_year = params.base_year
+    future_year = params.future_year
     
     # fc of community type polygons
     ctype_fc = params.comm_types_fc
