@@ -53,9 +53,13 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
     # get project community type
     project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
 
+    project_metric_tag = params.tags_ptypes[project_type]
 
     # get dict of collision data
     collision_data_project = collisions.get_collision_data(fc_project, project_type, params.collisions_fc, proj_aadt)
+
+    # update dict keys to reflect project location (freeway or non-freeway)
+    collision_data_project = {f"{k}{project_metric_tag}":v for k, v in collision_data_project.items()}
 
     # output example
     #     out_dict = {"TOT_COLLISNS": total_collns, "TOT_COLLISNS_PER_100MVMT": colln_rate_per_vmt,
@@ -65,7 +69,7 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
 
 
     # calculate total collisions
-    k_tot_collisions = "TOT_COLLISNS"
+    k_tot_collisions = f"TOT_COLLISNS{project_metric_tag}"
     tot_collns = collision_data_project[k_tot_collisions]
     loaded_json["Total collisions"] = tot_collns
 
@@ -76,7 +80,7 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
     loaded_json["Collision heat map Image Url"] = colln_img_path
     
     # calculate collisions per 100MVMT within all geos
-    kv_coll_rate = "TOT_COLLISNS_PER_100MVMT"
+    kv_coll_rate = f"TOT_COLLISNS_PER_100MVMT{project_metric_tag}"
     k_tblname_collrate = "Collisions per 100 million VMT"
     colln_rate_proj = collision_data_project[kv_coll_rate]
     update_tbl_multiple_geos(json_obj=loaded_json, proj_level_val=colln_rate_proj,
@@ -86,7 +90,7 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
 
     # chart of fatal collisions within all geos
 
-    k_fatal_collns = "PCT_FATAL_COLLISNS"
+    k_fatal_collns = f"PCT_FATAL_COLLISNS{project_metric_tag}"
     k_chartname_bpfatal = "Share of Collisions that are Fatal"
 
     val_proj = collision_data_project[k_fatal_collns]
@@ -106,8 +110,6 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
         f_val = vals_dict[f_type] # look up the value that corresponds to that geo type
         loaded_json[params.k_charts][k_chartname_bpfatal][params.k_features][i] \
             [params.k_attrs][params.k_value] = f_val # update the JSON file accordingly so each geo type gets correct val
-
-
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
