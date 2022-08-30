@@ -1,24 +1,24 @@
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_parcel'
-g_ESRI_variable_2 = 'fl_project'
-# Esri end of added variables
-
 #land use buffer calcs
 
 """
-Get following numbers within 0.5mi of project area:
+Get following numbers within buffer distance of project line:
     sum of jobs
     sum of dwelling units
     sum of trips (for each mode)
 
 """
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+
 from time import perf_counter as perf
 
 import arcpy
+arcpy.env.overwriteOutput = True
+
 import pandas as pd
 
-import base_scripts.ppa_input_params as params
+import parameters as params
 
 class LandUseBuffCalcs():
     '''
@@ -26,7 +26,8 @@ class LandUseBuffCalcs():
     for all parcels within a distance of a project line. Optionally,
     The user can run the point_sum_density() method to get the density (e.g. population density) within the buffer area
     '''
-    def __init__(self,fc_pclpt, fc_project, project_type, val_fields, buffdist, case_field=None, case_excs_list=[]):
+    def __init__(self,fc_pclpt, fc_project, project_type, val_fields, buffered_pcls=False, 
+                buffdist=0, case_field=None, case_excs_list=[]):
         
         # user inputs
         self.fc_pclpt = fc_pclpt
@@ -36,6 +37,7 @@ class LandUseBuffCalcs():
         self.buffdist = buffdist
         self.case_field = case_field
         self.case_excs_list = case_excs_list
+        self.buffered_pcls = buffered_pcls
         
 
     def point_sum(self):
@@ -43,16 +45,19 @@ class LandUseBuffCalcs():
         
         sufx = int(perf()) + 1
         fl_parcel = os.path.join('memory','fl_parcel{}'.format(sufx))
-        fl_project = g_ESRI_variable_2
-        
+
         if arcpy.Exists(fl_parcel): arcpy.Delete_management(fl_parcel)
         arcpy.MakeFeatureLayer_management(self.fc_pclpt, fl_parcel)
         
-        if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
-        arcpy.MakeFeatureLayer_management(self.fc_project, fl_project)    
-    
-        buff_dist = 0 if self.project_type == params.ptype_area_agg else self.buffdist
-        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
+        if not self.buffered_pcls:
+            # if a pre-made set of parcels within a buffer was not specified, then
+            # do the parcel selection process here--makes it much slower!
+            fl_project = 'fl_project'
+            if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
+            arcpy.MakeFeatureLayer_management(self.fc_project, fl_project)    
+
+            buff_dist = 0 if self.project_type == params.ptype_area_agg else self.buffdist
+            arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
     
         # If there are no points in the buffer (e.g., no collisions on segment, no parcels, etc.),
         # still add those columns, but make them = 0
@@ -127,11 +132,12 @@ if __name__ == '__main__':
     buffdist_ft = 2640
     value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
                     'BIK_TOT_RES', 'WLK_TOT_RES']
+    # value_fields = ['EMPIND']
 
     out_data = {}
     for data_year in data_years:
         in_pcl_pt_fc = params.parcel_pt_fc_yr(data_year)
-        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, ['EMPTOT', 'DU_TOT', 'GISAc'], buffdist_ft).point_sum()
+        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, value_fields, buffdist_ft).point_sum()
         out_data[data_year] = year_dict
 
     print(out_data)

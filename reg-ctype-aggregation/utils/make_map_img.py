@@ -82,7 +82,7 @@ class MakeMapImage(object):
         self.out_map_img = f"{self.map_name}.{self.imgtyp}"
      
             
-    def expandExtent2D(self, ext, ratio):
+    def expand_ext_2d(self, ext, ratio):
         '''Adjust zoom extent for map of project segment
         ext = input extent object
         ratio = how you want to change extent. Ratio > 1 zooms away from project line; <1 zooms in to project line
@@ -113,19 +113,11 @@ class MakeMapImage(object):
         try:
             # create temporary copy of APRX to not have conflicts if 2+ runs done at same time.
             aprx_temp_path = os.path.join(arcpy.env.scratchFolder, "TEMP{}.aprx".format(int(perf()) + 1)) 
-
-            if os.path.exists(aprx_temp_path): arcpy.Delete_management(aprx_temp_path)
-
             aprx_template_obj = arcpy.mp.ArcGISProject(self.aprx_path)
             aprx_template_obj.saveACopy(aprx_temp_path)
             
             #then manipulate the temporary copy of the APRX
             aprx = arcpy.mp.ArcGISProject(aprx_temp_path)
-            
-
-            #insert process to overwrite display layer and append to master. This will update in all layouts using the display layer
-            arcpy.DeleteFeatures_management(self.proj_line_template_fc) # delete whatever features were in the display layer
-            arcpy.Append_management([self.project_fc], self.proj_line_template_fc, "NO_TEST") # then replace those features with those from user-drawn line
 
             # activate layout and pan to the desired extent and make image of it.
             layouts_aprx = [l.name for l in aprx.listLayouts()] # makes sure there's a corresponding layout in the APRX file to the layout in the CSV
@@ -134,10 +126,39 @@ class MakeMapImage(object):
                     lyt = aprx.listLayouts(self.map_layout)[0]
                     map = aprx.listMaps(self.map_name)[0]
                     
-                    if self.proj_line_layer != "":  # if there's a feat class for project line
+                    if self.proj_line_layer != "":  # ensure there's a feat class for project line
                         
                         try:
+                            # Concept: the line template layer in the APRX has its data source updated with the feature class of
+                            # the project line, rather than truncating and inserting line feature into same source data set.
+                            # Goal is to reduce likelihood of project lines getting mapped to wrong runs.
+
                             lyr = map.listLayers(self.proj_line_layer)[0] # return layer object--based on layer name, not FC path
+
+
+                            # This step is twofold: ensures project line project is correct, but
+                            # also converts it from feature set to feature class that can be
+                            # plugged into APRX
+                            sref_lyr = arcpy.Describe(lyr).spatialReference
+                            project_fc_sref = arcpy.Describe(self.project_fc).spatialReference
+
+                            project_fc2 = os.path.join(arcpy.env.scratchGDB, f"pl_prj{int(perf()) + 1}")
+                            arcpy.management.Project(self.project_fc, project_fc2, sref_lyr)
+                            self.project_fc = project_fc2
+
+                            # get the connection properties of the project line feature class
+                            project_fc_info = arcpy.Describe(self.project_fc)
+                            project_fc_connprop = {'dataset': project_fc_info.baseName, 
+                                                'workspace_factory': 'File Geodatabase', 
+                                                'connection_info': {'database': project_fc_info.path}}
+
+                            # update the connection properties of the APRX line layer to connect to the input project line FC
+                            arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
+                            arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
+                            lyr.updateConnectionProperties(lyr.connectionProperties, project_fc_connprop) # https://community.esri.com/t5/python-questions/arcpy-layer-updateconnectionproperties-not-working/td-p/519982
+                            
+                            arcpy.AddMessage(f"updated connection DB for line layer: {lyr.connectionProperties}")
+
                             fl = "fl{}".format(int(perf()))
                             if arcpy.Exists(fl):
                                 try:
@@ -146,16 +167,25 @@ class MakeMapImage(object):
                                     pass 
                             arcpy.MakeFeatureLayer_management(lyr, fl, where_clause=self.map_sql)  # make feature layer of project line
                             ext = ""
-                            with arcpy.da.SearchCursor(fl, ["Shape@"]) as rows:
-                                for row in rows:
-                                    geom = row[0]
-                                    ext = geom.extent
+                            
+                            # method for getting extent for the first element in the project line layer
+                            # this method doesn't work if there are multiple features in the line layer
+                            # with arcpy.da.SearchCursor(fl, ["Shape@"]) as rows:
+                            #     for row in rows:
+                            #         geom = row[0]
+                            #         ext = geom.extent
                                     
-                                    ext_ratio = 1.33
-                                    ext_zoom = self.expandExtent2D(ext, ext_ratio)
-                                    break
+                            #         ext_ratio = 1.33
+                            #         ext_zoom = self.expand_ext_2d(ext, ext_ratio)
+                            #         break
+
+                            # method for getting extent of the entire line layer, instead of just the first feature in the line layer.
+                            mf = lyt.listElements('MAPFRAME_ELEMENT')[0] # get the mapframe from the layout (i.e., the object showing the map)
+                            ext = mf.getLayerExtent(lyr) # tight map extent of the project line layer
+                            ext_ratio = 1.33
+                            ext_zoom = self.expand_ext_2d(ext, ext_ratio) # zooms out from project line a bit to show more context around the project
+
                             if ext_zoom != "":  # zoom to project line feature
-                                mf = lyt.listElements('MAPFRAME_ELEMENT')[0]
                                 mf.camera.setExtent(ext_zoom)
                                 mf.panToExtent(ext_zoom)
 
@@ -189,20 +219,20 @@ class MakeMapImage(object):
             else:
                 arcpy.AddMessage(f"No map layout found. Map for {self.map_name} will not be created.") # if specified layout isn't in APRX project file, let the user know
         except:
-            arcpy.AddMessage("FAILED AND WENT TO EXCEPTION MODE IN PHASE 1")
+            arcpy.AddMessage("FAILED AND WENT TO EXCEPTION MODE IN PHASE 1. " \
+                "ArcPy version may be incompatible with Arc Pro version used to build APRX file. Please check.")
             msg = "{}, {}".format(arcpy.GetMessages(2), trace())
             print(msg)
             arcpy.AddWarning(msg)
             t_returns = (msg,)
 
 if __name__ == '__main__':
-    fc_project = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\SutterPortBl'
-    mapname = 'BikeRoutes'
+    print("Script contains functions only. Do not run this as standalone script.")
 
-    map_obj = MakeMapImage(project_fc=fc_project, map_name=mapname, proj_name='UnnamedProject', imgtyp='PNG')
-    out_path = map_obj.exportMap()
-    print(out_path)
+    result = set_img_path('https://services.sacog.org/hosting/rest/directories/arcgisjobs', 
+                'C:\\arcgisserver\\directories\\arcgisjobs\\rpartexpfreight_gpserver\\jf2567b51a75144c7914b9ac5ddb2dd47\\scratch')
 
+    print(result)
 
 
 

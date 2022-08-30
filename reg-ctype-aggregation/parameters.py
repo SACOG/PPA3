@@ -1,64 +1,63 @@
-# Esri start of added imports
-import sys, os, arcpy
-# Esri end of added imports
-
-# Esri start of added variables
-g_ESRI_variable_1 = '\\\\arcserver-svr\\D\\PPA_v2_SVR'
-# Esri end of added variables
-
 """
-Name: ppa_input_params.py
-Purpose: Stores all input parameter values for SACOG Project Performance Assessment Tool v2.0
+Name: parameters.py
+Purpose: Stores all input parameter values for SACOG Project Performance Assessment Tool v3,
+    for the REGIONAL PROGRAM templates and reports
         
           
 Author: Darren Conly
-Last Updated: 3/2020
+Last Updated: Aug 2022
 Updated by: <name>
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
+import os
 
 # ========================================INPUT DATA LAYERS===================================================== 
-server_folder = g_ESRI_variable_1
+server_folder = r'\\arcserver-svr\D\PPA3_SVR'
+program_folder_name = 'RegionalProgram' # 'CommunityDesign'
 
-fgdb = os.path.join(server_folder, r"PPA2_GIS_SVR\owner_PPA.sde")  # os.path.join(server_folder, gdb_name)
+program_folder = os.path.join(server_folder, program_folder_name)
+fgdb = os.path.join(r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
 projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet)
 
-# input feature classes
+# -------input feature classes, all in fgdb
 region_fc = 'sacog_region'
 fc_speed_data = 'npmrds_metrics_v8' #npmrds speed data
 accdata_fc = 'Sugar_access_data_latest' # sugar accessibility polygon data
-collisions_fc = 'Collisions2014to2018fwytag' # collision point data
-trn_svc_fc = 'transit_stoplocn_w_eventcount_2016' # transit stop event data; point file
+collisions_fc = 'collisions_tims_2015_2019_fwytag' # collision point data
+trn_svc_fc = 'transit_stopcount_2019' # transit stop event data; point file
 freight_route_fc = 'STAATruckRoutes' # STAA truck route lines
-intersections_base_fc = 'intersections_2016'
+intersections_base_fc = 'intersections_2021'
 comm_types_fc = 'comm_type_jurspec_dissolve'
 
-reg_centerline_fc = 'RegionalCenterline_2019'
-reg_artcollcline_fc = 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
+reg_centerline_fc = 'RegionalCenterline_Oct2021'
+reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
 
-reg_bikeway_fc = 'BikeRte_C1_C2_C4_2019' # 'BikeRte_C1_C2_C4_2017'
+reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
 
 proj_line_template_fc = 'Project_Line_Template' # has symbology that the project line will use.
-all_projects_fc = "All_PPA_Projects2020"
+all_projects_fc = "All_PPA_Projects2020" # feature class to which all run projects are added--NEED UPDATE FOR PPA3
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
-def parcel_pt_fc_yr(in_year=2016):
+base_year = 2016
+future_year = 2040
+
+def parcel_pt_fc_yr(in_year=base_year):
     return "parcel_data_pts_{}".format(in_year)
 
 
-def parcel_poly_fc_yr(in_year=2016):
+def parcel_poly_fc_yr(in_year=base_year):
     return "parcel_data_polys_{}".format(in_year)
 
 
-def model_links_fc(in_year=2016):
+def model_links_fc(in_year=base_year):
     return "model_links_{}".format(in_year)
 
 
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
-# aggvals_csv = os.path.join(server_folder, r"PPA2\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv")
-aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
+aggval_csv = os.path.join(program_folder, r"CSV\Agg_ppa_vals20220829_1258.csv")
+# aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
 ptype_fwy = 'Freeway'
@@ -67,67 +66,41 @@ ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
 ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
 
-
-# ===================================OUTPUT TEMPLATE DATA=========================================================
-# template_csv = r"Q:\ProjectLevelPerformanceAssessment\PPAv2\PPA2_0_code\PPA2\ExcelTemplate\output_rows_template.csv"
-
-include_pdf_output = False
-
-template_dir = os.path.join(server_folder, r'PPA2\Input_Template\XLSX')
-
-template_xlsx_arterial = "PPA_Template_ArterialExp.xlsx"
-template_xlsx_sgr = "PPA_Template_SGR_CS.xlsx"  # "PPA_Template_SGR_CS_MACRO2.xlsm" # 
-template_xlsx_fwy = "PPA_Template_Freeway.xlsx"
-template_xlsx_commdesgn = "PPA_Template_CommDesign.xlsx" 
-
-# dict corresponding project type to correct XLSX template
-type_template_dict = {ptype_arterial: template_xlsx_arterial,
-                      ptype_sgr: template_xlsx_sgr,
-                      ptype_fwy: template_xlsx_fwy,
-                      ptype_commdesign: template_xlsx_commdesgn}
-
-# dict to correspond user-friendly names of outcomes to each outcome's tab name
-# dict contains performance outcomes for all project types except community design,
-# whose report always has all performance outcomes.
-perf_outcomes_dict = {'Reduce VMT': '1ReduceVMT', 
-                      'Reduce Congestion': '2ReduceCongestion',
-                      'Encourage Multimodal Travel': '3Multimodal',
-                      'Promote Economic Prosperity': '4EconProsperity',
-                      'Improve Freight Mobility': '5Freight',
-                      'Make a Safer Transportation System': '6Safety',
-                      'Promote Complete Streets and State of Good Repair': '7SGR'
-                      }
-
-# sheet names for performance outcomes in community design project type
-perf_outcomes_commdesign = ['1TranspoChoice', '2CompactDev', '3MixedUseDev', 
-                            '4HousingChoice', '5UseExistingAssets', '6NaturalRsrcePreservn']
-
-
-xlsx_import_sheet = 'import'
-xlsx_disclaimer_sheet = '0BUsingThisReport'
-xlsx_titlepg_sheet = '0ATitlePg'
-xlsx_socequity_sheet = '8SocioEconEquity'
-tstamp_cell = 'A44' # cell where report generation time stamp will be written
-
-# regardless of which perf outcomes user selects, these tabs will be printed to
-# every PDF report for the selected project type.
-sheets_all_reports = {ptype_arterial: [xlsx_titlepg_sheet, xlsx_disclaimer_sheet, xlsx_socequity_sheet],
-                      ptype_sgr: [xlsx_titlepg_sheet, xlsx_disclaimer_sheet, xlsx_socequity_sheet],
-                      ptype_commdesign: [xlsx_titlepg_sheet, xlsx_disclaimer_sheet],
-                      ptype_fwy: [xlsx_titlepg_sheet, xlsx_disclaimer_sheet]}
+# ===================================OUTPUT APRX TEMPLATE DATA=========================================================
 
 # params related to inserting maps into report
-aprx_path = os.path.join(server_folder, r"PPA2_GIS_SVR\PPA2_GIS_SVR_v2.aprx")
-mapimg_configs_csv = os.path.join(server_folder, r"PPA2\Input_Template\CSV\map_img_config.csv") # configs for making maps imgs
-map_placement_csv = os.path.join(server_folder, r"PPA2\Input_Template\CSV\map_report_key.csv") # configs for inserting maps into Excel reports
+aprx_path = os.path.join(server_folder, r"PPA3_GIS_SVR\PPA3_GIS_SVR.aprx") # 8/30/2022: USE THIS PATH ONCE ARCSERVER UPDATE COMPLETE ON ARCSERVERGIS-SVR MACHINE
+mapimg_configs_csv = os.path.join(program_folder, r"CSV\map_img_config.csv") # configs for making maps imgs
+map_placement_csv = os.path.join(program_folder, r"CSV\map_report_key.csv") # configs for inserting maps into Excel reports
 map_img_format = "png" #jpg, png, svg, etc.
 
-msg_ok = "C_OK" # message that returns if utils script executes correctly.
-msg_fail = "Run_Failed"
+# root url, used for map images
+# FYI, it's represented as a list item instead of a string because Arc Pro gives an error 00068 if it's represented as a string.
+svc_root_url = ['https://services.sacog.org/hosting/rest/directories/arcgisjobs'] 
+
+# ===================================OUTPUT JSON TEMPLATE DATA=========================================================
+json_templates_dir = os.path.join(program_folder, "JSON")
+
+# names in json template
+geo_project = "Project"
+geo_proj_qmi = "Within 0.25mi"
+geo_ctype = "Community Type"
+geo_region = "Region"
+
+# re-used json keys, so assign to variable
+k_charts = "charts"
+k_name = "name"
+k_value = "value"
+k_features = "features" # remember, this is a list of dicts
+k_attrs = "attributes"
+k_year = "year"
+k_type = "type"
+
 
 # ===================================CONVERSION FACTORS=========================================================
 ft2acre = 43560 # convert square feet to acres
 ft2mile = 5280
+ann_factor = 320 # multiplier to get approximate annual value based on "typical weekday"
 # ===================================ACCESSIBILITY PARAMETERS=========================================================
 
 # Accessibility columns
@@ -174,8 +147,6 @@ col_reliab_pmpk = "lottr_pmpk"
 col_reliab_wknd = "lottr_wknd"
 col_tmcdir = "direction_signd"
 col_roadtype = "f_system"  # indicates if road is freeway or not, so that data from freeways doesn't affect data on surface streets, and vice-versa
-
-
 
 calc_distwt_avg = "distance_weighted_avg"
 calc_inv_avg = "inv_avg_spd"
@@ -290,19 +261,24 @@ fac_hov3 = 1/0.3 # inverse of 0.3, which is factor for converting HOV3+ person t
 
 
 # ============================COLLISION DATA PARAMETERS===========================
-col_fwytag = "fwy_yn"
+col_fwytag = "FwyTag"
+ind_fwytag_fwy = 1
+ind_fwytag_art = 2
+
 col_nkilled = "NUMBER_KILLED"
 col_bike_ind = 'BICYCLE_ACCIDENT'
 col_ped_ind = 'PEDESTRIAN_ACCIDENT'
 
 ind_val_true = 'Y'
 
+tags_ptypes = {ptype_fwy:'_fwy', ptype_arterial:'_nonfwy', ptype_sgr:'_nonfwy'}
+
 colln_searchdist = 75 # in feet, might have projection-related issues in online tool-how was this resolved in PPA1?
 years_of_collndata = 5
 
 # ============================TRANSIT SERVICE DENSITY PARAMETERS===========================
 trn_buff_dist = 1320 # feet, search distance for transit stops from project line
-col_transit_events = "COUNT_trip_id" #if transit feature class is point file dissolved by stop location, this
+col_transit_events = "tripcnt_day" #if transit feature class is point file dissolved by stop location, this
                                     #col is number of times per day that transit vehicle served each stop
 
 
@@ -311,6 +287,7 @@ col_transit_events = "COUNT_trip_id" #if transit feature class is point file dis
 
 # CSI = (students/acre + daily transit vehicle stops/acre + BY jobs/acre + BY du/acre)
 #                  * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
+# FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
 cs_buffdist = 2640 # feet
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
@@ -320,6 +297,8 @@ cs_spd_pen_fac = 0.04 # speed penalty factor
 
 intersxn_dens_buff = 1320 # distance in feet
 bikeway_buff = 1320 # distance in feet
+
+col_intxn_lnks = 'LINKS'
 
 # ============================URBANIZATION PARAMETERS===========================
 

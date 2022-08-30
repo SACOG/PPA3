@@ -1,8 +1,3 @@
-# Esri start of added variables
-g_ESRI_variable_1 = 'fl_accdata'
-g_ESRI_variable_2 = 'fl_project'
-# Esri end of added variables
-
 # --------------------------------
 # Name: accessibility_calcs.py
 # Purpose: PPA accessibility metrics using Sugar-access polygons (default is census block groups)
@@ -15,11 +10,15 @@ g_ESRI_variable_2 = 'fl_project'
 # Python Version: 3.x
 # --------------------------------
 import os
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+
 from time import perf_counter as perf
 import arcpy
 
-import base_scripts.ppa_input_params as params
-import base_scripts.ppa_utils as utils
+import parameters as params
+import utils.utils as ut
 
 
 def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
@@ -31,7 +30,7 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
     
     sufx = int(perf()) + 1
     fl_accdata = os.path.join('memory','fl_accdata{}'.format(sufx))
-    fl_project = g_ESRI_variable_2
+    fl_project = 'fl_project'
 
     if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)
@@ -45,7 +44,7 @@ def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
 
     # read accessibility data from selected polygons into a dataframe
     accdata_fields = [params.col_geoid, params.col_acc_ej_ind, params.col_pop] + params.acc_cols_ej
-    accdata_df = utils.esri_object_to_df(fl_accdata, accdata_fields)
+    accdata_df = ut.esri_object_to_df(fl_accdata, accdata_fields)
 
     # get pop-weighted accessibility values for all accessibility columns
 
