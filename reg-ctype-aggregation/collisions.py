@@ -148,11 +148,8 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     # approximate annual project VMT, assuming ADT is reflective of weekdays only, but assumes
     if project_type == params.ptype_area_agg:
         vmt_dict = get_model_link_sums(fc_project, fc_model_links)
-        
-        # dayvmt = vmt_dict[params.col_dayvmt]
         ann_vmt_fwy = vmt_dict[1][params.col_dayvmt] * params.ann_factor
         ann_vmt_nonfwy = vmt_dict[0][params.col_dayvmt] * params.ann_factor
-        # ann_proj_vmt = dayvmt * 320
         proj_len_mi = get_centerline_miles(fc_project, params.reg_artcollcline_fc) # only gets for collector streets and above
     else:
         ann_proj_vmt = project_adt * proj_len_mi * params.ann_factor

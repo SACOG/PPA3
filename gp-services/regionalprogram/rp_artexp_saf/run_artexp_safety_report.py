@@ -31,8 +31,6 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
     """Updates project-level, community-type, and region-level values for simple tables in JSON file."
     """
 
-
-
     ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[metric_outdictkey], 
                                                 proj_ctype=proj_commtype, yearkey=params.k_year, 
                                                 geo_regn=params.geo_region, yearval=None)
@@ -57,7 +55,6 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
 
     # project type tag to append to metric field name
     project_metric_tag = params.tags_ptypes[project_type]
-
 
     # get dict of collision data
     collision_data_project = collisions.get_collision_data(fc_project, project_type, params.collisions_fc, proj_aadt)
@@ -128,11 +125,6 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
             [params.geo_region] = val_regn
 
         
-
-
-
-
-
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"SafetyRpt{project_name}{output_sufx}.json"
@@ -151,14 +143,14 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  
-    project_name = arcpy.GetParameterAsText(1)  
-    project_aadt = int(arcpy.GetParameterAsText(2))
+    # project_fc = arcpy.GetParameterAsText(0)  
+    # project_name = arcpy.GetParameterAsText(1)  
+    # project_aadt = int(arcpy.GetParameterAsText(2))
 
     # hard values for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
-    # project_name = 'TestI5'
-    # project_aadt = 180000
+    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
+    project_name = 'TestI5'
+    project_aadt = 180000
 
     ptype = params.ptype_arterial
     

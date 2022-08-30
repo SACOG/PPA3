@@ -138,7 +138,7 @@ def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, test_r
 
 if __name__ == '__main__':
     time_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
-    arcpy.env.workspace = params.fgdb # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
+    arcpy.env.workspace = params.fgdb 
     arcpy.OverwriteOutput = True
     base_year = params.base_year
     future_year = params.future_year
