@@ -143,14 +143,14 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    # project_fc = arcpy.GetParameterAsText(0)  
-    # project_name = arcpy.GetParameterAsText(1)  
-    # project_aadt = int(arcpy.GetParameterAsText(2))
+    project_fc = arcpy.GetParameterAsText(0)  
+    project_name = arcpy.GetParameterAsText(1)  
+    project_aadt = int(arcpy.GetParameterAsText(2))
 
     # hard values for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
-    project_name = 'TestI5'
-    project_aadt = 180000
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
+    # project_name = 'TestI5'
+    # project_aadt = 180000
 
     ptype = params.ptype_arterial
     

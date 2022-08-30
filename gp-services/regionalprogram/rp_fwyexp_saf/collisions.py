@@ -3,7 +3,7 @@ import sys, os, arcpy
 # Esri end of added imports
 
 # --------------------------------
-# Name:collisions_ExclLocalFromPolyAgg.py
+# Name:collisions.py
 # Purpose: calculate collision data for PPA tool based on geocoded TIMS data (tims.berkeley.edu)
 # notably, this version, when computing total collisions and centerline miles within polygon,
 # will exclude centerline miles and collisions from local streets. This is because there are many
