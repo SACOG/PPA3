@@ -219,7 +219,8 @@ class MakeMapImage(object):
             else:
                 arcpy.AddMessage(f"No map layout found. Map for {self.map_name} will not be created.") # if specified layout isn't in APRX project file, let the user know
         except:
-            arcpy.AddMessage("FAILED AND WENT TO EXCEPTION MODE IN PHASE 1")
+            arcpy.AddMessage("FAILED AND WENT TO EXCEPTION MODE IN PHASE 1. " \
+                "ArcPy version may be incompatible with Arc Pro version used to build APRX file. Please check.")
             msg = "{}, {}".format(arcpy.GetMessages(2), trace())
             print(msg)
             arcpy.AddWarning(msg)
