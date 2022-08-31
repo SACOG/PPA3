@@ -12,6 +12,7 @@ Python Version: 3.x
     
 
 import os
+from uuid import uuid4
 import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
@@ -82,12 +83,13 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     proj_shape = get_geom(project_fc)
 
     # write to applicable log table
-    data_to_log = {"SHAPE@": proj_shape, "comm_type": project_commtype, 
-                "len_mi": tot_len_mi}
-    project_uid = utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
+    project_uid = str(uuid4())
+    data_to_log = {params.logtbl_join_key:project_uid, "SHAPE@":proj_shape, 
+                    "comm_type":project_commtype, "len_mi": tot_len_mi}
+    utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
     
     # use the new OBJECTID generated as the lookup key between master and subreport tables.
-    with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid)
+    with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid, f)
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -118,6 +120,13 @@ if __name__ == '__main__':
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
     result_path = make_title_guidepg_regpgm(project_name=proj_name, project_fc=proj_line)

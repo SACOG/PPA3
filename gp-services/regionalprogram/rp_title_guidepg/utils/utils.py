@@ -85,11 +85,9 @@ def log_row_to_table(data_row_dict, dest_table):
     data_values = list(data_row_dict.values())
 
     with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-        row_id = cur.insertRow(data_values)
+        cur.insertRow(data_values)
 
     arcpy.AddMessage(f"Logged subreport values to {dest_table}")
-
-    return row_id
 
 
 if __name__ == '__main__':
