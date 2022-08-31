@@ -73,9 +73,9 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     loaded_json["Project Community Type"] = project_commtype
 
     # insert project map
-    # img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
-    # map_img_path = img_obj.exportMap()
-    # loaded_json["Image Url"] = map_img_path
+    img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
+    map_img_path = img_obj.exportMap()
+    loaded_json["Image Url"] = map_img_path
 
 
     # get shape of project 
