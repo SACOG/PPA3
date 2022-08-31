@@ -102,19 +102,45 @@ def make_title_guidepg_regpgm(project_name, project_fc):
 
     return out_file
 
+    """
+    log_row_to_table(input_json, dest_table)
+    """
+
 
 if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
+    """
+        # 8/31/2022: saving general info passed from workflow to master project lager
+        # input for all gp tasks will be the same/follow the same format, e.g.:
+        {
+    "Project_Line":$projectLineJsonString.json,
+    "Project_Name": $reportConfig.result.projectName,
+    "Jurisdiction":$reportConfig.result.jurisdiction,
+    "Project_ADT":$reportConfig.result.ADT,
+    "AADT": $reportConfig.result.ADT,
+    "Posted_Speed_Limit":$reportConfig.result.postedSpeedLimit,
+    "PCI":$reportConfig.result.PCI,
+    "f":"json"
+    }
+
+    Once project logged to master layer, cache project ID as pkl --tHINK about how to do this so it's grabbable by multiple GP tasks
+        What about concurrency?
+        YY suggestion - can prefix UID file (or folder containing UID pkl) with project name to avoid overwriting/duplication
+        To delete folders, can schedule windows task on server machine to clear out the folder with cached stuff
+
+
+    """
+
 
     # specify project line feature class and attributes
-    # proj_line = arcpy.GetParameterAsText(0)
+    proj_line = arcpy.GetParameterAsText(0)
     # proj_name = arcpy.GetParameterAsText(1)
 
     # hard values for testing
-    proj_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84_multiFeature'
-    proj_name = "TestSGR"
+    # proj_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84_multiFeature'
+    # proj_name = "TestSGR"
 
     ptype = params.ptype_arterial
     

@@ -11,7 +11,6 @@ Copyright:   (c) SACOG
 Python Version: 3.x
 """
 import os
-from arcpy import env
 
 # ========================================INPUT DATA LAYERS===================================================== 
 server_folder = r'\\arcserver-svr\D\PPA3_SVR'
@@ -37,16 +36,7 @@ reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # 
 reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
 
 proj_line_template_fc = 'Project_Line_Template' # has symbology that the project line will use.
-
-
-# tables that results will be logged to--critical for making roll-ups and analyzing past project results
-log_fgdb = r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs_TESTING.gdb"
-cache_folder = os.path.join(server_folder, "cache")
-col_logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
-log_master = 'project_master'
-log_artexp_sgr = 'rp_artexp_sgr'
-log_rp_artexp_vmt = 'rp_artexp_vmt'
-
+all_projects_fc = "All_PPA_Projects2020" # feature class to which all run projects are added--NEED UPDATE FOR PPA3
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
 base_year = 2016

@@ -12,6 +12,7 @@ Python Version: 3.x
     
 
 import os
+import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 # sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
@@ -43,6 +44,8 @@ def make_sgr_report_artexp(project_pci, project_name, proj_aadt):
     with open(out_file, 'w') as f_out:
         json.dump(loaded_json, f_out, indent=4)
 
+    # log to master table
+
     return out_file
 
 
@@ -52,14 +55,14 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    proj_name = arcpy.GetParameterAsText(0)
-    proj_pci = int(arcpy.GetParameterAsText(1))
-    proj_aadt = int(arcpy.GetParameterAsText(2))  
+    # proj_name = arcpy.GetParameterAsText(0)
+    # proj_pci = int(arcpy.GetParameterAsText(1))
+    # proj_aadt = int(arcpy.GetParameterAsText(2))  
 
     # hard values for testing
-    # proj_pci = 67
-    # proj_name = "TestSGR"
-    # proj_aadt = 13500
+    proj_pci = 67
+    proj_name = "TestSGR"
+    proj_aadt = 13500
 
     ptype = params.ptype_arterial
     

@@ -76,33 +76,6 @@ def rename_dict_keys(dict_in, new_key_dict):
             dict_out[v] = 0
     return dict_out
 
-def check_if_uid_exists(table, field_to_check, input_value):
-    # Ensures that UID in all tables is unique value
-    
-    sql = f"{params.col_logtbl_join_key} = '{input_value}'"
-
-    with arcpy.da.SearchCursor(table, [field_to_check], sql) as cur:
-        try:
-            cur.next()
-            pass
-        except:
-            raise Exception("ERROR: Project UID value '{input_value}' already exists in {table}.")
-
-def log_row_to_table(data_row_dict, dest_table):
-    """Writes row of values to table. Fields are data_row_dict keys, and the values
-    written are the values from data_row_dict's values."""
-
-    data_fields = list(data_row_dict.keys())
-    data_values = list(data_row_dict.values())
-
-    project_uid_val = data_row_dict[params.col_logtbl_join_key]
-    check_if_uid_exists(dest_table, params.col_logtbl_join_key, project_uid_val)
-
-    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-        cur.insertRow(data_values)
-
-    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
-
 
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")
