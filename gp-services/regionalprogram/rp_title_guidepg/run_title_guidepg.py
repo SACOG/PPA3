@@ -83,14 +83,14 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     proj_shape = get_geom(project_fc)
 
     # write to applicable log table
+    # use the new OBJECTID generated as the lookup key between master and subreport tables.
     project_uid = str(uuid4())
+    with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid, f)
+
     data_to_log = {params.logtbl_join_key:project_uid, "SHAPE@":proj_shape, 
                     "comm_type":project_commtype, "len_mi": tot_len_mi}
     utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
-    
-    # use the new OBJECTID generated as the lookup key between master and subreport tables.
-    with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid, f)
-
+ 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"RPCoverPg{project_name}{output_sufx}.json"

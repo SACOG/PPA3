@@ -13,7 +13,8 @@ INSTRUCTIONS:
 SELECT    
 	m.project_join_id, 
 	[ProjName], 
-	Jurisdiction, 
+	Jurisdiction,
+	CommType,
 	[ProjType], 
 	[PerfOutcomes], 
 	[ADT], 

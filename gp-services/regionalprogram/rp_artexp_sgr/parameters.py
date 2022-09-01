@@ -18,7 +18,8 @@ server_folder = r'\\arcserver-svr\D\PPA3_SVR'
 program_folder_name = 'RegionalProgram' # 'CommunityDesign'
 
 program_folder = os.path.join(server_folder, program_folder_name)
-fgdb = os.path.join(r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
+gis_folder = os.path.join(server_folder, 'PPA3_GIS_SVR')
+fgdb = os.path.join(gis_folder, "owner_PPA.sde")
 projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet)
 
 # -------input feature classes, all in fgdb
@@ -37,15 +38,6 @@ reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # 
 reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
 
 proj_line_template_fc = 'Project_Line_Template' # has symbology that the project line will use.
-
-
-# tables that results will be logged to--critical for making roll-ups and analyzing past project results
-log_fgdb = r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs_TESTING.gdb"
-cache_folder = os.path.join(server_folder, "cache")
-col_logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
-log_master = 'project_master'
-log_artexp_sgr = 'rp_artexp_sgr'
-log_rp_artexp_vmt = 'rp_artexp_vmt'
 
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
@@ -67,7 +59,6 @@ def model_links_fc(in_year=base_year):
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
 aggval_csv = os.path.join(program_folder, r"CSV\Agg_ppa_vals20220829_1258.csv")
-# aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
 ptype_fwy = 'Freeway'
@@ -79,14 +70,25 @@ ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
 # ===================================OUTPUT APRX TEMPLATE DATA=========================================================
 
 # params related to inserting maps into report
-aprx_path = os.path.join(server_folder, r"PPA3_GIS_SVR\PPA3_GIS_SVR.aprx") # 8/30/2022: USE THIS PATH ONCE ARCSERVER UPDATE COMPLETE ON ARCSERVERGIS-SVR MACHINE
+aprx_path = os.path.join(gis_folder, "PPA3_GIS_SVR.aprx") # 8/30/2022: USE THIS PATH ONCE ARCSERVER UPDATE COMPLETE ON ARCSERVERGIS-SVR MACHINE
 mapimg_configs_csv = os.path.join(program_folder, r"CSV\map_img_config.csv") # configs for making maps imgs
-map_placement_csv = os.path.join(program_folder, r"CSV\map_report_key.csv") # configs for inserting maps into Excel reports
 map_img_format = "png" #jpg, png, svg, etc.
 
 # root url, used for map images
 # FYI, it's represented as a list item instead of a string because Arc Pro gives an error 00068 if it's represented as a string.
 svc_root_url = ['https://services.sacog.org/hosting/rest/directories/arcgisjobs'] 
+
+# ===================================PARAMETERS FOR LOGGING RUN OUTPUTS TO DATABASE TABLES====================================
+# tables that results will be logged to--critical for making roll-ups and analyzing past project results
+log_fgdb = os.path.join(gis_folder, "PPA3_archived_runs_TESTING.gdb") # will need to be updated to be SDE GDB (fgdb from above)
+# log_fgdb = r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs_TESTING.gdb"
+
+col_logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
+log_master = 'project_master'
+log_artexp_sgr = 'rp_artexp_sgr'
+log_rp_artexp_vmt = 'rp_artexp_vmt'
+
+cache_folder = os.path.join(server_folder, "cache") # for storing temporary files to be deleted automatically, e.g. pickle files of project IDs
 
 # ===================================OUTPUT JSON TEMPLATE DATA=========================================================
 json_templates_dir = os.path.join(program_folder, "JSON")
