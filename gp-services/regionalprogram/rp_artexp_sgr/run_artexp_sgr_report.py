@@ -45,6 +45,7 @@ def make_sgr_report_artexp(project_pci, project_name, proj_aadt):
         json.dump(loaded_json, f_out, indent=4)
 
     # log to master table
+    project_uid = pickle.load(open())
 
     return out_file
 

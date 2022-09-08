@@ -78,7 +78,7 @@ class MakeMapImage(object):
         self.map_layout = row['MapLayout'][0]
         self.map_sql = row['SQL'][0]
         self.proj_line_layer = row['ProjLineLayer'][0]
-        self.map_data_layer = row['DataLayer'][0]
+        # self.map_data_layer = row['DataLayer'][0]
         self.out_map_img = f"{self.map_name}.{self.imgtyp}"
      
             

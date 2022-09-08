@@ -75,7 +75,7 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
 
     
     # make collision heat map
-    img_obj_colln = imgmaker.MakeMapImage(fc_project, "CollisionHeat", project_name)
+    img_obj_colln = imgmaker.MakeMapImage(fc_project, "CollisionHeat_Fwy", project_name)
     colln_img_path = img_obj_colln.exportMap()
     loaded_json["Collision heat map Image Url"] = colln_img_path
     
