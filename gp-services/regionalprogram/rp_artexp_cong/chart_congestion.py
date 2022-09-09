@@ -25,7 +25,7 @@ class CongestionReport(object):
         self.raw_data = in_data # python dictionary, output of separate script that gets speed data/reliability data
         self.json_template = json_template # JSON python object, not a JSON file path
 
-        self.data_dir_names = ['NORTHBOUND', 'SOUTHBOUND', 'EASTBOUND', 'WESTBOUND']
+        self.data_dir_names = params.directions_tmc
         self.chart_dir_names = ['NB', 'SB', 'EB', 'WB']
         self.dirname_dict = dict(zip(self.data_dir_names, self.chart_dir_names))
         self.directions_used = self.get_unique_directions()
