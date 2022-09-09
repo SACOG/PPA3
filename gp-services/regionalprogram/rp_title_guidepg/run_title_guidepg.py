@@ -89,6 +89,7 @@ def make_title_guidepg_regpgm(project_name, project_fc):
 
     data_to_log = {params.logtbl_join_key:project_uid, "SHAPE@":proj_shape, 
                     "comm_type":project_commtype, "len_mi": tot_len_mi}
+
     utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
  
     # write out to new JSON file
@@ -136,7 +137,7 @@ if __name__ == '__main__':
 
     # specify project line feature class and attributes
     proj_line = arcpy.GetParameterAsText(0)
-    # proj_name = arcpy.GetParameterAsText(1)
+    proj_name = arcpy.GetParameterAsText(1)
 
     # hard values for testing
     # proj_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84_multiFeature'
