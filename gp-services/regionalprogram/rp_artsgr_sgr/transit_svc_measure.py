@@ -46,7 +46,7 @@ def get_poly_area(poly_fl):
 def transit_svc_density(fc_project, fc_trnstops, project_type):
 
     arcpy.AddMessage("calculating transit service density...")
-    sufx = int(time.clock()) + 1
+    sufx = int(time.perf_counter()) + 1
     fl_project = 'fl_projline'
     fl_trnstops = os.path.join('memory','trnstp{}'.format(sufx))
 

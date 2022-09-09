@@ -112,7 +112,7 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     """
-        # 8/31/2022: saving general info passed from workflow to master project lager
+        # 8/31/2022: saving general info passed from workflow to master project layer
         # input for all gp tasks will be the same/follow the same format, e.g.:
         {
     "Project_Line":$projectLineJsonString.json,

@@ -32,7 +32,7 @@ class GetLandUseArea():
         self.buff_pclpoly_intersect()
         
     def buff_pclpoly_intersect(self):
-        # arcpy.AddMessage("script updated {}".format(int(time.clock()))) # when troubleshooting
+        # arcpy.AddMessage("script updated {}".format(int(time.perf_counter()))) # when troubleshooting
         
     
         sufx = int(perf()) + 1
