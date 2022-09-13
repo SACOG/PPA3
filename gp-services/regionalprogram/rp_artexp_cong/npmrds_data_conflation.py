@@ -192,9 +192,10 @@ def simplify_outputs(in_df, proj_len_col):
     
     max_len_col = df_lencols.idxmax(axis = 1)[0] #return column name of direction with greatest overlap
     df_lencols2 = df_lencols.drop(max_len_col, axis = 1)
-    secndmax_col = df_lencols2.idxmax(axis = 1)[0] #return col name of direction with second-most overlap (should be reverse of direction with most overlap)
+    secndmax_col = df_lencols2.idxmax(axis = 1)[0] #return col name of direction with second-most overlap
 
-    maxdir = max_len_col[:max_len_col.find(dirlen_suffix)] #direction name without '_calc_len' suffix
+    # direction names without '_calc_len' suffix
+    maxdir = max_len_col[:max_len_col.find(dirlen_suffix)] 
     secdir = secndmax_col[:secndmax_col.find(dirlen_suffix)]
 
     outcols_max = [c for c in in_df.columns if re.match(maxdir, c)]

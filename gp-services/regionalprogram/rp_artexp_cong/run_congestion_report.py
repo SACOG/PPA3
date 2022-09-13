@@ -51,10 +51,7 @@ def make_congestion_rpt_artexp(fc_project, project_name, project_type, aadt):
 
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
-    import pdb; pdb.set_trace()
-
     cong_rpt_obj = chart_congestion.CongestionReport(congn_data, loaded_json)
-
     cong_rpt_obj.update_all_congestion_data()
 
     # update AADT
@@ -78,14 +75,14 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    # project_fc = arcpy.GetParameterAsText(0)
-    # project_name = arcpy.GetParameterAsText(1) 
-    # proj_aadt = int(arcpy.GetParameterAsText(2))
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1) 
+    proj_aadt = int(arcpy.GetParameterAsText(2))
 
     # testing parameters
-    project_fc = 'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\X_St_Oneway'  # 
-    project_name = 'XSt' #  
-    proj_aadt = 32000 # 
+    # project_fc = 'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\X_St_Oneway'  # 
+    # project_name = 'XSt' #  
+    # proj_aadt = 32000 # 
 
     ptype = params.ptype_arterial
     
