@@ -12,6 +12,7 @@ Python Version: 3.x
     
 
 import os
+import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 # sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
@@ -20,10 +21,28 @@ import datetime as dt
 import json
 
 import arcpy
+arcpy.env.overwriteOutput = True
 
 import parameters as params
 import commtype
 import utils.make_map_img as imgmaker
+import utils.utils as utils
+
+def get_geom(in_fc):
+    """Get the geometry object from input feature class.
+    If in_fc has multiple features, it's first dissolved and the returned
+    geometry is that of the dissolved feature class."""
+
+    if int(arcpy.GetCount_management(in_fc)[0]) > 1:
+        in_fc_diss = os.path.join(arcpy.env.scratchGDB, "input_fc_dissolved")
+        arcpy.Dissolve_management(in_fc, in_fc_diss)
+        in_fc = in_fc_diss
+
+    with arcpy.da.SearchCursor(in_fc, ["SHAPE@"]) as scur:
+        for row in scur:
+            output_geom = row[0]
+
+    return output_geom
 
 
 def make_title_guidepg_regpgm(project_name, project_fc):
@@ -59,14 +78,26 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     loaded_json["Image Url"] = map_img_path
 
 
-    # write out to new JSON file
+    #==========STUFF FOR POTENTIALLY LOGGING TO FGDB; COMMENT OUT FOR NOW
+    # # get shape of project 
+    # proj_shape = get_geom(project_fc)
+
+    # # write to applicable log table
+    # data_to_log = {"SHAPE@": proj_shape, "comm_type": project_commtype, 
+    #             "len_mi": tot_len_mi}
+    # project_uid = utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
+    
+    # # use the new OBJECTID generated as the lookup key between master and subreport tables.
+    # with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid)
+
+    # with open(out_file, 'w') as f_out:
+    #     json.dump(loaded_json, f_out, indent=4)
+
+    # --------------write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"RPCoverPg{project_name}{output_sufx}.json"
 
     out_file = os.path.join(output_dir, out_file_name)
-    
-    with open(out_file, 'w') as f_out:
-        json.dump(loaded_json, f_out, indent=4)
 
     return out_file
 
@@ -81,7 +112,7 @@ if __name__ == '__main__':
     proj_name = arcpy.GetParameterAsText(1)
 
     # hard values for testing
-    # proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
+    # proj_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84_multiFeature'
     # proj_name = "TestSGR"
 
     ptype = params.ptype_arterial
@@ -91,6 +122,8 @@ if __name__ == '__main__':
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
     result_path = make_title_guidepg_regpgm(project_name=proj_name, project_fc=proj_line)
+
+    import pdb; pdb.set_trace()
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         
