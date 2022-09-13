@@ -37,17 +37,17 @@ def make_congestion_rpt_artexp(fc_project, project_name, project_type, aadt):
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
-    # for year in data_years:
-    #     in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-    #     pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
-    #                         buffdist=lu_buffdist_ft, project_type=project_type, data_year=year)
-    #     parcel_fc_dict[year] = pcl_buff_fc
+    for year in data_years:
+        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
+        pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
+                            buffdist=lu_buffdist_ft, project_type=project_type, data_year=year)
+        parcel_fc_dict[year] = pcl_buff_fc
 
-    # # calc land use buffer values (job + du totals)
-    # for i, year in enumerate(data_years):
-    #     in_pcl_pt_fc = parcel_fc_dict[year]
-    #     chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-    #                                 project_fc=project_fc, project_type=ptype)
+    # calc land use buffer values (job + du totals)
+    for i, year in enumerate(data_years):
+        in_pcl_pt_fc = parcel_fc_dict[year]
+        chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
+                                    project_fc=project_fc, project_type=ptype)
 
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
