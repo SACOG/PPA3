@@ -25,7 +25,7 @@ class CongestionReport(object):
         self.raw_data = in_data # python dictionary, output of separate script that gets speed data/reliability data
         self.json_template = json_template # JSON python object, not a JSON file path
 
-        self.data_dir_names = ['NORTHBOUND', 'SOUTHBOUND', 'EASTBOUND', 'WESTBOUND']
+        self.data_dir_names = params.directions_tmc
         self.chart_dir_names = ['NB', 'SB', 'EB', 'WB']
         self.dirname_dict = dict(zip(self.data_dir_names, self.chart_dir_names))
         self.directions_used = self.get_unique_directions()
@@ -70,7 +70,6 @@ class CongestionReport(object):
         # output dict: {direction: {key: congstion speed value}}
         out_dict = {}
         for direcn in self.directions_used:
-            # import pdb; pdb.set_trace()
             data_dirn = {k.split(direcn)[1]:v for k, v in self.raw_data.items() if re.match(direcn, k)} # e.g. {'SOUTHBOUNDffs': 99, ...}
             dir_subdict = {k:v for k, v in data_dirn.items() if k in self.congtags} # return only data for free-flow speed and congested speed
 
@@ -88,7 +87,6 @@ class CongestionReport(object):
         # output dict: {direction: {key: lottr value}}
         out_dict = {}
         for direcn in self.directions_used:
-            # import pdb; pdb.set_trace()
             data_dirn = {k.split(direcn)[1]:v for k, v in self.raw_data.items() if re.match(direcn, k)} # e.g. {'SOUTHBOUNDffs': 99, ...}
             dir_subdict = {k:v for k, v in data_dirn.items() if k in self.lottrtags} # return only data for free-flow speed and congested speed
 
@@ -96,12 +94,20 @@ class CongestionReport(object):
         
         return out_dict
 
+    def get_chart_dirname(self, data, dir_keyval):
+        # for one-way streets, will only have values for one direction. For the "other"
+        # non-existent direction, all values are zero and the direction name in chart should show up as "Null"
+        
+        sum_dirvals = sum(data[dir_keyval].values())
+        out_dirname = 'Null' if sum_dirvals == 0 else self.dirname_dict[dir_keyval]
+        
+        return out_dirname
+
     def update_cong_chart(self):
         # update chart of congested and free-flow speeds
-        # import pdb; pdb.set_trace()
         update_data = self.parse_congestion()
         for i, direcn in enumerate(sorted(update_data.keys())): # ensure that x axis labels are in consistent order across reports
-            chart_dirname = self.dirname_dict[direcn] # example: 'SOUTHBOUND' becomes 'SB'
+            chart_dirname = self.get_chart_dirname(update_data, direcn)
             self.json_template[params.k_charts][self.cong_chart_title][params.k_features][i] \
                 [params.k_attrs][params.k_type] = chart_dirname
             self.json_template[params.k_charts][self.cong_chart_title][params.k_features][i] \
@@ -115,7 +121,7 @@ class CongestionReport(object):
         # update chart of travel time reliability
         update_data = self.parse_reliability()
         for i, direcn in enumerate(sorted(update_data.keys())): # ensure that x axis labels are in consistent order across reports
-            chart_dirname = self.dirname_dict[direcn] # example: 'SOUTHBOUND' becomes 'SB'
+            chart_dirname = self.get_chart_dirname(update_data, direcn) # example: 'SOUTHBOUND' becomes 'SB'
             self.json_template[params.k_charts][self.ttr_chart_title][params.k_features][i] \
                 [params.k_attrs][params.k_type] = chart_dirname
             self.json_template[params.k_charts][self.ttr_chart_title][params.k_features][i] \
@@ -138,7 +144,7 @@ class CongestionReport(object):
         keys_dict = dict(zip(direcn_keys, secn_keys))
 
         for direcn, secn_key in keys_dict.items():
-            chart_dirname = self.dirname_dict[direcn] # example: 'SOUTHBOUND' becomes 'SB' 
+            chart_dirname = self.get_chart_dirname(update_data, direcn) # example: 'SOUTHBOUND' becomes 'SB' 
             self.json_template[self.tag_congratio][secn_key][params.k_name] = chart_dirname
             self.json_template[self.tag_congratio][secn_key][params.k_value] = update_data[direcn][self.tag_congratio]
 
