@@ -12,6 +12,7 @@ Python Version: 3.x
 """
 import os
 from arcpy import env
+from black import jupyter_dependencies_are_installed
 
 # ========================================INPUT DATA LAYERS===================================================== 
 server_folder = r'\\arcserver-svr\D\PPA3_SVR'
@@ -324,3 +325,71 @@ buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres o
 lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
 
 
+# =============================JSON CONFIG PARAMETERS FROM USER INTERFACE===============
+
+class projInputKeys:
+    """Input key values for JSON object representing configuration parameters
+    from user interface"""
+    def __init__(self):
+        self.geom = "Project_Line"
+        self.name = 'Project_Name'
+        self.jur = 'Jurisdiction'
+        self.adt = 'Project_ADT'
+        self.aadt = 'AADT'
+        self.posted_spd = 'Posted_Speed_Limit'
+        self.pci = 'PCI'
+        self.proj_pci = 'Project_PCI'
+        self.email = 'userEmail'
+        self.fmt = 'f'
+
+"""
+EXAMPLE INPUT JSON OBJECT
+
+{
+    "Project_Line": {
+        "geometryType": "esriGeometryPolyline",
+        "sr": {
+            "wkid": 102642
+        },
+        "features": [
+            {
+                "geometry": {
+                    "spatialReference": {
+                        "wkid": 102642
+                    },
+                    "paths": [
+                        [
+                            [
+                                6748148.653240821,
+                                2003155.4099492875
+                            ],
+                            [
+                                6745985.7408012925,
+                                2000534.0577610424
+                            ],
+                            [
+                                6744517.244861613,
+                                2000591.358323832
+                            ],
+                            [
+                                6744483.218642788,
+                                2002526.948155975
+                            ]
+                        ]
+                    ]
+                }
+            }
+        ]
+    },
+    "Project_Name": "test_project",
+    "Jurisdiction": "example_jurisdiction",
+    "Project_ADT":1000,
+    "AADT": 1000,
+    "Posted_Speed_Limit":35,
+    "PCI":35,
+    "Project_PCI":35,
+    "userEmail":"fake@email.com",
+    "f":"json"
+  }
+
+"""
