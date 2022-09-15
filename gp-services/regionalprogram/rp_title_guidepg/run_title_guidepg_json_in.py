@@ -45,18 +45,29 @@ def get_geom(in_fc):
 
     return output_geom
 
-
-def make_title_guidepg_regpgm(project_name, project_fc):
+def parse_project_json(input_json):
+    with open(input_json, 'r') as j:
+        project_info_dict = json.load(j)
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Title_and_Guide_sample_dataSource.json")
+    js_geom = json.dumps(project_info_dict['Project_Line'])
+    fs_project_line = arcpy.FeatureSet(js_geom)
 
-    with open(in_json, "r") as j_in: # load applicable json template
+    return (fs_project_line, project_info_dict)
+
+def make_title_guidepg_regpgm(project_json):
+
+    project_data = parse_project_json(project_json)
+    project_fc = project_data[0]
+    project_info = project_data[1]
+
+    project_name = project_info['Project_Name']
+    
+    rpt_template_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Title_and_Guide_sample_dataSource.json")
+
+    with open(rpt_template_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
 
     # calculate total project length
-    # NOTE 3/15/2022: on a test project on Jefferson Bl between Lake Washington and Linden,
-        # Arc Pro's measuring tool says it's 0.25mi, but this script estiamtes same line to be
-        # 0.19mi. As a test, daftlogic.com's distance calculator said distance is also 0.19mi.
     tot_len_ft = 0
     sr_sacog = arcpy.SpatialReference(params.projexn_wkid_sacog)
     with arcpy.da.SearchCursor(project_fc, 'SHAPE@LENGTH', spatial_reference=sr_sacog) as cur:
@@ -74,9 +85,9 @@ def make_title_guidepg_regpgm(project_name, project_fc):
     loaded_json["Project Community Type"] = project_commtype
 
     # insert project map
-    # img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
-    # map_img_path = img_obj.exportMap()
-    # loaded_json["Image Url"] = map_img_path
+    img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
+    map_img_path = img_obj.exportMap()
+    loaded_json["Image Url"] = map_img_path
 
 
     # get shape of project 
@@ -160,7 +171,7 @@ if __name__ == '__main__':
 
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_title_guidepg_regpgm(project_name=proj_name, project_fc=proj_line)
+    result_path = make_title_guidepg_regpgm(project_json=in_json)
 
     arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         
