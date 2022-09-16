@@ -18,7 +18,7 @@ server_folder = r'\\arcserver-svr\D\PPA3_SVR'
 program_folder_name = 'RegionalProgram' # 'CommunityDesign'
 
 program_folder = os.path.join(server_folder, program_folder_name)
-fgdb = os.path.join(r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\owner_PPA.sde")
+fgdb = os.path.join(r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
 projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet)
 
 # -------input feature classes, all in fgdb
@@ -31,10 +31,10 @@ projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet
 # intersections_base_fc = 'intersections_2021'
 comm_types_fc = 'comm_type_jurspec_dissolve'
 
-# reg_centerline_fc = 'RegionalCenterline_Oct2021'
-# reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
+reg_centerline_fc = 'RegionalCenterline_Oct2021'
+reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
 
-# reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
+reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
 
 proj_line_template_fc = 'Project_Line_Template' # has symbology that the project line will use.
 
@@ -91,20 +91,20 @@ svc_root_url = ['https://services.sacog.org/hosting/rest/directories/arcgisjobs'
 # ===================================OUTPUT JSON TEMPLATE DATA=========================================================
 json_templates_dir = os.path.join(program_folder, "JSON")
 
-# # names in json template
-# geo_project = "Project"
-# geo_proj_qmi = "Within 0.25mi"
-# geo_ctype = "Community Type"
-# geo_region = "Region"
+# names in json template
+geo_project = "Project"
+geo_proj_qmi = "Within 0.25mi"
+geo_ctype = "Community Type"
+geo_region = "Region"
 
-# # re-used json keys, so assign to variable
-# k_charts = "charts"
-# k_name = "name"
-# k_value = "value"
-# k_features = "features" # remember, this is a list of dicts
-# k_attrs = "attributes"
-# k_year = "year"
-# k_type = "type"
+# re-used json keys, so assign to variable
+k_charts = "charts"
+k_name = "name"
+k_value = "value"
+k_features = "features" # remember, this is a list of dicts
+k_attrs = "attributes"
+k_year = "year"
+k_type = "type"
 
 
 # ===================================CONVERSION FACTORS=========================================================
@@ -144,7 +144,7 @@ ann_factor = 320 # multiplier to get approximate annual value based on "typical 
 
 
 
-# bg_search_dist = 300 # feet away from project line that you'll tag block groups in
+bg_search_dist = 300 # feet away from project line that you'll tag block groups in
 
 # ===================================PROBE-BASED SPEED DATA (E.G. NPMRDS) PARAMETERS================================
 
@@ -180,7 +180,7 @@ ann_factor = 320 # multiplier to get approximate annual value based on "typical 
 
 # ===================================MODEL-BASED LAND USE  PARAMETERS==============================================
 
-# parameters for mix index
+# # parameters for mix index
 # import pandas as pd
 
 # # input columns for land use mix calculation--MUST MATCH COLNAMES IN mix_idx_params_csv
@@ -211,7 +211,7 @@ ann_factor = 320 # multiplier to get approximate annual value based on "typical 
 
 # mix_idx_col = 'mix_index'
 
-# by default, bal_ratio_per_hh = ratio of that land use factor per HH at the regional level, and represents "ideal" ratio
+# # by default, bal_ratio_per_hh = ratio of that land use factor per HH at the regional level, and represents "ideal" ratio
 # mix_calc_cols = ['lu_fac', 'bal_ratio_per_hh', 'weight']
 # mix_calc_vals = [[col_k12_enr, 0.392079056, 0.2],
 #              [col_empret, 0.148253453, 0.4],
@@ -224,7 +224,7 @@ ann_factor = 320 # multiplier to get approximate annual value based on "typical 
 # params_df = pd.DataFrame(mix_calc_vals, columns = mix_calc_cols) \
 #     .set_index(mix_calc_cols[0])
 
-# ---------parameters for summary land use data ---------------------
+# # ---------parameters for summary land use data ---------------------
 
 # # other ILUT columns used
 # col_pop_ilut = 'POP_TOT'
@@ -299,29 +299,29 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 #                  * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
-# cs_buffdist = 2640 # feet
-# cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
+cs_buffdist = 2640 # feet
+cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
-# cs_threshold_speed = 40 # MPH
-# cs_spd_pen_fac = 0.04 # speed penalty factor
+cs_threshold_speed = 40 # MPH
+cs_spd_pen_fac = 0.04 # speed penalty factor
 
-# intersxn_dens_buff = 1320 # distance in feet
-# bikeway_buff = 1320 # distance in feet
+intersxn_dens_buff = 1320 # distance in feet
+bikeway_buff = 1320 # distance in feet
 
-# col_intxn_lnks = 'LINKS'
+col_intxn_lnks = 'LINKS'
 
 # ============================URBANIZATION PARAMETERS===========================
 
-# # params for determining if project is in greenfield or infill area
-# col_ctype_old = 'comm_type'  # base ctype field, but doesn't distinguish by jurisdiction (e.g. center/corridor in dowtown sac vs in rural main street)
+# params for determining if project is in greenfield or infill area
+col_ctype_old = 'comm_type'  # base ctype field, but doesn't distinguish by jurisdiction (e.g. center/corridor in dowtown sac vs in rural main street)
 col_ctype = 'comm_type_ppa'  # ctype field used in jurisdiction-specific ctypes layer (e.g. rural main streets vs. downtown core)
-# ctypes_infill = ['Established Communities', 'Arterials & Suburban Corridors', 'Rural & Small Town Main Street',
-#                  'Small-Town Established Communities', 'Urban core']
-# threshold_val = 0.9  # if more than 90% of project length is in greenfield, then project is greenfield vice-versa for infill
+ctypes_infill = ['Established Communities', 'Arterials & Suburban Corridors', 'Rural & Small Town Main Street',
+                 'Small-Town Established Communities', 'Urban core']
+threshold_val = 0.9  # if more than 90% of project length is in greenfield, then project is greenfield vice-versa for infill
 
-# # for measuring loss in acres of natural resources within project area (nat resources = forest, parks, ag land)
-# buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres of natural resources lost within project area.
-# lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
+# for measuring loss in acres of natural resources within project area (nat resources = forest, parks, ag land)
+buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres of natural resources lost within project area.
+lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
 
 
 # =============================JSON CONFIG PARAMETERS FROM USER INTERFACE===============

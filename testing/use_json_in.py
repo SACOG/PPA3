@@ -15,6 +15,8 @@ import os
 import json
 
 import arcpy
+# import parameters as params
+# arcpy.AddMessage("imported params.py successfully")
 
 def do_work(in_json, in_fc):
     name = in_json["Project_Name"]
@@ -41,6 +43,8 @@ if __name__ == '__main__':
 
     # input_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th'
+
+
     
     with open(input_json, 'r') as j:
         json_loaded = json.load(j)

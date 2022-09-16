@@ -25,6 +25,7 @@ import arcpy
 arcpy.env.overwriteOutput = True
 
 import parameters as params
+# from parameters import json_templates_dir, projexn_wkid_sacog, comm_types_fc, ft2mile, pickle_uid, logtbl_join_key, log_fgdb, log_master, ptype_arterial, fgdb
 import commtype
 import utils.make_map_img as imgmaker
 import utils.utils as utils
@@ -123,40 +124,10 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
-    """
-        # 8/31/2022: saving general info passed from workflow to master project layer
-        # input for all gp tasks will be the same/follow the same format, e.g.:
-        {
-    "Project_Line":$projectLineJsonString.json,
-    "Project_Name": $reportConfig.result.projectName,
-    "Jurisdiction":$reportConfig.result.jurisdiction,
-    "Project_ADT":$reportConfig.result.ADT,
-    "AADT": $reportConfig.result.ADT,
-    "Posted_Speed_Limit":$reportConfig.result.postedSpeedLimit,
-    "PCI":$reportConfig.result.PCI,
-    "f":"json"
-    }
-
-    Once project logged to master layer, cache project ID as pkl --tHINK about how to do this so it's grabbable by multiple GP tasks
-        What about concurrency?
-        YY suggestion - can prefix UID file (or folder containing UID pkl) with project name to avoid overwriting/duplication
-        To delete folders, can schedule windows task on server machine to clear out the folder with cached stuff
-
-
-    """
-
-
-    # specify project line feature class and attributes
-    # proj_line = arcpy.GetParameterAsText(0)
-    # proj_name = arcpy.GetParameterAsText(1)
-
-    # hard values for testing
-    # proj_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\JStreetWGS84_multiFeature'
-    # proj_name = "TestSGR"
-
-
     # method that can take in json file, hopefully
-    in_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
+    in_json = arcpy.GetParameterAsText(0)
+
+    # in_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
 
     ptype = params.ptype_arterial
     
@@ -173,7 +144,7 @@ if __name__ == '__main__':
     output_dir = arcpy.env.scratchFolder
     result_path = make_title_guidepg_regpgm(project_json=in_json)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(1, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
