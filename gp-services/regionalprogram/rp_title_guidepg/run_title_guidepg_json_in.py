@@ -29,7 +29,19 @@ import parameters as params
 # from parameters import json_templates_dir, projexn_wkid_sacog, comm_types_fc, ft2mile, pickle_uid, logtbl_join_key, log_fgdb, log_master, ptype_arterial, fgdb
 import commtype
 import utils.make_map_img as imgmaker
-import utils.utils as utils
+# import utils.utils as utils
+
+def log_row_to_table(data_row_dict, dest_table):
+    """Writes row of values to table. Fields are data_row_dict keys, and the values
+    written are the values from data_row_dict's values."""
+
+    data_fields = list(data_row_dict.keys())
+    data_values = list(data_row_dict.values())
+
+    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+        cur.insertRow(data_values)
+
+    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 
 def get_geom(in_fc):
     """Get the geometry object from input feature class.
@@ -84,6 +96,8 @@ def make_title_guidepg_regpgm(project_json):
 
     # get project community type
     project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    # project_commtype = commtype.get_proj_ctype(project_fc, r"C:\Users\dconly\AppData\Local\Temp\scratch.gdb\temp_comm_type")
+    
     loaded_json["Project Community Type"] = project_commtype
 
     # insert project map
@@ -103,7 +117,7 @@ def make_title_guidepg_regpgm(project_json):
     data_to_log = {params.logtbl_join_key:project_uid, "SHAPE@":proj_shape, 
                     "comm_type":project_commtype, "len_mi": tot_len_mi}
 
-    utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
+    log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
  
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
