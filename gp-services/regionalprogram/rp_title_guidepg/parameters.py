@@ -55,7 +55,7 @@ proj_line_template_fc = pathconfigs['sde']['proj_line_template_fc'] # has symbol
 log_fgdb = os.path.join(gis_dir, pathconfigs['server_data']['gisdir']['archived_run_db'])
 pickle_uid = os.path.join(env.scratchGDB, "project_uid.pkl") # pickle file containing integer unique ID that will be used for all tables
 logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
-log_master = 'project_master'
+log_master = 'project_master_v2' # 'project_master'
 log_artexp_sgr = 'rp_artexp_sgr'
 log_rp_artexp_vmt = 'rp_artexp_vmt'
 
@@ -352,6 +352,9 @@ class projInputKeys:
         self.proj_pci = 'Project_PCI'
         self.email = 'userEmail'
         self.fmt = 'f'
+
+user_inputs = projInputKeys()
+
 
 """
 EXAMPLE INPUT JSON OBJECT

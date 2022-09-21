@@ -29,19 +29,8 @@ import parameters as params
 # from parameters import json_templates_dir, projexn_wkid_sacog, comm_types_fc, ft2mile, pickle_uid, logtbl_join_key, log_fgdb, log_master, ptype_arterial, fgdb
 import commtype
 import utils.make_map_img as imgmaker
-# import utils.utils as utils
+import utils.utils as utils
 
-def log_row_to_table(data_row_dict, dest_table):
-    """Writes row of values to table. Fields are data_row_dict keys, and the values
-    written are the values from data_row_dict's values."""
-
-    data_fields = list(data_row_dict.keys())
-    data_values = list(data_row_dict.values())
-
-    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-        cur.insertRow(data_values)
-
-    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 
 def get_geom(in_fc):
     """Get the geometry object from input feature class.
@@ -59,18 +48,10 @@ def get_geom(in_fc):
 
     return output_geom
 
-def parse_project_json(input_json):
-    with open(input_json, 'r') as j:
-        project_info_dict = json.load(j)
-    
-    js_geom = json.dumps(project_info_dict['Project_Line'])
-    fs_project_line = arcpy.FeatureSet(js_geom)
-
-    return (fs_project_line, project_info_dict)
 
 def make_title_guidepg_regpgm(project_json):
 
-    project_data = parse_project_json(project_json)
+    project_data = utils.parse_project_json(project_json)
     project_fc = project_data[0]
     project_info = project_data[1]
 
@@ -110,14 +91,26 @@ def make_title_guidepg_regpgm(project_json):
     proj_shape = get_geom(project_fc)
 
     # write to applicable log table
-    # use the new OBJECTID generated as the lookup key between master and subreport tables.
     project_uid = str(uuid4())
     with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid, f)
 
-    data_to_log = {params.logtbl_join_key:project_uid, "SHAPE@":proj_shape, 
-                    "comm_type":project_commtype, "len_mi": tot_len_mi}
+    # these dict key names must match field names for master log table
+    user_inputs = params.user_inputs
+    data_to_log = {
+                params.logtbl_join_key:project_uid, 
+                "SHAPE@":proj_shape, 
+                "comm_type":project_commtype, 
+                "len_mi": tot_len_mi,
+                "Project_Name": project_name,
+                "Jurisdiction": project_info[user_inputs.jur],
+                "AADT": project_info[user_inputs.aadt],
+                "Posted_Speed_Limit": project_info[user_inputs.posted_spd],
+                "PCI": project_info[user_inputs.pci],
+                "userEmail": project_info[user_inputs.email],
+                "TimeCreated": str(dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                }
 
-    log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
+    utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
  
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
