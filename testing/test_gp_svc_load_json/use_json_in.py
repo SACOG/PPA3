@@ -15,34 +15,27 @@ import os
 import json
 
 import arcpy
-# import parameters as params
+import parameters_useyaml as params
+import utils.make_map_img as imgmaker
+arcpy.AddMessage('imported make_map_img.py from utils folder')
 # arcpy.AddMessage("imported params.py successfully")
 
-def do_work(in_json, in_fc):
+def do_work(in_json):
     name = in_json["Project_Name"]
     email = in_json["userEmail"]
-
-    proj_len = 0
-    with arcpy.da.SearchCursor(in_fc, "SHAPE@LENGTH") as cur:
-        for row in cur:
-            proj_len += row[0]
 
 
     out_msg = f"""
     Name: {name}
     Email: {email}
-    Length: {proj_len}
+    Project Line Template Name from Param File: {params.proj_line_template_fc}
     """
 
     arcpy.AddMessage(out_msg)
 
 if __name__ == '__main__':
-    project_fc = arcpy.GetParameterAsText(0)
-    input_json = arcpy.GetParameterAsText(1)
-
-
+    input_json = arcpy.GetParameterAsText(0)
     # input_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th'
 
 
     
@@ -50,4 +43,4 @@ if __name__ == '__main__':
         json_loaded = json.load(j)
 
 
-    do_work(json_loaded, project_fc)
+    do_work(json_loaded)
