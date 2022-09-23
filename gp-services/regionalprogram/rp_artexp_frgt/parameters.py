@@ -345,11 +345,10 @@ class projInputKeys:
         self.name = 'Project_Name'
         self.jur = 'Jurisdiction'
         self.ptype = 'Project_Type'
-        self.adt = 'Project_ADT'
+        self.perf_outcomes = 'PerfOutcomes'
         self.aadt = 'AADT'
         self.posted_spd = 'Posted_Speed_Limit'
         self.pci = 'PCI'
-        self.proj_pci = 'Project_PCI'
         self.email = 'userEmail'
         self.fmt = 'f'
 

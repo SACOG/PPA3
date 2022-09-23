@@ -87,18 +87,21 @@ def make_title_guidepg_regpgm(input_dict):
     # get shape of project 
     proj_shape = get_geom(project_fc)
 
-    # write to applicable log table
+    # generate project unique ID to enable table joining
     project_uid = str(uuid4())
-    with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid, f)
+
+    # write to applicable log table
 
     # these dict key names must match field names for master log table
+    # {field name in master log table: value going in that field}
     data_to_log = {
-                params.logtbl_join_key:project_uid, 
-                "SHAPE@":proj_shape, 
-                "comm_type":project_commtype, 
+                params.logtbl_join_key: project_uid, 
+                "SHAPE@": proj_shape, 
+                "comm_type": project_commtype, 
                 "len_mi": tot_len_mi,
                 "Project_Name": project_name,
                 "project_type": params.ptype_arterial,
+                "perf_outcomes": input_dict[uis.perf_outcomes],
                 "Jurisdiction": input_dict[uis.jur],
                 "AADT": input_dict[uis.aadt],
                 "Posted_Speed_Limit": input_dict[uis.posted_spd],
@@ -131,15 +134,18 @@ if __name__ == '__main__':
     project_name = arcpy.GetParameterAsText(1)
     jurisdiction = arcpy.GetParameterAsText(2)
     project_type = arcpy.GetParameterAsText(3)
-    aadt = arcpy.GetParameterAsText(4)
-    posted_spd = arcpy.GetParameterAsText(5)
-    pci = arcpy.GetParameterAsText(6)
-    email = arcpy.GetParameterAsText(7)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
     # project_name = 'causeway'
     # jurisdiction = 'Caltrans'
+    # project_type = 'Arterial Expansion'
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 150000
     # posted_spd = 65
     # pci = 80
@@ -150,12 +156,13 @@ if __name__ == '__main__':
         uis.geom: project_fc,
         uis.name: project_name,
         uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
         uis.aadt: aadt,
         uis.posted_spd: posted_spd,
         uis.pci: pci,
         uis.email: email
     }
-
 
     # in_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
     
@@ -172,7 +179,7 @@ if __name__ == '__main__':
     output_dir = arcpy.env.scratchFolder
     result_path = make_title_guidepg_regpgm(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(8, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
