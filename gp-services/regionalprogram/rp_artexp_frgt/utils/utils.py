@@ -11,6 +11,7 @@
 # --------------------------------
 import os
 import sys
+import json
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
@@ -75,6 +76,28 @@ def rename_dict_keys(dict_in, new_key_dict):
         else:
             dict_out[v] = 0
     return dict_out
+
+
+def log_row_to_table(data_row_dict, dest_table):
+    """Writes row of values to table. Fields are data_row_dict keys, and the values
+    written are the values from data_row_dict's values."""
+
+    data_fields = list(data_row_dict.keys())
+    data_values = list(data_row_dict.values())
+
+    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+        cur.insertRow(data_values)
+
+    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+
+def parse_project_json(input_json):
+    with open(input_json, 'r') as j:
+        project_info_dict = json.load(j)
+    
+    js_geom = json.dumps(project_info_dict[params.user_inputs.geom])
+    fs_project_line = arcpy.FeatureSet(js_geom)
+
+    return (fs_project_line, project_info_dict)
 
 
 if __name__ == '__main__':

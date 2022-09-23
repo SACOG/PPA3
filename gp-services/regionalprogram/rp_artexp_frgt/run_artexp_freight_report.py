@@ -18,7 +18,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import commtype
@@ -27,6 +27,7 @@ import landuse_buff_calcs
 import get_line_overlap as glo
 import get_agg_values as aggvals
 import utils.make_map_img as imgmaker
+import utils.utils as utils
 
 
 def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
@@ -42,7 +43,11 @@ def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
     return pct_jobs_sector
 
 
-def make_frgt_report_artexp(fc_project, project_name, project_type):
+def make_frgt_report_artexp(project_json, project_type):
+
+    project_data = utils.parse_project_json(project_json)
+    fc_project = project_data[0]
+    project_info = project_data[1]
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Freight_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -52,7 +57,7 @@ def make_frgt_report_artexp(fc_project, project_name, project_type):
         loaded_json = json.load(j_in)
 
     # get project community type
-    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(fc_project, params.comm_types_fc)
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
@@ -101,9 +106,13 @@ def make_frgt_report_artexp(fc_project, project_name, project_type):
 
     # generate map image of STAA truck routes and insert link to image
     
+    project_name = project_info[params.user_inputs.name]
     img_obj = imgmaker.MakeMapImage(fc_project, 'TruckRtes', project_name)
     map_img_path = img_obj.exportMap()
     loaded_json["STAA network Image Url"] = map_img_path
+
+    # log results to archive table
+    # INSERT CODE HERE
 
 
     # write out to new JSON file
@@ -124,12 +133,12 @@ if __name__ == '__main__':
 
 
     # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
+    json_in = arcpy.GetParameterAsText(0) 
+    
+    
 
     # hard values for testing
-    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS'
-    # project_name = 'StocktonCS'
+    # json_in = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
 
     ptype = params.ptype_arterial
     
@@ -137,9 +146,9 @@ if __name__ == '__main__':
     #=================BEGIN SCRIPT===========================
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_frgt_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_frgt_report_artexp(project_json=json_in, project_type=ptype)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(1, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

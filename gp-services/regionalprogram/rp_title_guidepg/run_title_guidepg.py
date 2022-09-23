@@ -23,10 +23,9 @@ import json
 
 import arcpy
 arcpy.env.overwriteOutput = True
-arcpy.SetLogHistory(False)
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
-# from parameters import json_templates_dir, projexn_wkid_sacog, comm_types_fc, ft2mile, pickle_uid, logtbl_join_key, log_fgdb, log_master, ptype_arterial, fgdb
 import commtype
 import utils.make_map_img as imgmaker
 import utils.utils as utils
@@ -49,13 +48,11 @@ def get_geom(in_fc):
     return output_geom
 
 
-def make_title_guidepg_regpgm(project_json):
+def make_title_guidepg_regpgm(input_dict):
 
-    project_data = utils.parse_project_json(project_json)
-    project_fc = project_data[0]
-    project_info = project_data[1]
-
-    project_name = project_info['Project_Name']
+    uis = params.user_inputs
+    project_fc = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
     
     rpt_template_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Title_and_Guide_sample_dataSource.json")
 
@@ -95,18 +92,18 @@ def make_title_guidepg_regpgm(project_json):
     with open(params.pickle_uid, 'wb') as f: pickle.dump(project_uid, f)
 
     # these dict key names must match field names for master log table
-    user_inputs = params.user_inputs
     data_to_log = {
                 params.logtbl_join_key:project_uid, 
                 "SHAPE@":proj_shape, 
                 "comm_type":project_commtype, 
                 "len_mi": tot_len_mi,
                 "Project_Name": project_name,
-                "Jurisdiction": project_info[user_inputs.jur],
-                "AADT": project_info[user_inputs.aadt],
-                "Posted_Speed_Limit": project_info[user_inputs.posted_spd],
-                "PCI": project_info[user_inputs.pci],
-                "userEmail": project_info[user_inputs.email],
+                "project_type": params.ptype_arterial,
+                "Jurisdiction": input_dict[uis.jur],
+                "AADT": input_dict[uis.aadt],
+                "Posted_Speed_Limit": input_dict[uis.posted_spd],
+                "PCI": input_dict[uis.pci],
+                "userEmail": input_dict[uis.email],
                 "TimeCreated": str(dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 }
 
@@ -123,19 +120,44 @@ def make_title_guidepg_regpgm(project_json):
 
     return out_file
 
-    """
-    log_row_to_table(input_json, dest_table)
-    """
 
 
 if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
-    in_json = arcpy.GetParameterAsText(0)
+
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    aadt = arcpy.GetParameterAsText(4)
+    posted_spd = arcpy.GetParameterAsText(5)
+    pci = arcpy.GetParameterAsText(6)
+    email = arcpy.GetParameterAsText(7)
+
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
+    # project_name = 'causeway'
+    # jurisdiction = 'Caltrans'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
+
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
+
 
     # in_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
-
-    ptype = params.ptype_arterial
     
 
     #=================BEGIN SCRIPT===========================
@@ -148,9 +170,9 @@ if __name__ == '__main__':
 
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_title_guidepg_regpgm(project_json=in_json)
+    result_path = make_title_guidepg_regpgm(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(1, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(8, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
