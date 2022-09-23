@@ -100,7 +100,7 @@ def make_title_guidepg_regpgm(input_dict):
                 "comm_type": project_commtype, 
                 "len_mi": tot_len_mi,
                 "Project_Name": project_name,
-                "project_type": params.ptype_arterial,
+                "project_type": input_dict[uis.ptype],
                 "perf_outcomes": input_dict[uis.perf_outcomes],
                 "Jurisdiction": input_dict[uis.jur],
                 "AADT": input_dict[uis.aadt],
