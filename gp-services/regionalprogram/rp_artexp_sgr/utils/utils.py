@@ -11,6 +11,7 @@
 # --------------------------------
 import os
 import sys
+import json
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
@@ -76,17 +77,6 @@ def rename_dict_keys(dict_in, new_key_dict):
             dict_out[v] = 0
     return dict_out
 
-def check_if_uid_exists(table, field_to_check, input_value):
-    # Ensures that UID in all tables is unique value
-    
-    sql = f"{params.col_logtbl_join_key} = '{input_value}'"
-
-    with arcpy.da.SearchCursor(table, [field_to_check], sql) as cur:
-        try:
-            cur.next()
-            pass
-        except:
-            raise Exception("ERROR: Project UID value '{input_value}' already exists in {table}.")
 
 def log_row_to_table(data_row_dict, dest_table):
     """Writes row of values to table. Fields are data_row_dict keys, and the values
@@ -95,13 +85,50 @@ def log_row_to_table(data_row_dict, dest_table):
     data_fields = list(data_row_dict.keys())
     data_values = list(data_row_dict.values())
 
-    project_uid_val = data_row_dict[params.col_logtbl_join_key]
-    check_if_uid_exists(dest_table, params.col_logtbl_join_key, project_uid_val)
-
     with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
         cur.insertRow(data_values)
 
     arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+
+def get_project_uid(proj_name, proj_type, proj_jur, user_email):
+    """Find the project UID in the master table where project name, type, 
+    and user email match and it's the most recently-run one"""
+
+    master_fields = [params.logtbl_join_key, params.f_master_tstamp]
+
+    fc_mastertbl = os.path.join(params.log_fgdb, params.log_master)
+    fl_mastertbl = 'fl_mastertbl'
+    arcpy.MakeFeatureLayer_management(fc_mastertbl, fl_mastertbl)
+
+    uis = params.user_inputs
+    sql = f"""{uis.name} = '{proj_name}' AND {uis.ptype} = '{proj_type}'
+    AND {uis.jur} = '{proj_jur}' AND {uis.email} = '{user_email}'"""
+
+    arcpy.management.SelectLayerByAttribute(fl_mastertbl, "NEW_SELECTION", sql)
+
+    df = esri_object_to_df(fl_mastertbl, esri_obj_fields=master_fields, index_field=None)
+
+    if df.shape[0] == 0:
+        uid = "UID_NOT_FOUND"
+        arcpy.AddWarning(f"No project records found in {fc_mastertbl} where {sql}")
+    else:
+        uid = df.sort_values(by=params.f_master_tstamp, ascending=False) \
+            [params.logtbl_join_key][0]
+
+    return uid
+
+
+
+
+
+# def parse_project_json(input_json):
+#     with open(input_json, 'r') as j:
+#         project_info_dict = json.load(j)
+    
+#     js_geom = json.dumps(project_info_dict[params.user_inputs.geom])
+#     fs_project_line = arcpy.FeatureSet(js_geom)
+
+#     return (fs_project_line, project_info_dict)
 
 
 if __name__ == '__main__':
