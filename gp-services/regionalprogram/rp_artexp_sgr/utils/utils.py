@@ -101,9 +101,9 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
     arcpy.MakeFeatureLayer_management(fc_mastertbl, fl_mastertbl)
 
     uis = params.user_inputs
-    sql = f"""{uis.name} = '{proj_name}' AND {uis.ptype} = '{proj_type}'
-    AND {uis.jur} = '{proj_jur}' AND {uis.email} = '{user_email}'"""
-
+    sql = f"""{params.f_master_projname} = '{proj_name}' AND {params.f_master_projtyp} = '{proj_type}'
+    AND {params.f_master_jur} = '{proj_jur}' AND {params.f_master_email} = '{user_email}'"""
+    
     arcpy.management.SelectLayerByAttribute(fl_mastertbl, "NEW_SELECTION", sql)
 
     df = esri_object_to_df(fl_mastertbl, esri_obj_fields=master_fields, index_field=None)
