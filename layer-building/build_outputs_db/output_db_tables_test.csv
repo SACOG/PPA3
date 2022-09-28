@@ -1,15 +1,15 @@
 TableName,Page_Subreport,use_table,geom_type,FieldName,FieldDesc,esri_dtype,text_len
-project_master,cover page,1,POLYLINE,proj_uid,unique project ID,TEXT,36
+project_master,cover page,1,POLYLINE,project_uid,unique project ID,TEXT,36
 project_master,cover page,1,POLYLINE,proj_shape,geometry of project line,SHAPE,
-project_master,cover page,1,POLYLINE,Project_Name,self-explanatory,TEXT,255
-project_master,cover page,1,POLYLINE,Jurisdiction,self-explanatory,TEXT,100
+project_master,cover page,1,POLYLINE,proj_name,self-explanatory,TEXT,255
+project_master,cover page,1,POLYLINE,juris,self-explanatory,TEXT,100
 project_master,cover page,1,POLYLINE,proj_type,self-explanatory,TEXT,100
 project_master,cover page,1,POLYLINE,aadt,traffic vol,LONG,
 project_master,cover page,1,POLYLINE,pci,pavement condition,SHORT,
 project_master,cover page,1,POLYLINE,posted_speed,speed limit,SHORT,
 project_master,cover page,1,POLYLINE,len_mi,self-explanatory,FLOAT,
 project_master,cover page,1,POLYLINE,comm_type,self-explanatory,TEXT,100
-project_master,cover page,1,POLYLINE,starttime,time that run started,DATE,
+project_master,cover page,1,POLYLINE,time_created,time that run started,DATE,
 project_master,cover page,1,POLYLINE,user_email,self-explanatory,TEXT,100
 project_master,cover page,1,POLYLINE,perf_outcomes,semi-colon-separated list of the performance outcomes,TEXT,1000
 rp_artexp_vmt,arterial exp reduce vmt,1,,proj_uid,unique project ID,TEXT,36

@@ -69,13 +69,11 @@ def build_db_tables(gdb_workspace, spec_csv, tables_to_make=[]):
 
         for drow in tbl_dict:
             try:
-                f_len = drow[f_len] if f_dtype == 'TEXT' else None
-
-                # arcpy automatically adds SHAPE/geo field when creating feature class, so don't add explicitly
-                if drow[f_dtype] == dtype_shape: 
+                f_len = int(drow[f_len]) if f_dtype == 'TEXT' else None
+                if drow[f_dtype] == dtype_shape: # arcpy automatically adds SHAPE/geo field when creating feature class, so don't add explicitly
                     continue
 
-                arcpy.management.AddField(table, drow[f_fieldname], drow[f_dtype], f_len)
+                arcpy.management.AddField(table, drow[f_fieldname], drow[f_dtype], field_length=f_len)
             except:
                 import pdb; pdb.set_trace()
 
@@ -86,6 +84,6 @@ def build_db_tables(gdb_workspace, spec_csv, tables_to_make=[]):
 if __name__ == '__main__':
     fgdb = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs_TESTING.gdb'
     config_csv = r'C:\Users\dconly\GitRepos\PPA3\layer-building\build_outputs_db\output_db_tables_test.csv'
-    make_tables = ['rp_artsgr_sgr'] # ['project_master', 'rp_artexp_cong']
+    make_tables = ['project_master'] # ['project_master', 'rp_artexp_cong']
 
     build_db_tables(gdb_workspace=fgdb, spec_csv=config_csv, tables_to_make=make_tables)

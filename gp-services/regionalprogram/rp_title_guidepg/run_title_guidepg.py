@@ -99,15 +99,15 @@ def make_title_guidepg_regpgm(input_dict):
                 "SHAPE@": proj_shape, 
                 "comm_type": project_commtype, 
                 "len_mi": tot_len_mi,
-                "Project_Name": project_name,
-                "project_type": input_dict[uis.ptype],
+                "proj_name": project_name,
+                "proj_type": input_dict[uis.ptype],
                 "perf_outcomes": input_dict[uis.perf_outcomes],
-                "Jurisdiction": input_dict[uis.jur],
-                "AADT": input_dict[uis.aadt],
-                "Posted_Speed_Limit": input_dict[uis.posted_spd],
-                "PCI": input_dict[uis.pci],
-                "userEmail": input_dict[uis.email],
-                "TimeCreated": str(dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                "juris": input_dict[uis.jur],
+                "aadt": input_dict[uis.aadt],
+                "posted_speed": input_dict[uis.posted_spd],
+                "pci": input_dict[uis.pci],
+                "user_email": input_dict[uis.email],
+                "time_created": str(dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                 }
 
     utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
