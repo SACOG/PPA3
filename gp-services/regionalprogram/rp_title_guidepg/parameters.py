@@ -56,8 +56,12 @@ log_fgdb = os.path.join(gis_dir, pathconfigs['server_data']['gisdir']['archived_
 pickle_uid = os.path.join(env.scratchGDB, "project_uid.pkl") # pickle file containing integer unique ID that will be used for all tables
 logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
 log_master = 'project_master' # 'project_master_v2'
-log_artexp_sgr = 'rp_artexp_sgr'
-log_rp_artexp_vmt = 'rp_artexp_vmt'
+f_master_tstamp = "time_created"
+
+f_master_projname = 'proj_name'
+f_master_projtyp = 'proj_type'
+f_master_jur = 'juris'
+f_master_email = 'user_email'
 
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
