@@ -279,18 +279,18 @@ if __name__ == '__main__':
     from time import perf_counter as perf
     start_time = perf()
 
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    # arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
-    project_line = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
-    proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
+    # project_line = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
+    # proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
 
 
-    test_dict = get_npmrds_data(project_line, proj_type)
+    # test_dict = get_npmrds_data(project_line, proj_type)
 
-    print(test_dict)
+    # print(test_dict)
 
-    elapsed_time = round((perf() - start_time)/60, 1)
-    print("Success! Time elapsed: {} minutes".format(elapsed_time))    
+    # elapsed_time = round((perf() - start_time)/60, 1)
+    # print("Success! Time elapsed: {} minutes".format(elapsed_time))    
 
 
     

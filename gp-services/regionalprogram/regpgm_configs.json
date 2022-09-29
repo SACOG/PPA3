@@ -102,7 +102,7 @@
 				{
 					"name": "Reduce Congestion",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceCongestion",
-					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpCongestion/GPServer/RPArtExpCongestion",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpCongestion2/GPServer/RPArtExpCongestion",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=797a9f45cd394711b478d65be64f45b7",
 					"maxProcessingTimeInMins": 3
 				},
