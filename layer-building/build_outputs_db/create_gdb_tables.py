@@ -24,13 +24,13 @@ def build_db_tables(gdb_workspace, spec_csv, tables_to_make=[]):
     f_fieldname = 'FieldName'
     f_geomtyp = 'geom_type'
     f_dtype = 'esri_dtype'
-    f_flen = 'text_len'
+    f_len = 'text_len'
     f_usetable = 'use_table'
 
     dtype_shape = 'SHAPE'
 
     # load master CSV with table names, field names, field dtypes for all tables
-    df_master = pd.read_csv(spec_csv, usecols=[f_tblname, f_usetable, f_geomtyp, f_fieldname, f_dtype, f_flen])
+    df_master = pd.read_csv(spec_csv, usecols=[f_tblname, f_usetable, f_geomtyp, f_fieldname, f_dtype, f_len])
 
 
     # filter to only work with tables where use_table is true (master table may have proposed future tables)
@@ -69,11 +69,11 @@ def build_db_tables(gdb_workspace, spec_csv, tables_to_make=[]):
 
         for drow in tbl_dict:
             try:
-                f_len = int(drow[f_len]) if f_dtype == 'TEXT' else None
+                text_len = int(drow[f_len]) if f_dtype == 'TEXT' else None
                 if drow[f_dtype] == dtype_shape: # arcpy automatically adds SHAPE/geo field when creating feature class, so don't add explicitly
                     continue
 
-                arcpy.management.AddField(table, drow[f_fieldname], drow[f_dtype], field_length=f_len)
+                arcpy.management.AddField(table, drow[f_fieldname], drow[f_dtype], field_length=text_len)
             except:
                 import pdb; pdb.set_trace()
 
@@ -82,7 +82,7 @@ def build_db_tables(gdb_workspace, spec_csv, tables_to_make=[]):
 
 
 if __name__ == '__main__':
-    fgdb = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_archived_runs_TESTING.gdb'
+    fgdb = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_run_data.gdb'
     config_csv = r'C:\Users\dconly\GitRepos\PPA3\layer-building\build_outputs_db\output_db_tables_test.csv'
     make_tables = [] # ['project_master', 'rp_artexp_cong']
 
