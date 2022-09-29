@@ -1,5 +1,5 @@
 # Esri start of added variables
-g_ESRI_variable_1 = 'fl_parcel'
+# g_ESRI_variable_1 = 'fl_parcel'
 g_ESRI_variable_2 = 'fl_project'
 # Esri end of added variables
 

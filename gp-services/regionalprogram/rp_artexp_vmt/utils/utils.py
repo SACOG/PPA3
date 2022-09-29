@@ -120,19 +120,6 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
     return uid
 
 
-
-
-
-# def parse_project_json(input_json):
-#     with open(input_json, 'r') as j:
-#         project_info_dict = json.load(j)
-    
-#     js_geom = json.dumps(project_info_dict[params.user_inputs.geom])
-#     fs_project_line = arcpy.FeatureSet(js_geom)
-
-#     return (fs_project_line, project_info_dict)
-
-
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")
 

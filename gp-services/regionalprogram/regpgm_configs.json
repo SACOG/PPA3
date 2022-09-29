@@ -95,7 +95,7 @@
 				{
 					"name": "Reduce VMT",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceVMT",
-					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpVMT/GPServer/RPArtExpVMT",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpVMT2/GPServer/RPArtExpVMT",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=c510ef8017cd4e748f8cd95c9a2825fd",
 					"maxProcessingTimeInMins": 3
 				},
@@ -162,7 +162,7 @@
 				{
 					"name": "Reduce VMT",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceVMT",
-					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpVMT/GPServer/RPArtExpVMT",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpVMT2/GPServer/RPArtExpVMT",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=c510ef8017cd4e748f8cd95c9a2825fd",
 					"maxProcessingTimeInMins": 3
 				},
