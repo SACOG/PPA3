@@ -92,6 +92,8 @@ rp_artexp_eq,arterial expansion equity report,0,,p_hisp,hispanic population,FLOA
 rp_artexp_eq,arterial expansion equity report,0,,du_lowinc_perm,number of low-income DU permitted per RHNA plans,FLOAT,
 rp_artexp_frgt,arterial expansion freight report,1,,project_uid,unique project ID,TEXT,36
 rp_artexp_frgt,arterial expansion freight report,1,,pct_staa,share of project that is on STAA freight route,FLOAT,
+rp_artexp_frgt,arterial expansion freight report,1,,pct_empind_base,"share of jobs in industrial sectors, base year",FLOAT,
+rp_artexp_frgt,arterial expansion freight report,1,,pct_empind_fut,"share of jobs in industrial sectors, future year",FLOAT,
 rp_artexp_mm,arterial expansion mulitmodal report,1,,project_uid,unique project ID,TEXT,36
 rp_artexp_mm,arterial expansion mulitmodal report,1,,intxndens,intersection density per acre,FLOAT,
 rp_artexp_mm,arterial expansion mulitmodal report,1,,bikeway_pct,share of centerline miles that have bike lane or path,FLOAT,

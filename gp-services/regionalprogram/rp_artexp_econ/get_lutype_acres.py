@@ -51,7 +51,7 @@ class GetLandUseArea():
         if self.projtyp == params.ptype_area_agg:
             fc_buff = self.fc_project
         else:
-            buff_dist = f"{params.ilut_sum_buffdist} Feet"  # distance in feet
+            buff_dist = params.ilut_sum_buffdist  # distance in feet
             fc_buff = os.path.join(arcpy.env.scratchGDB, "temp_buff_hmi")  # r"memory\temp_buff_hmi"
             if arcpy.Exists(fc_buff): arcpy.Delete_management(fc_buff)
             arcpy.Buffer_analysis(fl_project, fc_buff, buff_dist)

@@ -146,8 +146,6 @@ def make_econ_report_artexp(input_dict):
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_econ'))
 
-    #, , , 'acc_walk_alljob', 'acc_bike_alljob', 'acc_drive_alljob', 'acc_transit_alljob', 'acc_walk_edu', 'acc_bike_edu', 'acc_drive_edu', 'acc_transit_edu'
-
     return out_file
 
 

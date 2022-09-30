@@ -55,9 +55,13 @@ proj_line_template_fc = pathconfigs['sde']['proj_line_template_fc'] # has symbol
 log_fgdb = os.path.join(gis_dir, pathconfigs['server_data']['gisdir']['archived_run_db'])
 pickle_uid = os.path.join(env.scratchGDB, "project_uid.pkl") # pickle file containing integer unique ID that will be used for all tables
 logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
-log_master = 'project_master_v2' # 'project_master'
-log_artexp_sgr = 'rp_artexp_sgr'
-log_rp_artexp_vmt = 'rp_artexp_vmt'
+log_master = 'project_master' # 'project_master_v2'
+f_master_tstamp = "time_created"
+
+f_master_projname = 'proj_name'
+f_master_projtyp = 'proj_type'
+f_master_jur = 'juris'
+f_master_email = 'user_email'
 
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
@@ -79,6 +83,7 @@ def model_links_fc(in_year=base_year):
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
 aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
+# aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
 ptype_fwy = 'Freeway'
@@ -353,59 +358,6 @@ class projInputKeys:
         self.fmt = 'f'
 
 user_inputs = projInputKeys()
-
-
-"""
-EXAMPLE INPUT JSON OBJECT
-
-{
-    "Project_Line": {
-        "geometryType": "esriGeometryPolyline",
-        "sr": {
-            "wkid": 102642
-        },
-        "features": [
-            {
-                "geometry": {
-                    "spatialReference": {
-                        "wkid": 102642
-                    },
-                    "paths": [
-                        [
-                            [
-                                6748148.653240821,
-                                2003155.4099492875
-                            ],
-                            [
-                                6745985.7408012925,
-                                2000534.0577610424
-                            ],
-                            [
-                                6744517.244861613,
-                                2000591.358323832
-                            ],
-                            [
-                                6744483.218642788,
-                                2002526.948155975
-                            ]
-                        ]
-                    ]
-                }
-            }
-        ]
-    },
-    "Project_Name": "test_project",
-    "Jurisdiction": "example_jurisdiction",
-    "Project_ADT":1000,
-    "AADT": 1000,
-    "Posted_Speed_Limit":35,
-    "PCI":35,
-    "Project_PCI":35,
-    "userEmail":"fake@email.com",
-    "f":"json"
-  }
-
-"""
 
 if __name__ == '__main__':
     import pdb; pdb.set_trace()
