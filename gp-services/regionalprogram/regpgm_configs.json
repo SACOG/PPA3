@@ -116,7 +116,7 @@
 				{
 					"name": "Promote Economic Prosperity",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_EconProsperity",
-					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpEconProsp/GPServer/RPArtExpEconProsp",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpEconProsp2/GPServer/RPArtExpEconProsp",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=56f572c943104feab1f13887dddb4f04",
 					"maxProcessingTimeInMins": 3
 				},
