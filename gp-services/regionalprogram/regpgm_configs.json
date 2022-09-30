@@ -109,7 +109,7 @@
 				{
 					"name": "Encourage Multimodal Travel",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Multimodal",
-					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpMultiModal/GPServer/RPArtExpMultiModal",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpMultiModal2/GPServer/RPArtExpMultiModal2",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4d6c8f9a01ea4b0c83e874e79079d57d",
 					"maxProcessingTimeInMins": 3
 				},
@@ -176,7 +176,7 @@
 				{
 					"name": "Encourage Multimodal Travel",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Multimodal",
-					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpMultiModal/GPServer/RPArtExpMultiModal",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/RPArtExpMultiModal2/GPServer/RPArtExpMultiModal2",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4d6c8f9a01ea4b0c83e874e79079d57d",
 					"maxProcessingTimeInMins": 3
 				},
