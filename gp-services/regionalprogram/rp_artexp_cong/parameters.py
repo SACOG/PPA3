@@ -191,8 +191,8 @@ truck_data_calc_dict = {col_truckpct: calc_distwt_avg}
 roadtypes_fwy = (1, 2)  # road type values corresponding to freeways
 directions_tmc = ["NORTHBOUND", "SOUTHBOUND", "EASTBOUND", "WESTBOUND"]
 
-tmc_select_srchdist = 300 # units in feet. will select TMCs within this distance of project line for analysis.
-tmc_buff_dist_ft = 90  # buffer distance, in feet, around the TMCs
+tmc_select_srchdist = "300 Feet" # units in feet. will select TMCs within this distance of project line for analysis.
+tmc_buff_dist_ft = "90 Feet"  # buffer distance, in feet, around the TMCs
 
 # ===================================MODEL-BASED LAND USE  PARAMETERS==============================================
 
@@ -208,9 +208,9 @@ col_empret = 'EMPRET'
 col_empsvc = 'EMPSVC'
 col_k12_enr = 'ENR_K12'
 
-mix_index_buffdist = 5280 #feet, default = 5280
-du_mix_buffdist = 5280 #feet, default = 5280
-ilut_sum_buffdist = 2640 # feet, default = 2640 (0.5mi)
+mix_index_buffdist = "5280 Feet" #feet, default = 5280
+du_mix_buffdist = "5280 Feet" #feet, default = 5280
+ilut_sum_buffdist = "2640 Feet" # feet, default = 2640 (0.5mi)
 
 # park acreage info,
 col_area_ac = 'GISAc'
@@ -303,7 +303,7 @@ colln_searchdist = 75 # in feet, might have projection-related issues in online 
 years_of_collndata = 5
 
 # ============================TRANSIT SERVICE DENSITY PARAMETERS===========================
-trn_buff_dist = 1320 # feet, search distance for transit stops from project line
+trn_buff_dist = "1320 Feet" # feet, search distance for transit stops from project line
 col_transit_events = "tripcnt_day" #if transit feature class is point file dissolved by stop location, this
                                     #col is number of times per day that transit vehicle served each stop
 
@@ -315,14 +315,14 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 #                  * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
-cs_buffdist = 2640 # feet
+cs_buffdist = "2640 Feet" # feet
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
 cs_threshold_speed = 40 # MPH
 cs_spd_pen_fac = 0.04 # speed penalty factor
 
-intersxn_dens_buff = 1320 # distance in feet
-bikeway_buff = 1320 # distance in feet
+intersxn_dens_buff = "1320 Feet" # must specify distance in string so that different projections don't mess up calculation
+bikeway_buff = "1320 Feet" # distance in feet
 
 col_intxn_lnks = 'LINKS'
 
@@ -336,7 +336,7 @@ ctypes_infill = ['Established Communities', 'Arterials & Suburban Corridors', 'R
 threshold_val = 0.9  # if more than 90% of project length is in greenfield, then project is greenfield vice-versa for infill
 
 # for measuring loss in acres of natural resources within project area (nat resources = forest, parks, ag land)
-buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres of natural resources lost within project area.
+buff_nat_resources = "2640 Feet" #feet. Is area of consideration when measuring acres of natural resources lost within project area.
 lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
 
 

@@ -24,9 +24,35 @@ import parcel_data
 import landuse_buff_calcs 
 import chart_accessibility
 import chart_lu_acre_change
+import utils.utils as utils
 
 
-def make_econ_report_artexp(fc_project, project_name, project_type):
+def convert_acc_fnames(in_dict):
+    d_modenames = {'WALKDESTS': 'acc_walk', 'BIKEDESTS': 'acc_bike', 
+                    'AUTODESTS': 'acc_drive', 'TRANDESTS': 'acc_transit'}
+
+    splitter_text = 'DESTS'
+
+    out_dict = {}
+    for k, v in in_dict.items():
+        
+        mode_name = f"{k.split(splitter_text)[0]}{splitter_text}"
+        dest_name = k.split(splitter_text)[1]
+        mode_name_new = d_modenames[mode_name]
+
+        out_field_name = f"{mode_name_new}_{dest_name}"
+
+        out_dict[out_field_name] = v
+
+    return out_dict
+
+
+def make_econ_report_artexp(input_dict):
+
+    uis = params.user_inputs
+    fc_project=input_dict[uis.geom]
+    project_name=input_dict[uis.name]
+    project_type=input_dict[uis.ptype]
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_EconProsperity_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -67,23 +93,28 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
     loaded_json["Total new jobs added"] = job_change
 
     # calc change in ag acreage
+    d_ag_acres = {}
     for i, year in enumerate(data_years):
         arcpy.AddMessage(f"calculating Ag land use acres for {year}")
         in_pcl_poly_fc = params.parcel_poly_fc_yr(year)
-        chart_lu_acre_change.update_json(json_loaded=loaded_json, data_year=year, order_val=i, fc_poly_parcels=in_pcl_poly_fc,
+        ag_ac_yr = chart_lu_acre_change.update_json(json_loaded=loaded_json, data_year=year, order_val=i, fc_poly_parcels=in_pcl_poly_fc,
                                         project_fc=fc_project, project_type=project_type, in_lu_type='Agriculture',
                                         k_chart_title="Change in Ag acreage")
+        
+        d_ag_acres[year] = list(ag_ac_yr.values())[0]
+
+    agac_base = d_ag_acres[data_years[0]]
+    agac_future = d_ag_acres[data_years[1]]
 
     # access to jobs chart update
-    chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
+    acc_data_jobs = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
                                     project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
                                     k_chart_title="Access to jobs", destination_type='alljob')
 
     # access to edu facilities chart update
-    chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
+    acc_data_edu = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
                                     project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
                                     k_chart_title="Education Facility", destination_type='edu')
-
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -94,6 +125,29 @@ def make_econ_report_artexp(fc_project, project_name, project_type):
     with open(out_file, 'w') as f_out:
         json.dump(loaded_json, f_out, indent=4)
 
+    # log to data table
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+    acc_data_jobs_fmt = convert_acc_fnames(acc_data_jobs)
+    acc_data_edu_fmt = convert_acc_fnames(acc_data_edu)
+
+
+    data_to_log = {
+        'project_uid': project_uid, 'enr_k12': k12_enr_val, 
+        'jobs_added': job_change, 'agac_pct_base': agac_base,
+        'agac_pct_future': agac_future
+    }
+
+    data_to_log.update(acc_data_jobs_fmt)
+    data_to_log.update(acc_data_edu_fmt)
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_econ'))
+
+    #, , , 'acc_walk_alljob', 'acc_bike_alljob', 'acc_drive_alljob', 'acc_transit_alljob', 'acc_walk_edu', 'acc_bike_edu', 'acc_drive_edu', 'acc_transit_edu'
+
     return out_file
 
 
@@ -101,24 +155,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
-    # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  
-    project_name = arcpy.GetParameterAsText(1) 
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'broadway'
+    # jurisdiction = 'sac city'
+    # project_type = params.ptype_arterial
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
-    # test values hard coded
-    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Test_HoweAve'
-    # project_name = 'HoweAve'
-
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_econ_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_econ_report_artexp(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

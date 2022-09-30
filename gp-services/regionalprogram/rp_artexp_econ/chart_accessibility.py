@@ -22,7 +22,7 @@ from get_agg_values import make_aggval_dict
 
 
 
-def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_csv, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
+def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_csv, destination_type, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
 
     fc_accessibility_data = params.accdata_fc
 
@@ -30,9 +30,8 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_
     dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
 
     # lookup dict between names of data points in raw output and names in JSON file
-    dest_type = 'poi2' # destination type as specified in raw data output
-    acc_metrics = {f'WALKDESTS{dest_type}':'30 Min Walk', f'BIKEDESTS{dest_type}':'30 Min Biking', 
-                    f'AUTODESTS{dest_type}':'15 Min Drive', f'TRANDESTS{dest_type}':'45 Min Transit'}
+    acc_metrics = {f'WALKDESTS{destination_type}':'30 Min Walk', f'BIKEDESTS{destination_type}':'30 Min Biking', 
+                    f'AUTODESTS{destination_type}':'15 Min Drive', f'TRANDESTS{destination_type}':'45 Min Transit'}
     accmetrics_keys = list(acc_metrics.keys())
 
     # trimmed down output, only containing the accessibility metrics needed for this chart 
