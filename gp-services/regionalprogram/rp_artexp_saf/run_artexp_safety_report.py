@@ -26,6 +26,7 @@ import commtype
 import collisions
 import get_agg_values as aggvals
 import utils.make_map_img as imgmaker
+import utils.utils as utils
 
 def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):
     """Updates project-level, community-type, and region-level values for simple tables in JSON file."
@@ -43,7 +44,14 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
     json_obj[k_chartname_metric][params.geo_region] = val_regn
 
 
-def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt):
+# def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt):
+def make_safety_report_artexp(input_dict):
+
+    uis = params.user_inputs
+    fc_project = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]
+    proj_aadt = int(input_dict[uis.aadt])
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json")
 
@@ -98,8 +106,10 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
 
 
     # chart of bike/ped and fatal collisions within all geos
-    type_lkp_dict = {f"PCT_FATAL_COLLISNS{project_metric_tag}": "Pct of collisions that are fatal",
-                    f"PCT_BIKEPED_COLLISNS{project_metric_tag}": "Pct of collisions with bike/ped"}
+    tag_pct_fatal = f"PCT_FATAL_COLLISNS{project_metric_tag}"
+    tag_pct_bikeped = f"PCT_BIKEPED_COLLISNS{project_metric_tag}"
+    type_lkp_dict = {tag_pct_fatal: "Pct of collisions that are fatal",
+                    tag_pct_bikeped: "Pct of collisions with bike/ped"}
 
     typekeys = list(type_lkp_dict.keys())
 
@@ -114,7 +124,6 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
         val_ctyp = aggdict[k][project_commtype]
         val_regn = aggdict[k][params.geo_region]
         
-
         loaded_json[params.k_charts][k_chartname_bpfatal][params.k_features][i][params.k_attrs] \
             [params.k_type] = typeval
         loaded_json[params.k_charts][k_chartname_bpfatal][params.k_features][i][params.k_attrs] \
@@ -134,34 +143,78 @@ def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt)
     with open(out_file, 'w') as f_out:
         json.dump(loaded_json, f_out, indent=4)
 
+    # log to data table
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+    fatal_crash_pct = collision_data_project[tag_pct_fatal]
+    bikeped_crash_pct = collision_data_project[tag_pct_bikeped]
+
+    data_to_log = {
+        'project_uid': project_uid, 'crash_cnt': tot_collns, 
+        'crash_100mvmt': colln_rate_proj, 'crash_bkpd_clmile': colln_bkpd_proj,
+        'crashpct_fatal': fatal_crash_pct, 'crash_bkpd_pct': bikeped_crash_pct
+    }
+
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_saf'))
+
     return out_file
 
 
 if __name__ == '__main__':
 
-    # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'broadway'
+    # jurisdiction = 'sac city'
+    # project_type = params.ptype_arterial
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
-    # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  
-    project_name = arcpy.GetParameterAsText(1)  
-    project_aadt = int(arcpy.GetParameterAsText(2))
-
-    # hard values for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
-    # project_name = 'TestI5'
-    # project_aadt = 180000
-
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_safety_report_artexp(fc_project=project_fc, project_name=project_name,
-                                            project_type=ptype, proj_aadt=project_aadt)
+    result_path = make_safety_report_artexp(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(3, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

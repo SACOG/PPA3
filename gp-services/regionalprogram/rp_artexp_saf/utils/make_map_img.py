@@ -60,6 +60,7 @@ class MakeMapImage(object):
         self.proj_name = proj_name
         self.map_name = map_name
         self.project_fc = project_fc #remember, this is a feature set!
+        self.project_fc_fnames = [f.name for f in arcpy.ListFields(self.project_fc)]
         self.imgtyp = imgtyp
         
         # params that are derived or imported from ppa_input_params.py
@@ -72,15 +73,21 @@ class MakeMapImage(object):
         # generate map config attributes
         self.get_map_config_params()
 
+
     def get_map_config_params(self):
+
+        # FeatureSet input has 'OID' field, while feature class input has 'OBJECTID' field
+        oid_options = ['OBJECTID', 'OID']
+        f_oid = [f for f in oid_options if f in self.project_fc_fnames][0]
+        self.map_sql = f"{f_oid} > 0"
+
         df = pd.read_csv(self.config_csv)
         row = df.loc[df['MapName'] == self.map_name].reset_index()
         self.map_layout = row['MapLayout'][0]
-        self.map_sql = row['SQL'][0]
         self.proj_line_layer = row['ProjLineLayer'][0]
         self.out_map_img = f"{self.map_name}.{self.imgtyp}"
-     
-            
+
+
     def expand_ext_2d(self, ext, ratio):
         '''Adjust zoom extent for map of project segment
         ext = input extent object
@@ -139,7 +146,7 @@ class MakeMapImage(object):
                             # also converts it from feature set to feature class that can be
                             # plugged into APRX
                             sref_lyr = arcpy.Describe(lyr).spatialReference
-                            project_fc_sref = arcpy.Describe(self.project_fc).spatialReference
+                            # project_fc_sref = arcpy.Describe(self.project_fc).spatialReference
 
                             project_fc2 = os.path.join(arcpy.env.scratchGDB, f"pl_prj{int(perf()) + 1}")
                             arcpy.management.Project(self.project_fc, project_fc2, sref_lyr)
@@ -152,11 +159,11 @@ class MakeMapImage(object):
                                                 'connection_info': {'database': project_fc_info.path}}
 
                             # update the connection properties of the APRX line layer to connect to the input project line FC
-                            arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
-                            arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
+                            # arcpy.AddMessage(f"old connection DB for line layer: {lyr.connectionProperties}")
+                            # arcpy.AddMessage(f"should update connection properties to: {project_fc_connprop}")
                             lyr.updateConnectionProperties(lyr.connectionProperties, project_fc_connprop) # https://community.esri.com/t5/python-questions/arcpy-layer-updateconnectionproperties-not-working/td-p/519982
                             
-                            arcpy.AddMessage(f"updated connection DB for line layer: {lyr.connectionProperties}")
+                            # arcpy.AddMessage(f"updated connection DB for line layer: {lyr.connectionProperties}")
 
                             fl = "fl{}".format(int(perf()))
                             if arcpy.Exists(fl):
@@ -164,7 +171,12 @@ class MakeMapImage(object):
                                     arcpy.Delete_management(fl)
                                 except:
                                     pass 
+
+                            # import pdb; pdb.set_trace()
+
+                            # feature class query based on OBJECTID field, whereas for featureset its OID field.
                             arcpy.MakeFeatureLayer_management(lyr, fl, where_clause=self.map_sql)  # make feature layer of project line
+                            
                             ext = ""
                             
                             # method for getting extent for the first element in the project line layer
@@ -228,10 +240,10 @@ class MakeMapImage(object):
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")
 
-    result = set_img_path('https://services.sacog.org/hosting/rest/directories/arcgisjobs', 
-                'C:\\arcgisserver\\directories\\arcgisjobs\\rpartexpfreight_gpserver\\jf2567b51a75144c7914b9ac5ddb2dd47\\scratch')
+    # result = set_img_path('https://services.sacog.org/hosting/rest/directories/arcgisjobs', 
+    #             'C:\\arcgisserver\\directories\\arcgisjobs\\rpartexpfreight_gpserver\\jf2567b51a75144c7914b9ac5ddb2dd47\\scratch')
 
-    print(result)
+    # print(result)
 
 
 
