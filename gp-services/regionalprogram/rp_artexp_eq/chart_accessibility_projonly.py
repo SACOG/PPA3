@@ -32,7 +32,6 @@ def update_json(json_loaded, fc_project, project_type,
     # lookup dict between names of data points in raw output and names in JSON file
     acc_metrics = {f'WALKDESTS{destination_type}':'30 Min Walk', f'BIKEDESTS{destination_type}':'30 Min Biking', 
                     f'AUTODESTS{destination_type}':'15 Min Drive', f'TRANDESTS{destination_type}':'45 Min Transit'}
-    accmetrics_keys = list(acc_metrics.keys())
 
     # trimmed down output, only containing the accessibility metrics needed for this chart 
     # instead of all accessibility metrics
@@ -49,6 +48,8 @@ def update_json(json_loaded, fc_project, project_type,
             [params.k_attrs][params.k_value] = dict_data2[k] 
 
     print("calculated accessibility values sucessfully")
+
+    return dict_data
 
 
 if __name__ == '__main__':

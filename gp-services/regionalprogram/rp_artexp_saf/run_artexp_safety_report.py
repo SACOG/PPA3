@@ -19,7 +19,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import commtype
@@ -44,7 +44,6 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
     json_obj[k_chartname_metric][params.geo_region] = val_regn
 
 
-# def make_safety_report_artexp(fc_project, project_name, project_type, proj_aadt):
 def make_safety_report_artexp(input_dict):
 
     uis = params.user_inputs
