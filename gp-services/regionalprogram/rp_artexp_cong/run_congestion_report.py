@@ -103,12 +103,6 @@ def make_congestion_rpt_artexp(input_dict):
     du_base = d_lubuff[data_years[0]]["dwellingUnits"]
     du_future = d_lubuff[data_years[1]]["dwellingUnits"]
 
-    # old function for getting buffer stuff
-    # for i, year in enumerate(data_years):
-    #     in_pcl_pt_fc = parcel_fc_dict[year]
-    #     chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-    #                                 project_fc=project_fc, project_type=ptype)
-
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
 

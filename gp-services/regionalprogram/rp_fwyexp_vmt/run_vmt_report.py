@@ -68,7 +68,11 @@ def make_vmt_report_fwyexp(input_dict):
         loaded_json[params.k_charts][cname_vehocc][params.k_features][i] \
             [params.k_attrs][params.k_value] =  proj_vehocc       
 
-        import pdb; pdb.set_trace()
+        output_data[year] = out_dict
+
+    # resulting output dict = {2016:{trantrips:val, vehocc:val}, 2040:{trantrips:val, vehocc:val}}
+
+
 
     # log to data table
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
@@ -76,14 +80,19 @@ def make_vmt_report_fwyexp(input_dict):
                                         proj_jur=input_dict[uis.jur], 
                                         user_email=input_dict[uis.email])
 
+    base_trntrip = output_data[data_years[0]]['avg_2way_trantrips']
+    base_vehocc = output_data[data_years[0]]['avg_2way_vehocc']  
+    future_trntrip = output_data[data_years[1]]['avg_2way_trantrips']
+    future_vehocc = output_data[data_years[1]]['avg_2way_vehocc']   
 
-    # data_to_log = {
-    #     'project_uid': project_uid, 'base_trntrip': ,
-    #     'base_vehocc': , 'future_trntrip': ,
-    #     'future_vehocc': ,
+    data_to_log = {
+        'project_uid': project_uid, 'base_trntrip': base_trntrip,
+        'base_vehocc': base_vehocc, 'future_trntrip': future_trntrip,
+        'future_vehocc': future_vehocc
+    }
 
 
-    # utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_fwy_vmt'))
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_fwy_vmt'))
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -113,15 +122,15 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
-    project_name = 'broadway'
-    jurisdiction = 'sac city'
-    project_type = params.ptype_arterial
-    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    aadt = 150000
-    posted_spd = 65
-    pci = 80
-    email = 'fake@test.com'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway' # Broadway16th_2226
+    # project_name = 'causeway'
+    # jurisdiction = 'caltrans'
+    # project_type = params.ptype_fwy
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {
