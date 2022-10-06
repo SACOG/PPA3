@@ -42,6 +42,8 @@ def update_json(json_loaded, fc_project, fc_accdata, proj_type, project_commtype
     for i, geo_type in enumerate(geotype_keys):
         json_loaded[params.k_charts][chart_title][params.k_features][i][params.k_attrs][params.k_value] = output_dict[geo_type]
 
+    return project_dict
+
 
 
 if __name__ == '__main__':
