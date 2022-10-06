@@ -1,6 +1,6 @@
 """
 Name: run_artexp_freight_report.py
-Purpose: Freight perf subreport for arterial or transit expansion projects
+Purpose: Freight perf subreport for arterial SGR projects
 
 
 Author: Darren Conly
@@ -18,7 +18,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
+
 
 import parameters as params
 import commtype
@@ -27,7 +27,6 @@ import landuse_buff_calcs
 import get_line_overlap as glo
 import get_agg_values as aggvals
 import utils.make_map_img as imgmaker
-import utils.utils as utils
 
 
 def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
@@ -43,12 +42,7 @@ def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
     return pct_jobs_sector
 
 
-# def make_frgt_report_artexp(project_json, project_type):
-def make_frgt_report_artsgr(input_dict):
-
-    uis = params.user_inputs
-    fc_project = input_dict[uis.geom]
-    project_name = input_dict[uis.name]
+def make_frgt_report_artexp(fc_project, project_name, project_type):
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_Freight_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -58,7 +52,7 @@ def make_frgt_report_artsgr(input_dict):
         loaded_json = json.load(j_in)
 
     # get project community type
-    project_commtype = commtype.get_proj_ctype(fc_project, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
@@ -110,21 +104,6 @@ def make_frgt_report_artsgr(input_dict):
     with open(out_file, 'w') as f_out:
         json.dump(loaded_json, f_out, indent=4)
 
-    # log to data table
-    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
-                                        proj_type=input_dict[uis.ptype], 
-                                        proj_jur=input_dict[uis.jur], 
-                                        user_email=input_dict[uis.email])
-
-
-    data_to_log = {
-        'project_uid': project_uid, 'pct_staa': staa_pct, 
-        'pct_empind_base': pct_ind_jobs_project
-    }
-
-
-    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_frgt'))
-
     return out_file
 
 
@@ -132,55 +111,24 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
-    # inputs from tool interface
-    project_fc = arcpy.GetParameterAsText(0)
-    project_name = arcpy.GetParameterAsText(1)
-    jurisdiction = arcpy.GetParameterAsText(2)
-    project_type = arcpy.GetParameterAsText(3)
-    perf_outcomes = arcpy.GetParameterAsText(4)
-    aadt = arcpy.GetParameterAsText(5)
-    posted_spd = arcpy.GetParameterAsText(6)
-    pci = arcpy.GetParameterAsText(7)
-    email = arcpy.GetParameterAsText(8)
 
-    # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
-    # project_name = 'broadway'
-    # jurisdiction = 'sac city'
-    # project_type = params.ptype_arterial
-    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    # aadt = 150000
-    # posted_spd = 65
-    # pci = 80
-    # email = 'fake@test.com'
+    # specify project line feature class and attributes
+    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
+    project_name = arcpy.GetParameterAsText(1)  # 'TestTruxelBridge'
 
-    uis = params.user_inputs
-    input_parameter_dict = {
-        uis.geom: project_fc,
-        uis.name: project_name,
-        uis.jur: jurisdiction,
-        uis.ptype: project_type,
-        uis.perf_outcomes: perf_outcomes,
-        uis.aadt: aadt,
-        uis.posted_spd: posted_spd,
-        uis.pci: pci,
-        uis.email: email
-    }
+    # hard values for testing
+    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_StocktonBlCS'
+    # project_name = 'StocktonCS'
+
+    ptype = params.ptype_arterial
     
 
     #=================BEGIN SCRIPT===========================
-    try:
-        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
-        print("Deleted arcpy scratch GDB to ensure reliability.")
-    except:
-        pass
-
-
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_frgt_report_artsgr(input_dict=input_parameter_dict)
+    result_path = make_frgt_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
 
-    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
