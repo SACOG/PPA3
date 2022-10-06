@@ -16,21 +16,31 @@ Python Version: 3.x
 """
 import datetime as dt
 import os
+import sys
 import csv
 from time import perf_counter as perf
 
 import arcpy
-import pandas as pd
 
 import accessibility_calcs as acc
 import get_buff_netmiles as bikebuffmi
-import mix_index_for_project as mixidx
 import get_zone_comm_type as get_ctyp
 import parameters as params
 
 arcpy.overwriteOutput = True
 
-def get_zone_data(polygon_fl_selection, data_year):
+def trace():
+    import traceback, inspect
+    tb = sys.exc_info()[2]
+    tbinfo = traceback.format_tb(tb)[0]
+    # script name + line number
+    line = tbinfo.split(", ")[1]
+    filename = inspect.getfile(inspect.currentframe())
+    # Get Python syntax error
+    synerror = traceback.format_exc().splitlines()[-1]
+    return line, filename, synerror #return line number, name of file with error line, and type of error
+
+def get_zone_data(polygon_fl_selection):
     """Compute applicable PPA metrics for single polygon representing green zone or other
     polygon-based analysis area.
 
@@ -103,7 +113,7 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
                     zone_name = row[poly_fl_fields.index(f_gzname)]
                     sql_getzone = f"{f_id} = '{zone_id}'"
                     arcpy.SelectLayerByAttribute_management(in_poly_fl, where_clause=sql_getzone)
-                    zone_data = get_zone_data(in_poly_fl, data_year)
+                    zone_data = get_zone_data(in_poly_fl)
 
                     output_dict = {f_id: zone_id, f_jur: zone_jur, f_gzname: zone_name}
                     output_dict.update(zone_data)
@@ -121,6 +131,8 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
                         print(f"{i} of {zone_cnt} zones processed...")
 
                 except:
+                    msg = trace()
+                    arcpy.AddMessage(msg)
                     import pdb; pdb.set_trace()
 
 
@@ -128,7 +140,7 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
 
 if __name__ == '__main__':
     # SHP or FC of green zone polygons
-    fc_zones = r'I:\Projects\Darren\PPA3_GIS\PPA3_GreenMeansGo.gdb\GreenZones_20220809'
+    fc_zones = r'I:\Green_Means_Go\Green Zones-for new application\GreenZones_100622.shp'
     output_dir = r'I:\Projects\Darren\PPA3_GIS\CSV\GMG'
 
 #=============================RUN SCRIPT=================================

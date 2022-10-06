@@ -82,6 +82,8 @@ def get_tmc_truck_data(fc_projline, str_project_type):
     # get "full" table with data for all directions
     projdata_df = ndc.conflate_tmc2projline(fl_projline, params.directions_tmc, params.col_tmcdir, 
                                             fl_tmc_buff, params.truck_data_calc_dict)
+    
+    arcpy.AddMessage(str(projdata_df))
 
     out_dict = {}
     for field, calcmthd in params.truck_data_calc_dict.items():

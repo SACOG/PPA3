@@ -60,7 +60,7 @@ def get_bikeway_mileage_share(project_fc, proj_type):
     centerline_miles = netmiles_in_buffer(project_fc, c_line_layer, proj_type)
     bikeway_miles = netmiles_in_buffer(project_fc, bikewy_layer, proj_type)
 
-    share_bikeways = bikeway_miles / centerline_miles
+    share_bikeways = bikeway_miles / centerline_miles if centerline_miles > 0 else 0
 
     return {"pct_roadmi_bikeways": share_bikeways}
 
