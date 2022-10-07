@@ -102,7 +102,6 @@ def make_congestion_rpt_fwyexp(input_dict):
 
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
-    arcpy.AddMessage(str(congn_data))
 
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
     

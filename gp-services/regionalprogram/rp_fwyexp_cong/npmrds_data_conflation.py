@@ -86,7 +86,7 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         # https://support.esri.com/en/technical-article/000012699
         
         # temporary files
-        scratch_gdb = "memory" # arcpy.env.scratchGDB
+        scratch_gdb = arcpy.env.scratchGDB # arcpy.env.scratchGDB
         
         temp_intersctpts = os.path.join(scratch_gdb, "temp_intersectpoints")  # r"{}\temp_intersectpoints".format(scratch_gdb)
         temp_intrsctpt_singlpt = os.path.join(scratch_gdb, "temp_intrsctpt_singlpt") # converted from multipoint to single point (1 pt per feature)
@@ -104,7 +104,9 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         arcpy.SelectLayerByAttribute_management(fl_tmcs_buffd, "SUBSET_SELECTION", sql_sel_tmcxdir)
 
         out_dict_len_field = f"{direcn}_calc_len"
-        if int(arcpy.GetCount_management(fl_tmcs_buffd)[0]) == 0:
+
+        sel_feat_cnt = int(arcpy.GetCount_management(fl_tmcs_buffd)[0])
+        if sel_feat_cnt == 0:
             out_row_dict[out_dict_len_field] = 0
         else:
             # split the project line at the boundaries of the TMC buffer, creating points where project line intersects TMC buffer boundaries
@@ -175,8 +177,6 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         arcpy.Delete_management(fc)
 
     output_df = pd.DataFrame([out_row_dict])
-
-    # import pdb; pdb.set_trace()
     
     return output_df
     
@@ -245,7 +245,7 @@ def get_npmrds_data(fc_projline, str_project_type):
 
     # make flat-ended buffers around TMCs that intersect project
     arcpy.SelectLayerByLocation_management(fl_speed_data, "WITHIN_A_DISTANCE", fl_projline, params.tmc_select_srchdist, "NEW_SELECTION")
-    if str_project_type == 'Freeway':
+    if str_project_type == params.ptype_fwy:
         sql = g_ESRI_variable_8.format(params.col_roadtype, params.roadtypes_fwy)
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
     else:
@@ -283,6 +283,12 @@ if __name__ == '__main__':
 
     project_line = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
     proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
+
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
 
 
     test_dict = get_npmrds_data(project_line, proj_type)

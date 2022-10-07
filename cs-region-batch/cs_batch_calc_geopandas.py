@@ -62,36 +62,69 @@ def complete_streets_idx(gdf_pclpt, gdf_project, project_type, posted_speedlim, 
 def load_efficient_dbf(in_fc, cols):
     if 'geometry' not in cols:
         cols.append('geometry')
-    # import pdb; pdb.set_trace()
-    gdf = gpd.GeoDataFrame.from_file(params.fgdb, layer=in_fc, 
-            driver="OpenFileGDB")[cols]
+    
+    fc_dir = os.path.dirname(in_fc)
+    fc_name = os.path.basename(in_fc)
 
+    gdf = gpd.read_file(fc_dir, layer=fc_name, driver="OpenFileGDB")[cols]
     memory_optimization(gdf)
-
     return gdf
 
+
+def make_trim_pclpts(fc_parcels, fc_net):
+    name_temp_pcl_fc = 'TEMP_parcels_near_roads'
+    temp_pcl_fc = os.path.join(arcpy.env.scratchGDB, name_temp_pcl_fc)
+    pcl_fl = "pcl_fl"
+    arcpy.management.MakeFeatureLayer(fc_parcels, pcl_fl)
+
+    net_fl = "net_fl"
+    arcpy.management.MakeFeatureLayer(fc_net, net_fl)
+
+    arcpy.management.SelectLayerByLocation(pcl_fl, overlap_type="WITHIN_A_DISTANCE",
+                                        select_features=net_fl, search_distance=params.cs_buffdist)
+
+    arcpy.conversion.FeatureClassToFeatureClass(pcl_fl, arcpy.env.scratchGDB, name_temp_pcl_fc)
+
+    return temp_pcl_fc
 
 def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
     start_time = dt.datetime.now()
 
     fld_oid = "OBJECTID"
     fld_geom = "SHAPE@"
-    fld_strtname = "FULLSTREET"
+    fld_strtname = "ST_NAME"
     fld_spd = "SPD_LIMIT"
     fld_len = "SHAPE@LENGTH"
     fld_csi = "CompltStreetIdx"
+    fields_network = [fld_geom, fld_strtname, fld_spd, fld_len, fld_oid]
+
+    # for debugging field-not-found errors
+    fnames_to_check = [fld_oid, fld_strtname, fld_spd]
+    fields_net_all = [f.name for f in arcpy.ListFields(network_fc)]
+    stop_script = False
+    
+    for f in fnames_to_check:
+        if f not in fields_net_all:
+            print(f"{f} not in {network_fc}")
+            stop_script = True
+
+    if stop_script:
+        import pdb; pdb.set_trace()
 
     # make the parcel point geodataframe
     arcpy.AddMessage("loading land use data...")
-    gdf_parcels = load_efficient_dbf(fc_pclpt, cols=lu_fac_cols)
+
+    # create temp fc just of parcels near the network to reduce selection time
+    pcls_filtered = make_trim_pclpts(fc_pclpt, network_fc)
+    
+    gdf_parcels = load_efficient_dbf(pcls_filtered, cols=lu_fac_cols)
 
     # make the transit stop point geodataframe
     arcpy.AddMessage("loading transit stop event data...")
-    gdf_transit = load_efficient_dbf(transit_event_fc, cols=["COUNT_trip_id"])
+    gdf_transit = load_efficient_dbf(transit_event_fc, cols=["tripcnt_day"])
+
 
     # make the output featureclass
-    fields_network = [fld_geom, fld_strtname, fld_spd, fld_len, fld_oid]
-    
     time_sufx = str(dt.datetime.now().strftime('%m%d%Y%H%M'))
     output_fc = "CompleteStreetMap{}".format(time_sufx)
     
@@ -119,7 +152,6 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
                 stname = row[1]
                 speedlim = row[2]
                 
-                # import pdb; pdb.set_trace()
                 dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
                 dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
                 project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
@@ -137,20 +169,21 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
 
 
 if __name__ == '__main__':
-    arcpy.env.workspace = r"C:\\PPA_CS_batch_temp\\TEMP_PPA_cs_data.gdb"
+    arcpy.env.workspace = r"I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb"
 
     # input fc of parcel data--must be points!
     # PERFORMANCE NOTE: With a parcel file containing 670,000 parcels, each line segment takes ~2.67sec to process
     # PERFORMANCE TIP - parcel fc should only have parcel points within desired buffer distance of roads, rather than all parcels in region.
-    in_pcl_pt_fc = 'parcel_data_pts_2016_qmi_roads' # params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE" 
+    in_pcl_pt_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\parcel_data_pts_2016' # params.parcel_pt_fc_yr(in_year=2016) # "parcel_data_pts_SAMPLE" 
     value_fields = [params.col_area_ac, params.col_k12_enr, params.col_emptot, params.col_du]
     ptype = 'Arterial'
 
     # input line project for basing spatial selection
     # NOTE - input files should come from local drive in case network connections fail
-    input_network_fc = 'Centerline_ArterialCollector10132021_spdSpJn' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
+    input_network_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
+    
     # trnstops_fc = os.path.join(params.fgdb, params.trn_svc_fc)
-    trnstops_fc = params.trn_svc_fc
+    trnstops_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\transit_stopcount_2019'
 
     make_fc_with_csi(input_network_fc, trnstops_fc, in_pcl_pt_fc, ptype)
     
