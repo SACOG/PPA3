@@ -61,7 +61,7 @@ def model_links_fc(in_year=2016):
 aggvals_csv = os.path.join(server_folder, r"PPA2\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv")
 
 # project type
-ptype_fwy = 'Freeway'
+ptype_fwy = 'Freeway Expansion'
 ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"

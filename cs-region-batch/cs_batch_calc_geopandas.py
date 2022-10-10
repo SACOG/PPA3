@@ -11,6 +11,7 @@
 # --------------------------------
 import datetime as dt
 import os
+from time import perf_counter as perf
 
 import arcpy
 import geopandas as gpd
@@ -59,7 +60,7 @@ def complete_streets_idx(gdf_pclpt, gdf_project, project_type, posted_speedlim, 
     return out_dict
 
 
-def load_efficient_dbf(in_fc, cols):
+def load_efficient_gdf(in_fc, cols):
     if 'geometry' not in cols:
         cols.append('geometry')
     
@@ -87,7 +88,19 @@ def make_trim_pclpts(fc_parcels, fc_net):
 
     return temp_pcl_fc
 
-def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
+def filter_by_ctype(gdf_pcls, gdf_ctypes, f_ctnames, ctyp_name):
+    # filter down to specific comm type, so parcel selection process happens on smaller subset of parcels
+    ctyp_buff_dist_ft = 4000
+    gdf_ctyp = gdf_ctypes.loc[gdf_ctypes[f_ctnames] == ctyp_name] # filter to only get the desired ctype
+    buff_ctyp = gdf_ctyp.buffer(ctyp_buff_dist_ft).unary_union # make buffer around that 1 ctype
+    
+    # then select all parcels just within buffer distance of the one ctype
+    gdf_selected_pts = gdf_pcls.loc[gdf_pcls.geometry.within(buff_ctyp) == True]
+
+    return gdf_selected_pts
+
+
+def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, fc_ctypes, project_type):
     start_time = dt.datetime.now()
 
     fld_oid = "OBJECTID"
@@ -117,12 +130,19 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
     # create temp fc just of parcels near the network to reduce selection time
     pcls_filtered = make_trim_pclpts(fc_pclpt, network_fc)
     
-    gdf_parcels = load_efficient_dbf(pcls_filtered, cols=lu_fac_cols)
+    gdf_parcels = load_efficient_gdf(pcls_filtered, cols=lu_fac_cols)
 
     # make the transit stop point geodataframe
     arcpy.AddMessage("loading transit stop event data...")
-    gdf_transit = load_efficient_dbf(transit_event_fc, cols=["tripcnt_day"])
+    gdf_transit = load_efficient_gdf(transit_event_fc, cols=["tripcnt_day"])
 
+    # load gdf of community types and comm type names
+    f_commtyp_names = 'comm_type_ppa'
+    gdf_ctypes = load_efficient_gdf(fc_ctypes, [f_commtyp_names])
+    ctype_names = gdf_ctypes[f_commtyp_names].unique()
+
+    fl_ctypes = 'fl_ctypes'
+    arcpy.MakeFeatureLayer_management(fc_ctypes, fl_ctypes)
 
     # make the output featureclass
     time_sufx = str(dt.datetime.now().strftime('%m%d%Y%H%M'))
@@ -142,25 +162,35 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, project_type):
     total_net_links = arcpy.GetCount_management(fl_network)[0]
     
     print(f"inserting rows, starting at {start_time}...")
-    with arcpy.da.InsertCursor(output_fc, [fld_geom, fld_strtname, fld_spd, fld_csi]) as inscur:
-        with arcpy.da.SearchCursor(fl_network, fields_network) as cur:
-            for i, row in enumerate(cur):
-                if i % 1000 == 0:
-                    st_time = dt.datetime.now() - start_time
-                    print(f"{i} out of {total_net_links} rows processed, with {st_time} elapsed.")
-                geom = row[0]
-                stname = row[1]
-                speedlim = row[2]
-                
-                dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
-                dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
-                project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
-                
-                csi_dict = complete_streets_idx(gdf_parcels, project_gdf, project_type, speedlim, gdf_transit)
-                csi = csi_dict['complete_street_score']
 
-                ins_row = [geom, stname, speedlim, csi]
-                inscur.insertRow(ins_row)
+    for commtyp in ctype_names:
+        arcpy.SelectLayerByAttribute_management(fl_ctypes, "NEW_SELECTION", f"{f_commtyp_names} = '{commtyp}'")
+        arcpy.SelectLayerByLocation_management(in_layer=fl_network, overlap_type="INTERSECT", 
+                                                select_features=fl_ctypes, selection_type="NEW_SELECTION")
+
+        st = perf()
+        gdf_pcls_ctyp = filter_by_ctype(gdf_parcels, gdf_ctypes, f_commtyp_names, commtyp)
+        print(f"selecting all parcels within ctype {commtyp} took {(perf() - st) / 60} mins.")
+
+        with arcpy.da.InsertCursor(output_fc, [fld_geom, fld_strtname, fld_spd, fld_csi]) as inscur:
+            with arcpy.da.SearchCursor(fl_network, fields_network) as cur:
+                for i, row in enumerate(cur):
+                    if i % 1000 == 0:
+                        st_time = dt.datetime.now() - start_time
+                        print(f"{i} out of {total_net_links} rows processed, with {st_time} elapsed.")
+                    geom = row[0]
+                    stname = row[1]
+                    speedlim = row[2]
+                    
+                    dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
+                    dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
+                    project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
+                    
+                    csi_dict = complete_streets_idx(gdf_pcls_ctyp, project_gdf, project_type, speedlim, gdf_transit)
+                    csi = csi_dict['complete_street_score']
+
+                    ins_row = [geom, stname, speedlim, csi]
+                    inscur.insertRow(ins_row)
     time_elapsed = dt.datetime.now() - start_time
     print("Finished! Processed {} rows in {}".format(i + 1, time_elapsed))
 
@@ -180,11 +210,13 @@ if __name__ == '__main__':
 
     # input line project for basing spatial selection
     # NOTE - input files should come from local drive in case network connections fail
-    input_network_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
+    input_network_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS_rmIdentical' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
     
     # trnstops_fc = os.path.join(params.fgdb, params.trn_svc_fc)
     trnstops_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\transit_stopcount_2019'
 
-    make_fc_with_csi(input_network_fc, trnstops_fc, in_pcl_pt_fc, ptype)
+    comm_types_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\comm_type_jurspec_dissolve'
+
+    make_fc_with_csi(input_network_fc, trnstops_fc, in_pcl_pt_fc, comm_types_fc, ptype)
     
 
