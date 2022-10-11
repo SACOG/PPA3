@@ -84,6 +84,6 @@ def build_db_tables(gdb_workspace, spec_csv, tables_to_make=[]):
 if __name__ == '__main__':
     fgdb = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_run_data.gdb'
     config_csv = r'C:\Users\dconly\GitRepos\PPA3\layer-building\build_outputs_db\output_db_tables_test.csv'
-    make_tables = ['rp_artexp_saf'] # ['project_master', 'rp_artexp_cong']
+    make_tables = ['cd_trnchoice'] # ['project_master', 'rp_artexp_cong']
 
     build_db_tables(gdb_workspace=fgdb, spec_csv=config_csv, tables_to_make=make_tables)

@@ -1,10 +1,10 @@
 """
 Name: run_title_guidepg.py
-Purpose: Freight perf subreport for arterial or transit expansion projects
+Purpose: Makes title and user notice pages.
 
 
 Author: Darren Conly
-Last Updated: Mar 2022
+Last Updated: Oct 2022
 Updated by: 
 Copyright:   (c) SACOG
 Python Version: 3.x
@@ -144,12 +144,17 @@ if __name__ == '__main__':
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
     # project_name = 'causeway'
     # jurisdiction = 'Caltrans'
-    # project_type = 'Arterial Expansion'
+    # project_type = 'Freeway Expansion'
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 150000
     # posted_spd = 65
     # pci = 80
     # email = 'fake@test.com'
+
+    if project_type == params.ptype_commdesign:
+        aadt = None
+        posted_spd = None
+        pci = None
 
     uis = params.user_inputs
     input_parameter_dict = {

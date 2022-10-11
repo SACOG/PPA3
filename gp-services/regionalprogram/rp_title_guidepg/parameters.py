@@ -361,57 +361,5 @@ user_inputs = projInputKeys()
 
 
 
-"""
-EXAMPLE INPUT JSON OBJECT
-
-{
-    "Project_Line": {
-        "geometryType": "esriGeometryPolyline",
-        "sr": {
-            "wkid": 102642
-        },
-        "features": [
-            {
-                "geometry": {
-                    "spatialReference": {
-                        "wkid": 102642
-                    },
-                    "paths": [
-                        [
-                            [
-                                6748148.653240821,
-                                2003155.4099492875
-                            ],
-                            [
-                                6745985.7408012925,
-                                2000534.0577610424
-                            ],
-                            [
-                                6744517.244861613,
-                                2000591.358323832
-                            ],
-                            [
-                                6744483.218642788,
-                                2002526.948155975
-                            ]
-                        ]
-                    ]
-                }
-            }
-        ]
-    },
-    "Project_Name": "test_project",
-    "Jurisdiction": "example_jurisdiction",
-    "Project_ADT":1000,
-    "AADT": 1000,
-    "Posted_Speed_Limit":35,
-    "PCI":35,
-    "Project_PCI":35,
-    "userEmail":"fake@email.com",
-    "f":"json"
-  }
-
-"""
-
 if __name__ == '__main__':
     import pdb; pdb.set_trace()
