@@ -1,0 +1,83 @@
+= {
+	"endingUI": "stack-52f055e8",
+	"textBoxIllegalChars": [
+		"@",
+		"#",
+		"$",
+		"%",
+		"^",
+		"&",
+		"*"
+	],
+	"viewerUrl": "https://sacog-poc-dev.apps.geocortex.com/webviewer/?app=3134fb5897034d63b1a096de6b393014",
+	"serverWorkflowURL": "https://portal.sacog.org/portal/sharing/rest/content/items/e77e61c37839444687c6c45cd1278826/data?f=json",
+	"targetSpatialReference": {
+		"wkid": 102642,
+		"transformation": 0,
+		"reverse": 0
+	},
+	"geometryValidation": {
+		"maximumNumOfLines": 10,
+		"targetLayer": {
+			"layerId": "Counties",
+			"sublayerId": ""
+		},
+		"message": "You have to specify geometries intersect the SACOG area"
+	},
+	"reportName": "Community Design",
+	"projects": [
+		{
+			"name": "Community Design",
+			"titleReport": {
+				"dataSourceName": "Datasource_Community_Design_title",
+				"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=e4586e2e82c9450fa0201fb7cdf9967b",
+				"dataUrl": "https://services.sacog.org/hosting/rest/services/RPTitleAndGuide/GPServer/RPTitleAndGuide",
+				"maxProcessingTimeInMins": 10
+			},
+			"report": [
+				{
+					"name": "Transportation Choice",
+					"dataSourceName": "SACOG_CommunityDesignProgram_CommDesign_TransportationChoice",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=29da91ee3d9a4e70a1cdf961526f6b3e",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/CDTranspoChoice/GPServer/CDTranspoChoice",
+					"maxProcessingTimeInMins": 10
+				},
+				{
+					"name": "Compact Development",
+					"dataSourceName": "SACOG_CommunityDesignProgram_CommDesign_CompactDev",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=775e8fd7080f4c3fa59448ede3b22c88",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/CDCompactDev/GPServer/CDCompactDev",
+					"maxProcessingTimeInMins": 10
+				},
+				{
+					"name": "Mixed-Use Development",
+					"dataSourceName": "SACOG_CommunityDesignProgram_CommDesign_MixedUse",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=46742c9051fe49f881025c86772a5bb6",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/CDMixedUse/GPServer/CDMixedUse",
+					"maxProcessingTimeInMins": 10
+				},
+				{
+					"name": "Housing Choice",
+					"dataSourceName": "SACOG_CommunityDesignProgram_CommDesign_HousingChoice",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=0c9d65d9fabc46ac9c348cf868478582",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/CDHousingChoice/GPServer/CDHousingChoice",
+					"maxProcessingTimeInMins": 10
+				},
+				{
+					"name": "Use Existing Assets",
+					"dataSourceName": "SACOG_CommunityDesignProgram_CommDesign_ExistingAssets",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=10cdf3caf9d54c1096a643b84aded2e8",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/CDExistingAssets/GPServer/CDExistingAssets",
+					"maxProcessingTimeInMins": 10
+				},
+				{
+					"name": "Preserve Natural Resources",
+					"dataSourceName": "SACOG_CommunityDesignProgram_CommDesign_NaturePreservation",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=00b2e542650d4cda99e95e1680b2e3bb",
+					"dataUrl": "https://services.sacog.org/hosting/rest/services/CDNaturalResources/GPServer/CDNaturalResources",
+					"maxProcessingTimeInMins": 10
+				}
+			]
+		}
+	]
+}

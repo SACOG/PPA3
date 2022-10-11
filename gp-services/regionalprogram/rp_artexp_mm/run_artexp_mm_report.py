@@ -20,7 +20,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import commtype

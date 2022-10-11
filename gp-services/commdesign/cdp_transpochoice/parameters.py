@@ -22,7 +22,7 @@ with open(yaml_file, 'r') as y:
 
 
 # ========================================INPUT DATA LAYERS===================================================== 
-PROGRAM_NAME = 'dir_regpgm' # 'dir_commd'
+PROGRAM_NAME = 'dir_commd' # 'dir_regpgm' 
 
 server_folder = pathconfigs['server_data']['rootdir']
 program_folder = os.path.join(server_folder, pathconfigs['server_data'][PROGRAM_NAME])
