@@ -19,19 +19,29 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import landuse_buff_calcs as lubuff
 import parameters as params
 import parcel_data 
+import utils.utils as utils
+
+def cd_housingchoice_rpt(input_dict):
+
+    uis = params.user_inputs
+    fc_project = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype] 
 
 
-def cd_housingchoice_rpt(fc_project, project_name, project_type):
     # sometimes the scratch gdb folder becomes just a folder, so need to re-create to ensure no errors
     if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
 
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Community Design Program}_{CommDesign}_HousingChoice_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [2016, 2040]
+    year_relref_names = ['base', 'fut']
+    year_relref_dict = dict(zip(data_years, year_relref_names))
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
@@ -46,20 +56,23 @@ def cd_housingchoice_rpt(fc_project, project_name, project_type):
         parcel_fc_dict[year] = pcl_buff_fc
 
     # calc housing types split
+    row_data = {}
     for i, year in enumerate(data_years):
         pcl_fc = parcel_fc_dict[year]
 
         housing_mix_data = lubuff.LandUseBuffCalcs(pcl_fc, project_fc, project_type, [params.col_du], params.du_mix_buffdist,
                                             case_field=params.col_housing_type, case_excs_list=['Other']).point_sum()
 
-        types = ["Very Low or Rural Res Density", "Low Density", "Medium Density",
-                "Med-High Density", "High Density", "Mixed Use"]
+        # {housing type name for charts: field name used in log table}
+        types_dict = {"Very Low or Rural Res Density": "res_vld", "Low Density": "res_ld", 
+                "Medium Density": "res_md", "Med-High Density": "res_mhd", 
+                "High Density": "res_hid", "Mixed Use": "mixuse"}
 
         k_chartname = "Housing Types"
         loaded_json[params.k_charts][k_chartname][params.k_features][i] \
             [params.k_attrs][params.k_year] = str(year)
 
-        for htyp in types:
+        for htyp, htyp_fname in types_dict.items():
             if htyp in housing_mix_data.keys():
                 val = housing_mix_data[htyp]
             else:
@@ -67,7 +80,24 @@ def cd_housingchoice_rpt(fc_project, project_name, project_type):
             
             loaded_json[params.k_charts][k_chartname][params.k_features][i] \
                 [params.k_attrs][htyp] = val
-                                      
+
+            relref = year_relref_dict[year]
+            field_name = f"{htyp_fname}_{relref}"
+            row_data[field_name] = val
+
+    # log results to data tables
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+    data_to_log = {
+        'project_uid': project_uid
+    }
+
+    data_to_log.update(row_data)
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'cd_houschoice'))                                      
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -85,24 +115,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
-
-    # specify project line feature class and attributes
+    # inputs from tool interface
     project_fc = arcpy.GetParameterAsText(0)
     project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = params.ptype_commdesign
+    perf_outcomes = '' # comm design projects don't choose specific perf outcomes
+    aadt = None
+    posted_spd = None
+    pci = None
+    email = arcpy.GetParameterAsText(3)
 
-    # hard values for testing
-    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
-    # project_name = 'TestJefferson'
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'cd'
+    # jurisdiction = 'cdtest'
+    # project_type = params.ptype_commdesign
+    # perf_outcomes = '' # comm design projects don't choose specific perf outcomes
+    # aadt = None
+    # posted_spd = None
+    # pci = None
+    # email = 'fake@test.com'
 
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = cd_housingchoice_rpt(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = cd_housingchoice_rpt(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(4, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

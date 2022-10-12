@@ -70,13 +70,6 @@ def cd_lumix_rpt(input_dict):
     mixidx_base = d_mixidx[data_years[0]][params.mix_idx_col]
     mixidx_future = d_mixidx[data_years[1]][params.mix_idx_col]
 
-    # # calc mix index
-    # for i, year in enumerate(data_years):
-    #     in_pcl_pt_fc = parcel_fc_dict[year]
-    #     chart_mixindex.update_json(json_loaded=loaded_json, fc_project=project_fc, fc_parcel=in_pcl_pt_fc,
-    #                                 data_year=year, proj_type=project_type, project_commtype=project_commtype,
-    #                                 aggval_csv=params.aggval_csv)
-
     # log results to data tables
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
                                         proj_type=input_dict[uis.ptype], 
