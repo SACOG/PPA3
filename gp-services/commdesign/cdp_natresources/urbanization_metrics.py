@@ -54,7 +54,7 @@ def projarea_infill_status(fc_project, comm_types_fc):
     return out_dict
 
 
-def nat_resources(fc_project, projtyp, fc_pcl_poly):  # NOTE - this is year dependent!
+def nat_resources(fc_project, projtyp, fc_pcl_poly, year=2016):  # NOTE - this is year dependent!
     nat_resource_ac = 0
     
     # pdb.set_trace()

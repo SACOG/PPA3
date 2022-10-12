@@ -19,15 +19,21 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import commtype
 import chart_accessibility
 import urbanization_metrics as urbmet
+import utils.utils as utils
 
+def cd_existassets_rpt(input_dict):
 
-def cd_existassets_rpt(project_fc, project_name, ptype):
+    uis = params.user_inputs
+    project_fc = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype] 
+
     # sometimes the scratch gdb folder becomes just a folder, so need to re-create to ensure no errors
     if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
 
@@ -40,9 +46,9 @@ def cd_existassets_rpt(project_fc, project_name, ptype):
     project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)    
 
     # get service accessibility numbers
-    chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=ptype,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
-                                    k_chart_title="Accessibility to Services")      
+    acc_data = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
+                                project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
+                                k_chart_title="Accessibility to Services")
 
     # Tag if project is in an infill or greenfield area                          
     k_status = "Project location infill status"
@@ -51,6 +57,20 @@ def cd_existassets_rpt(project_fc, project_name, ptype):
     urban_status = [v for k, v in urban_status_dict.items()][0]
 
     loaded_json[k_status] = urban_status
+
+    # log results to data tables
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+    data_to_log = {
+        'project_uid': project_uid, 'acc_svc_walk': acc_data[params.col_walk_poi], 
+        'acc_svc_bike': acc_data[params.col_bike_poi], 'acc_svc_drive': acc_data[params.col_drive_poi], 
+        'acc_svc_pubtrn': acc_data[params.col_transit_poi], 
+    }
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'cd_existgasset'))
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -68,24 +88,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
-
-    # specify project line feature class and attributes
+    # inputs from tool interface
     project_fc = arcpy.GetParameterAsText(0)
     project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = params.ptype_commdesign
+    perf_outcomes = '' # comm design projects don't choose specific perf outcomes
+    aadt = None
+    posted_spd = None
+    pci = None
+    email = arcpy.GetParameterAsText(3)
 
-    # hard values for testing
-    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
-    # project_name = 'TestJefferson'
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'cd'
+    # jurisdiction = 'cdtest'
+    # project_type = params.ptype_commdesign
+    # perf_outcomes = '' # comm design projects don't choose specific perf outcomes
+    # aadt = None
+    # posted_spd = None
+    # pci = None
+    # email = 'fake@test.com'
 
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = cd_existassets_rpt(project_fc=project_fc, project_name=project_name, ptype=ptype)
+    result_path = cd_existassets_rpt(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(4, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
