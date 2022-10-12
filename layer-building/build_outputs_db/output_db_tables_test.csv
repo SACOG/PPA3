@@ -215,7 +215,7 @@ cd_existgasset,community design use of existing assets report,1,,acc_svc_walk,wa
 cd_existgasset,community design use of existing assets report,1,,acc_svc_bike,bike access to services,FLOAT,
 cd_existgasset,community design use of existing assets report,1,,acc_svc_drive,drive access to services,FLOAT,
 cd_existgasset,community design use of existing assets report,1,,acc_svc_pubtrn,transit access to services,FLOAT,
+cd_existgasset,community design use of existing assets report,1,,infill_status,tag if project is in infill or greenfield area,TEXT,100
 cd_naturpres,community design natural resource preservn report,1,,project_uid,unique project ID,TEXT,36
 cd_naturpres,community design natural resource preservn report,1,,ac_natlands_base,"total park, forest, and ag lands near project - base year",FLOAT,
 cd_naturpres,community design natural resource preservn report,1,,ac_natlands_fut,"total park, forest, and ag lands near project - future year",FLOAT,
-cd_naturpres,community design natural resource preservn report,1,,infill_status,tag if project is in infill or greenfield area,TEXT,50

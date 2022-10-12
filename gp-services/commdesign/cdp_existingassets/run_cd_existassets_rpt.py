@@ -67,7 +67,7 @@ def cd_existassets_rpt(input_dict):
     data_to_log = {
         'project_uid': project_uid, 'acc_svc_walk': acc_data[params.col_walk_poi], 
         'acc_svc_bike': acc_data[params.col_bike_poi], 'acc_svc_drive': acc_data[params.col_drive_poi], 
-        'acc_svc_pubtrn': acc_data[params.col_transit_poi], 
+        'acc_svc_pubtrn': acc_data[params.col_transit_poi], 'infill_status': urban_status
     }
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'cd_existgasset'))
