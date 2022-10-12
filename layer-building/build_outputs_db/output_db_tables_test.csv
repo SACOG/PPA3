@@ -193,7 +193,6 @@ cd_compactdev,community design compact development report,1,,jobs_base,self-expl
 cd_compactdev,community design compact development report,1,,jobs_future,self-explanatory,FLOAT,
 cd_compactdev,community design compact development report,1,,du_base,dwelling units,FLOAT,
 cd_compactdev,community design compact development report,1,,du_future,dwelling units,FLOAT,
-cd_compactdev,community design compact development report,1,,cs_index,complete streets index (0-100),FLOAT,
 cd_mixeduse,community design mixed use development report,1,,project_uid,unique project ID,TEXT,36
 cd_mixeduse,community design mixed use development report,1,,lumix_base,land use mix,FLOAT,
 cd_mixeduse,community design mixed use development report,1,,lumix_future,land use mix,FLOAT,
