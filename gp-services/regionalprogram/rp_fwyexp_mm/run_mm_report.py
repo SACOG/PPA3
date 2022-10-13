@@ -34,7 +34,7 @@ def make_mm_report_fwyexp(input_dict):
     project_name = input_dict[uis.name]
     project_type = input_dict[uis.ptype] 
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_ReduceVMT_sample_dataSource.json")
+    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Multimodal_sample_dataSource.json")
     data_years = [2016, 2040]
 
     with open(in_json, "r") as j_in: # load applicable json template
@@ -56,7 +56,7 @@ def make_mm_report_fwyexp(input_dict):
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
             [params.k_attrs][params.k_year] = year
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
-            [params.k_attrs][params.k_value] =  proj_trantrips
+            [params.k_attrs][params.k_value] = proj_trantrips
 
         output_data[year] = out_dict
     # resulting output dict = {2016:{trantrips:val, vehocc:val}, 2040:{trantrips:val, vehocc:val}}
