@@ -88,7 +88,7 @@ aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
 # project type
 ptype_fwy = 'Freeway Expansion'
 ptype_arterial = 'Arterial or Transit Expansion'
-ptype_sgr = 'Complete Street or State of Good Repair'
+ptype_sgr = 'Arterial State of Good Repair' # original version and display name: 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
 ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
 
@@ -297,7 +297,8 @@ col_ped_ind = 'PEDESTRIAN_ACCIDENT'
 
 ind_val_true = 'Y'
 
-tags_ptypes = {ptype_fwy:'_fwy', ptype_arterial:'_nonfwy', ptype_sgr:'_nonfwy'}
+tags_ptypes = {ptype_fwy:'_fwy', ptype_arterial:'_nonfwy', ptype_sgr:'_nonfwy',
+                'Complete Street or State of Good Repair': '_nonfwy'}
 
 colln_searchdist = 75 # in feet, might have projection-related issues in online tool-how was this resolved in PPA1?
 years_of_collndata = 5

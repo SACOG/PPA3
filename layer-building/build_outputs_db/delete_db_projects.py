@@ -61,6 +61,9 @@ if __name__ == '__main__':
     uid_field = 'project_uid'
 
     sql = "project_uid = 'UID_NOT_FOUND'"
+    # HINTS:
+        # Template for selecting records based on time stamp: "<time stamp field> timestamp '<string representation of time stamp>'"
+        # Generally, if a sql query fails, you can test in Arc Pro to confirm the syntax
 
     subreport_tables = ['rp_artexp_vmt', 'rp_artexp_econ', 'rp_artexp_eq', 
         'rp_artexp_mm', 'rp_artexp_sgr', 'rp_fwy_vmt', 'rp_fwy_cong', 
