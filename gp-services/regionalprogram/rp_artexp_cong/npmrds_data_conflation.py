@@ -279,9 +279,9 @@ if __name__ == '__main__':
     from time import perf_counter as perf
     start_time = perf()
 
-    # arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    # arcpy.env.workspace = params.fgdb # r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb'
 
-    # project_line = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
+    # project_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_16thSt_oneway' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
     # proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
 
 
