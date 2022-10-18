@@ -1,9 +1,0 @@
-{
-	"Percent Project on STAA": 0.05,
-	"STAA network Image Url": "https://latitudegeo.maps.arcgis.com/sharing/rest/content/items/31435829568a45baa25883886897b080/data",
-	"Share of jobs in industrial sectors": {
-		"Within 0.25mi": 0.1,
-		"Within community": 0.16,
-		"Within region": 0.13
-	}
-}
