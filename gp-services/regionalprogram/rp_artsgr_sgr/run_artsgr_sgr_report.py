@@ -98,7 +98,7 @@ if __name__ == '__main__':
     # hard-coded vals for testing
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
     # project_name = 'broadway'
-    # jurisdiction = 'sac city'
+    # jurisdiction = 'sac city' 
     # project_type = params.ptype_arterial
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 22000

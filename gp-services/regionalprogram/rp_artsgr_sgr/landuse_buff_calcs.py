@@ -83,6 +83,7 @@ class LandUseBuffCalcs():
     
         out_dict = out_df.to_dict('records')[0]
     
+        arcpy.AddMessage(out_dict)
         return out_dict
     
     # gets density of whatever you're summing, based on parcel area (i.e., excludes rivers, lakes, road ROW, etc.)
