@@ -46,9 +46,10 @@ def direction_field_translator(in_congdata_dict):
         'lottr_ampk': 'lottr_am',
         'lottr_midday': 'lottr_md',
         'lottr_pmpk': 'lottr_pm',
-        'lottr_wknd': 'lottr_wknd'
+        'lottr_wknd': 'lottr_wknd',
+        'congrat': 'congrat'
     }
-
+    
     out_dict = {}
     for dname_in, dname_out in d_dirnames.items():
         for mname_in, mname_out in d_metrnames.items():
@@ -108,6 +109,11 @@ def make_congestion_rpt_artexp(input_dict):
 
     cong_rpt_obj = chart_congestion.CongestionReport(congn_data, loaded_json)
     cong_rpt_obj.update_all_congestion_data()
+
+    # get congestion ratio for each direction
+    cong_data2 = cong_rpt_obj.parse_congestion()
+    cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
+    congn_data.update(cong_ratios)
 
     # update AADT
     loaded_json["projectAADT"] = aadt

@@ -37,6 +37,8 @@ contents_to_publish = ['rp_artexp_vmt', 'rp_artexp_econ', 'rp_artexp_eq', 'rp_ar
                 'rp_artsgr_sgr', 'cd_compactdev', 'cd_mixeduse', 'cd_houschoice', 'cd_naturpres', 
                 'rp_artexp_cong', 'rp_artexp_frgt', 'rp_artexp_saf', 'cd_trnchoice', 'cd_existgasset', 'project_master']
 
+contents_to_publish = ['project_master']
+
 #--------seldom-changed parameters-------------
 portal_url = "https://portal.sacog.org/portal"
 portal_folder = "PPA_archived_runs"
@@ -56,6 +58,7 @@ arcpy.SignInToPortal(portal_url)
 # Reference layers to publish
 aprx = arcpy.mp.ArcGISProject(aprx_file_path)
 map_obj = aprx.listMaps(aprx_map_name)[0]
+map_obj_layer_names = [i.name for i in map_obj.listLayers()]
 all_map_layers = [fl for fl in map_obj.listLayers()]
 all_map_tables = [t for t in map_obj.listTables()]
 all_map_contents = all_map_layers + all_map_tables
@@ -76,7 +79,7 @@ for item in contents_to_publish:
     sd_output_filename = os.path.join(outdir, sd_filename)
 
     # Create FeatureSharingDraft
-    if item in map_obj.listLayers(item):
+    if item in map_obj_layer_names:
         selected_layer = map_obj.listLayers(item)[0]
     else:
         selected_layer = map_obj.listTables(item)[0]
