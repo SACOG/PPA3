@@ -32,8 +32,10 @@ aprx_file_path = r"I:\Projects\Darren\PPA3_GIS\PPA3_GIS.aprx"
 aprx_map_name = 'ItemsToShare'
 
 # list of all feature layers and tables in APRX map you want to publish
-contents_to_publish = ['cd_compactdev']
-
+contents_to_publish = ['rp_artexp_vmt', 'rp_artexp_econ', 'rp_artexp_eq', 'rp_artexp_mm', 'rp_artexp_sgr', 
+                'rp_fwy_vmt', 'rp_fwy_cong', 'rp_fwy_mm', 'rp_fwy_econ', 'rp_fwy_frgt', 'rp_fwy_saf', 
+                'rp_artsgr_sgr', 'cd_compactdev', 'cd_mixeduse', 'cd_houschoice', 'cd_naturpres', 
+                'rp_artexp_cong', 'rp_artexp_frgt', 'rp_artexp_saf', 'cd_trnchoice', 'cd_existgasset', 'project_master']
 
 #--------seldom-changed parameters-------------
 portal_url = "https://portal.sacog.org/portal"
@@ -41,6 +43,7 @@ portal_folder = "PPA_archived_runs"
 server_type = "HOSTING_SERVER"
 
 # sharing permissions - https://pro.arcgis.com/en/pro-app/latest/tool-reference/server/upload-service-definition.htm
+override_val = "OVERRIDE_DEFINITION"
 share_level = "PUBLIC" # "PRIVATE" # if you want to share tool with everyone or not
 org_share = "SHARE_ORGANIZATION" # whether you want to share with organization
 
@@ -91,7 +94,8 @@ for item in contents_to_publish:
 
     # Share to portal
     arcpy.AddMessage("\tUploading...")
-    arcpy.server.UploadServiceDefinition(sd_output_filename, server_type,   =share_level)
+    arcpy.server.UploadServiceDefinition(sd_output_filename, server_type, in_override=override_val, in_public=share_level,
+                                        in_organization=org_share)
 
     arcpy.AddMessage(f"\tFinished publishing {item}")
 
