@@ -49,10 +49,15 @@ def make_sgr_report_artsgr(input_dict):
     # get complete streets index value
     pcl_pts = params.parcel_pt_fc_yr(2016)
     transit_data = params.trn_svc_fc
-    cs_outdict = cs.complete_streets_idx(fc_pclpt=pcl_pts, fc_project=proj_fc, project_type=proj_typ, 
-                                        posted_speedlim=proj_postedspd, transit_event_fc=transit_data)
 
-    csi = cs_outdict['complete_street_score'] / params.cs_region_max * 100
+    if proj_postedspd == 0:
+        csi = -1 # don't comput CSI if user doesn't enter speed
+    else:
+        cs_outdict = cs.complete_streets_idx(fc_pclpt=pcl_pts, fc_project=proj_fc, project_type=proj_typ, 
+                                            posted_speedlim=proj_postedspd, transit_event_fc=transit_data)
+
+        csi = cs_outdict['complete_street_score'] / params.cs_region_max * 100
+
     loaded_json["Complete Streets Index"] = csi
 
     # log to data table
