@@ -169,9 +169,6 @@ if __name__ == '__main__':
         uis.email: email
     }
 
-    # in_json = r"C:\Users\dconly\GitRepos\PPA3\vertigis-deliverables\input_json_samples\gp_inputs_ex1.json"
-    
-
     #=================BEGIN SCRIPT===========================
     try:
         arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
