@@ -323,7 +323,7 @@ cs_spd_pen_fac = 0.04 # speed penalty factor
 
 # regional max complete street index -- note that it only considers streets with posted speed limit > 15mph, since realistically
 # no projects will be submitted for streets with posted speed <= 15mph
-cs_region_max = 321.8862915 # source fc = I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\CompleteStreetMap20220909forMaxCS
+cs_region_max = 372.83636475 # source fc = I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\CompleteStreetMap102020220915forMaxCS_V2
 
 intersxn_dens_buff = 1320 # distance in feet
 bikeway_buff = 1320 # distance in feet

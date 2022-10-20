@@ -210,7 +210,7 @@ if __name__ == '__main__':
 
     # input line project for basing spatial selection
     # NOTE - input files should come from local drive in case network connections fail
-    input_network_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TEST_cs_batch__excerpt2226' # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS_rmIdentical' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
+    input_network_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_formaxCS_2' # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS_rmIdentical' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
     
     # trnstops_fc = os.path.join(params.fgdb, params.trn_svc_fc)
     trnstops_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\transit_stopcount_2019'
