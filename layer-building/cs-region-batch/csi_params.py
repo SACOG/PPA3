@@ -302,7 +302,7 @@ years_of_collndata = 5
 
 # ============================TRANSIT SERVICE DENSITY PARAMETERS===========================
 trn_buff_dist = 1320 # feet, search distance for transit stops from project line
-col_transit_events = "COUNT_trip_id" #if transit feature class is point file dissolved by stop location, this
+col_transit_events = "tripcnt_day" #if transit feature class is point file dissolved by stop location, this
                                     #col is number of times per day that transit vehicle served each stop
 
 

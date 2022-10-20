@@ -60,7 +60,15 @@ def transit_svc_density(gdf_project, gdf_trnstops, project_type):
 
         # get count of transit stops within buffer
         gdf_selected_stopevs = gdf_trnstops.loc[gdf_trnstops.geometry.within(geom_buff) == True]
-        transit_veh_events = gdf_selected_stopevs.shape[0]
+        transit_veh_events = gdf_selected_stopevs[params.col_transit_events].sum()
+
+        msg = f"""
+        PER GEOPANDAS:
+        line_length: {gdf_project.geometry.length.sum()}
+        buffer acres: {buff_acres}
+        transit stops: {transit_veh_events}
+        """
+        print(msg)
 
         trnstops_per_acre = transit_veh_events / buff_acres if buff_acres > 0 else 0
 

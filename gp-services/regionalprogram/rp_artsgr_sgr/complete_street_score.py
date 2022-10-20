@@ -9,6 +9,8 @@
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
+import os
+
 import arcpy
 
 import parameters as params
@@ -21,6 +23,7 @@ def complete_streets_idx(fc_pclpt, fc_project, project_type, posted_speedlim, tr
         CSI = (students/acre + daily transit vehicle stops/acre + BY jobs/acre + BY du/acre) * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
         '''
     # don't give complete street score for freeway projects or if sponsor didn't enter speed limit
+
     if project_type == params.ptype_fwy or posted_speedlim <= 1: 
         csi = -1
     else:
@@ -34,13 +37,30 @@ def complete_streets_idx(fc_pclpt, fc_project, project_type, posted_speedlim, tr
         lu_vals_cols = [params.col_k12_enr, params.col_emptot, params.col_du]
     
         # get sums of the lu_fac_cols within project buffer area
-        lu_vals_dict = landuse_buff_calcs.LandUseBuffCalcs(fc_pclpt, fc_project, project_type, lu_fac_cols, params.cs_buffdist).point_sum()
+        lu_vals_dict = landuse_buff_calcs.LandUseBuffCalcs(fc_pclpt, fc_project, project_type, lu_fac_cols, \
+                                                            buffdist=params.cs_buffdist).point_sum()
     
         #dens_score = (student_dens + trn_svc_dens + job_dens + du_dens)
         dens_score = sum([lu_vals_dict[i] / lu_vals_dict[params.col_area_ac] for i in lu_vals_cols]) + transit_svc_density
-    
+
         csi = dens_score * (1 - (posted_speedlim - params.cs_threshold_speed) * params.cs_spd_pen_fac)
 
+        # for diagnostics only
+        # proj_len = 0
+        # with arcpy.da.SearchCursor(fc_project, ["SHAPE@LENGTH"]) as cur:
+        #     for row in cur:
+        #         proj_len += row[0]
+
+        # sr_project_fc = arcpy.Describe(fc_project).spatialReference.name
+
+        # info_msg = f"""DENSITY SCORE: {dens_score} |
+        #             TRANSIT SVC DENSITY: {transit_svc_density} |
+        #             PROJECT LENGTH IN FEET: {proj_len} |
+        #             SPATIAL REFERENCE OF PROJECT LINE: {sr_project_fc}
+        #             """
+        
+        # arcpy.AddMessage(info_msg) 
+    
     out_dict = {'complete_street_score': csi}
     
     return out_dict

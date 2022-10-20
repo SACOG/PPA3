@@ -72,6 +72,7 @@ def transit_svc_density(fc_project, fc_trnstops, project_type):
 
         # calculate buffer area
         buff_acres = get_poly_area(fl_buff)
+        arcpy.AddMessage(f"buffer acres: {buff_acres}")
 
         # get count of transit stops within buffer
         arcpy.SelectLayerByLocation_management(fl_trnstops, "INTERSECT", fl_buff, 0, "NEW_SELECTION")
@@ -82,6 +83,13 @@ def transit_svc_density(fc_project, fc_trnstops, project_type):
             for row in cur:
                 vehstops = row[0] if row[0] is not None else 0
                 transit_veh_events += vehstops
+
+        msg = f"""
+        PER ARCPY:
+        buffer acres: {buff_acres}
+        transit stops: {transit_veh_events}
+        """
+        print(msg)
 
         trnstops_per_acre = transit_veh_events / buff_acres if buff_acres > 0 else 0
 
