@@ -198,7 +198,8 @@ def simplify_outputs(in_df, proj_len_col):
     secdir = secndmax_col[:secndmax_col.find(dirlen_suffix)]
 
     outcols_max = [c for c in in_df.columns if re.match(maxdir, c)]
-    outcols_sec = [c for c in in_df.columns if re.match(secdir, c)] 
+    # outcols_sec = [c for c in in_df.columns if re.match(secdir, c)] 
+    outcols_sec = [f.replace(maxdir, secdir) for f in outcols_max] 
 
     outcols = outcols_max + outcols_sec
     
