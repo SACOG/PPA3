@@ -20,6 +20,7 @@ from time import perf_counter as perf
 import json
 import pandas as pd
 import arcpy
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 
 import parameters as params
@@ -28,9 +29,14 @@ from parcel_data import get_buffer_parcels
 import chart_job_du_tot
 import chart_accessibility
 import chart_mixindex
+import utils.utils as utils
 
 
-def make_vmt_report_artexp(fc_project, project_name, project_type):
+def make_vmt_report_artexp(input_dict):
+
+    uis = params.user_inputs
+    project_fc = input_dict[uis.geom]
+    proj_type = input_dict[uis.ptype]
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceVMT_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -46,28 +52,58 @@ def make_vmt_report_artexp(fc_project, project_name, project_type):
     parcel_fc_dict = {}
     for year in data_years:
         in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-        pcl_buff_fc = get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
-                            buffdist=lu_buffdist_ft, project_type=project_type, data_year=year)
+        pcl_buff_fc = get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=project_fc,
+                            buffdist=lu_buffdist_ft, project_type=proj_type, data_year=year)
         parcel_fc_dict[year] = pcl_buff_fc
 
     # calc land use buffer values 
+    d_lubuff = {}
     for i, year in enumerate(data_years):
         in_pcl_pt_fc = parcel_fc_dict[year]
-        chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-                                    project_fc=project_fc, project_type=ptype)
+        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
+                                    project_fc=project_fc, project_type=proj_type)
+
+        # {f"jobs": jobs, f"dwellingUnits": du}
+        d_lubuff[year] = d_jobdu
+    
+    job_base = d_lubuff[data_years[0]]["jobs"]
+    job_future = d_lubuff[data_years[1]]["jobs"]
+    du_base = d_lubuff[data_years[0]]["dwellingUnits"]
+    du_future = d_lubuff[data_years[1]]["dwellingUnits"]
 
     # calc accessibility numbers and update JSON chart with it
-    chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=ptype,
+    acc_data = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=proj_type,
                                     project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
                                     k_chart_title="Base Year Service Accessibility")
 
 
     # calc mix index
+    d_mixidx = {}
     for i, year in enumerate(data_years):
         in_pcl_pt_fc = parcel_fc_dict[year]
-        chart_mixindex.update_json(json_loaded=loaded_json, fc_project=project_fc, fc_parcel=in_pcl_pt_fc,
-                                    data_year=year, proj_type=ptype, project_commtype=project_commtype,
+        dy_mixidx = chart_mixindex.update_json(json_loaded=loaded_json, fc_project=project_fc, fc_parcel=in_pcl_pt_fc,
+                                    data_year=year, proj_type=proj_type, project_commtype=project_commtype,
                                     aggval_csv=params.aggval_csv)
+        
+        # dy_mixidx = {'mix_index': <mix index val>}
+        d_mixidx[year] = dy_mixidx
+
+    mixidx_base = d_mixidx[data_years[0]][params.mix_idx_col]
+    mixidx_future = d_mixidx[data_years[1]][params.mix_idx_col]
+
+    # log to archive GDB tables
+    project_id = utils.get_project_uid(input_dict[uis.name], proj_type, input_dict[uis.jur], input_dict[uis.email])
+
+    data_to_log = {
+        'project_uid': project_id, 'jobs_base': job_base, 
+        'jobs_future': job_future, 'du_base': du_base, 
+        'du_future': du_future, 'lumix_base': mixidx_base, 
+        'lumix_future': mixidx_future, 'acc_svc_walk': acc_data[params.col_walk_poi], 
+        'acc_svc_bike': acc_data[params.col_bike_poi], 'acc_svc_drive': acc_data[params.col_drive_poi], 
+        'acc_svc_pubtrn': acc_data[params.col_transit_poi] 
+    }
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb,'rp_artexp_vmt'))
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -85,20 +121,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
-    # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  # r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    project_name = arcpy.GetParameterAsText(1) # 'TestTruxelBridge'
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
+    # project_name = 'causeway'
+    # jurisdiction = 'Caltrans'
+    # project_type = 'Arterial Expansion'
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_vmt_report_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_vmt_report_artexp(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

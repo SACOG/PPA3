@@ -49,6 +49,7 @@ def update_json(json_loaded, fc_project, fc_parcel, data_year, proj_type, projec
             
     print("calculated land use diversity values sucessfully")
 
+    return project_dict
 
 
 if __name__ == '__main__':

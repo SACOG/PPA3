@@ -28,6 +28,9 @@ def update_json(json_loaded, data_year, order_val, fc_poly_parcels, project_fc, 
     json_loaded[params.k_charts][k_chart_title][params.k_features][order_val][params.k_attrs][params.k_year] = str(data_year) # JSON chart requires year label to be string
     json_loaded[params.k_charts][k_chart_title][params.k_features][order_val][params.k_attrs][params.k_value] = lutype_acres
 
+    output_dict = {data_key: lutype_acres}
+
+    return output_dict
 
 if __name__ == '__main__':
     pass

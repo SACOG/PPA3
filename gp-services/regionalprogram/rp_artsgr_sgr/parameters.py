@@ -11,32 +11,58 @@ Copyright:   (c) SACOG
 Python Version: 3.x
 """
 import os
+from arcpy import env
+
+import yaml
+
+yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
+
+with open(yaml_file, 'r') as y:
+    pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
+
 
 # ========================================INPUT DATA LAYERS===================================================== 
-server_folder = r'\\arcserver-svr\D\PPA3_SVR'
-program_folder_name = 'RegionalProgram' # 'CommunityDesign'
+PROGRAM_NAME = 'dir_regpgm' # 'dir_commd'
 
-program_folder = os.path.join(server_folder, program_folder_name)
-fgdb = os.path.join(r"\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\owner_PPA.sde") # NEEDS UPDATE FOR PPA3
+server_folder = pathconfigs['server_data']['rootdir']
+program_folder = os.path.join(server_folder, pathconfigs['server_data'][PROGRAM_NAME])
+gis_dir = os.path.join(server_folder, pathconfigs['server_data']['gisdir']['dir_name'])
+fgdb = pathconfigs['sde']['path']
+config_csvs_dir = os.path.join(program_folder, pathconfigs['server_data']['dir_csv'])
+json_templates_dir = os.path.join(program_folder, pathconfigs['server_data']['dir_json_template'])
+
 projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet)
 
 # -------input feature classes, all in fgdb
-region_fc = 'sacog_region'
-fc_speed_data = 'npmrds_metrics_v8' #npmrds speed data
-accdata_fc = 'Sugar_access_data_latest' # sugar accessibility polygon data
-collisions_fc = 'collisions_tims_2015_2019_fwytag' # collision point data
-trn_svc_fc = 'transit_stopcount_2019' # transit stop event data; point file
-freight_route_fc = 'STAATruckRoutes' # STAA truck route lines
-intersections_base_fc = 'intersections_2021'
-comm_types_fc = 'comm_type_jurspec_dissolve'
+region_fc = pathconfigs['sde']['region_fc']
+fc_speed_data = pathconfigs['sde']['fc_speed_data'] #npmrds speed data
+accdata_fc = pathconfigs['sde']['accdata_fc'] # sugar accessibility polygon data
+collisions_fc = pathconfigs['sde']['collisions_fc'] # collision point data
+trn_svc_fc = pathconfigs['sde']['trn_svc_fc'] # transit stop event data; point file
+freight_route_fc = pathconfigs['sde']['freight_route_fc'] # STAA truck route lines
+intersections_base_fc = pathconfigs['sde']['intersections_base_fc']
+comm_types_fc = pathconfigs['sde']['comm_types_fc']
 
-reg_centerline_fc = 'RegionalCenterline_Oct2021'
-reg_artcollcline_fc = 'OSM_ArterialCollector_2022' # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
+reg_centerline_fc = pathconfigs['sde']['reg_centerline_fc']
+reg_artcollcline_fc = pathconfigs['sde']['reg_artcollcline_fc'] # 'ArterialCollector_2019' # road centerlines but for collectors and above (no local streets/alleys)
 
-reg_bikeway_fc = 'BikeRte_C1_C2_C4_2022' # 'BikeRte_C1_C2_C4_2017'
+reg_bikeway_fc = pathconfigs['sde']['reg_bikeway_fc'] # 'BikeRte_C1_C2_C4_2017'
 
-proj_line_template_fc = 'Project_Line_Template' # has symbology that the project line will use.
-all_projects_fc = "All_PPA_Projects2020" # feature class to which all run projects are added--NEED UPDATE FOR PPA3
+proj_line_template_fc = pathconfigs['sde']['proj_line_template_fc'] # has symbology that the project line will use.
+
+
+# tables that results will be logged to--critical for making roll-ups and analyzing past project results
+log_fgdb = os.path.join(gis_dir, pathconfigs['server_data']['gisdir']['archived_run_db'])
+pickle_uid = os.path.join(env.scratchGDB, "project_uid.pkl") # pickle file containing integer unique ID that will be used for all tables
+logtbl_join_key = 'project_uid' # join key field that will be shared across all tables and enable joining
+log_master = 'project_master' # 'project_master_v2'
+f_master_tstamp = "time_created"
+
+f_master_projname = 'proj_name'
+f_master_projtyp = 'proj_type'
+f_master_jur = 'juris'
+f_master_email = 'user_email'
+
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
 base_year = 2016
@@ -56,11 +82,11 @@ def model_links_fc(in_year=base_year):
 
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
-aggval_csv = os.path.join(program_folder, r"CSV\Agg_ppa_vals20220829_1258.csv")
+aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
 # aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
-ptype_fwy = 'Freeway'
+ptype_fwy = 'Freeway Expansion'
 ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
@@ -69,17 +95,17 @@ ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
 # ===================================OUTPUT APRX TEMPLATE DATA=========================================================
 
 # params related to inserting maps into report
-aprx_path = os.path.join(server_folder, r"PPA3_GIS_SVR\PPA3_GIS_SVR.aprx") # 8/30/2022: USE THIS PATH ONCE ARCSERVER UPDATE COMPLETE ON ARCSERVERGIS-SVR MACHINE
-mapimg_configs_csv = os.path.join(program_folder, r"CSV\map_img_config.csv") # configs for making maps imgs
-map_placement_csv = os.path.join(program_folder, r"CSV\map_report_key.csv") # configs for inserting maps into Excel reports
+
+aprx_path = os.path.join(gis_dir, "PPA3_GIS_SVR.aprx") # 8/30/2022: USE THIS PATH ONCE ARCSERVER UPDATE COMPLETE ON ARCSERVERGIS-SVR MACHINE
+mapimg_configs_csv = os.path.join(config_csvs_dir, "map_img_config.csv") # configs for making maps imgs
 map_img_format = "png" #jpg, png, svg, etc.
 
 # root url, used for map images
 # FYI, it's represented as a list item instead of a string because Arc Pro gives an error 00068 if it's represented as a string.
-svc_root_url = ['https://services.sacog.org/hosting/rest/directories/arcgisjobs'] 
+svc_root_url = pathconfigs['server_data']['gisdir']['svc_root_url']
 
 # ===================================OUTPUT JSON TEMPLATE DATA=========================================================
-json_templates_dir = os.path.join(program_folder, "JSON")
+json_templates_dir = os.path.join(json_templates_dir)
 
 # names in json template
 geo_project = "Project"
@@ -295,6 +321,10 @@ cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 cs_threshold_speed = 40 # MPH
 cs_spd_pen_fac = 0.04 # speed penalty factor
 
+# regional max complete street index -- note that it only considers streets with posted speed limit > 15mph, since realistically
+# no projects will be submitted for streets with posted speed <= 15mph
+cs_region_max = 372.83636475 # source fc = I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\CompleteStreetMap102020220915forMaxCS_V2
+
 intersxn_dens_buff = 1320 # distance in feet
 bikeway_buff = 1320 # distance in feet
 
@@ -314,3 +344,24 @@ buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres o
 lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
 
 
+# =============================JSON CONFIG PARAMETERS FROM USER INTERFACE===============
+
+class projInputKeys:
+    """Input key values for JSON object representing configuration parameters
+    from user interface"""
+    def __init__(self):
+        self.geom = "Project_Line"
+        self.name = 'Project_Name'
+        self.jur = 'Jurisdiction'
+        self.ptype = 'Project_Type'
+        self.perf_outcomes = 'PerfOutcomes'
+        self.aadt = 'AADT'
+        self.posted_spd = 'Posted_Speed_Limit'
+        self.pci = 'PCI'
+        self.email = 'userEmail'
+        self.fmt = 'f'
+
+user_inputs = projInputKeys()
+
+if __name__ == '__main__':
+    import pdb; pdb.set_trace()

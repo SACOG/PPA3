@@ -64,7 +64,7 @@ def get_tmc_truck_data(fc_projline, str_project_type):
 
     # make flat-ended buffers around TMCs that intersect project
     arcpy.SelectLayerByLocation_management(fl_speed_data, "WITHIN_A_DISTANCE", fl_projline, params.tmc_select_srchdist, "NEW_SELECTION")
-    if str_project_type == 'Freeway':
+    if str_project_type == params.ptype_fwy:
         sql = g_ESRI_variable_3.format(params.col_roadtype, params.roadtypes_fwy)
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
     else:
@@ -82,6 +82,8 @@ def get_tmc_truck_data(fc_projline, str_project_type):
     # get "full" table with data for all directions
     projdata_df = ndc.conflate_tmc2projline(fl_projline, params.directions_tmc, params.col_tmcdir, 
                                             fl_tmc_buff, params.truck_data_calc_dict)
+    
+    arcpy.AddMessage(str(projdata_df))
 
     out_dict = {}
     for field, calcmthd in params.truck_data_calc_dict.items():

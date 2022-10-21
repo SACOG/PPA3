@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import commtype
@@ -24,6 +24,7 @@ import parcel_data
 import landuse_buff_calcs 
 import chart_accessibility_projonly as chart_acc
 import get_agg_values as aggvals
+import utils.utils as utils
 
 
 def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):
@@ -42,7 +43,12 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
     json_obj[k_chartname_metric]["Within region"] = val_regn
 
 
-def make_equity_rpt_artexp(fc_project, project_name, project_type):
+def make_equity_rpt_artexp(input_dict):
+
+    uis = params.user_inputs
+    fc_project = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]  
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Equity_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -81,23 +87,45 @@ def make_equity_rpt_artexp(fc_project, project_name, project_type):
     update_tbl_multiple_geos(json_obj=loaded_json, proj_level_val=project_pct_ej, k_chartname_metric=k_chartname,
                             metric_outdictkey=k_metric, proj_commtype=project_commtype)
 
+    
     # update total EJ population -- NOTE that the JSON tag should be changed from "Population" to "EJ Population"
     loaded_json["Population"] = pop_ej
 
     # access to jobs chart update
-    chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
+    d_acc = chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
                                     k_chart_title="Total Job Accessibility", destination_type='alljob_EJ', 
                                     get_ej_only=True)
 
     # access to edu facilities chart update
-    chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type, 
+    d_eduacc = chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type, 
                                     k_chart_title="Education Accessibility", destination_type='edu_EJ', 
                                     get_ej_only=True)
 
     # access to services chart update
-    chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type, 
+    d_svcacc = chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type, 
                                     k_chart_title="Services Accessibility", destination_type='poi2_EJ', 
                                     get_ej_only=True)
+
+    # log to data table
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+    acc_walk_alljob_ej = d_acc[f"{params.col_walk_alljob}_EJ"]
+    acc_bike_alljob_ej = d_acc[f"{params.col_bike_alljob}_EJ"]
+    acc_drive_alljob_ej = d_acc[f"{params.col_drive_alljob}_EJ"]
+    acc_transit_alljob_ej = d_acc[f"{params.col_transit_alljob}_EJ"]
+
+    data_to_log = {
+        'project_uid': project_uid, 
+        'pop_tot': pop_tot, 'pop_ej_area': pop_ej,
+        'pctpot_ej_area': project_pct_ej, 'acc_walk_alljob_ej': acc_walk_alljob_ej,
+        'acc_bike_alljob_ej': acc_bike_alljob_ej, 'acc_drive_alljob_ej': acc_drive_alljob_ej,
+        'acc_transit_alljob_ej': acc_transit_alljob_ej
+    }
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_eq'))
 
 
     # write out to new JSON file
@@ -116,24 +144,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
-    # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  
-    project_name = arcpy.GetParameterAsText(1) 
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'broadway'
+    # jurisdiction = 'sac city'
+    # project_type = params.ptype_arterial
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
-    # test values hard coded
-    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'
-    # project_name = 'Test'
-
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_equity_rpt_artexp(fc_project=project_fc, project_name=project_name, project_type=ptype)
+    result_path = make_equity_rpt_artexp(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(2, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

@@ -56,7 +56,7 @@ aggval_csv = os.path.join(server_folder, r"CSV\Agg_ppa_vals04222020_1017.csv")
 # aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
-ptype_fwy = 'Freeway'
+ptype_fwy = 'Freeway Expansion'
 ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"

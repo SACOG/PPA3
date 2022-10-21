@@ -12,6 +12,7 @@ Python Version: 3.x
     
 
 import os
+import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 # sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
@@ -20,19 +21,23 @@ import datetime as dt
 import json
 
 import arcpy
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
+import utils.utils as utils
 
 
-def make_sgr_report_artexp(project_pci, project_name, proj_aadt):
+def make_sgr_report_artexp(input_dict):
+
+    uis = params.user_inputs
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_SGR_sample_dataSource.json")
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
 
-    loaded_json["Pavement Condition Index"] = project_pci
-    loaded_json["ADT"] = proj_aadt
+    loaded_json["Pavement Condition Index"] = input_dict[uis.pci]
+    loaded_json["ADT"] = input_dict[uis.aadt]
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -43,6 +48,14 @@ def make_sgr_report_artexp(project_pci, project_name, proj_aadt):
     with open(out_file, 'w') as f_out:
         json.dump(loaded_json, f_out, indent=4)
 
+    # log to master table
+    p_uid = utils.get_project_uid(proj_name=input_dict[uis.name], proj_type=input_dict[uis.ptype],
+                            proj_jur=input_dict[uis.jur], user_email=input_dict[uis.email])
+
+    data_row = {params.logtbl_join_key: p_uid, 'pci': input_dict[uis.pci], 'aadt': input_dict[uis.aadt]}
+
+    utils.log_row_to_table(data_row_dict=data_row, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_sgr'))
+
     return out_file
 
 
@@ -50,26 +63,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
-    # specify project line feature class and attributes
-    proj_name = arcpy.GetParameterAsText(0)
-    proj_pci = int(arcpy.GetParameterAsText(1))
-    proj_aadt = int(arcpy.GetParameterAsText(2))  
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
+    # project_name = 'causeway'
+    # jurisdiction = 'Caltrans'
+    # project_type = 'Arterial Expansion'
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
-    # hard values for testing
-    # proj_pci = 67
-    # proj_name = "TestSGR"
-    # proj_aadt = 13500
-
-    ptype = params.ptype_arterial
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_sgr_report_artexp(project_pci=proj_pci,project_name=proj_name , proj_aadt=proj_aadt)
+    result_path = make_sgr_report_artexp(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(3, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 

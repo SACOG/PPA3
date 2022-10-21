@@ -63,6 +63,8 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     fl_project = g_ESRI_variable_1
     fl_model_links = g_ESRI_variable_2
 
+    if arcpy.Exists(fl_project): arcpy.management.Delete(fl_project)
+    if arcpy.Exists(fl_model_links): arcpy.management.Delete(fl_model_links)
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)
     arcpy.MakeFeatureLayer_management(fc_model_links, fl_model_links)
 

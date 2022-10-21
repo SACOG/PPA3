@@ -13,6 +13,8 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
+import arcpy
+
 import landuse_buff_calcs
 import parameters as params
 
@@ -33,13 +35,18 @@ def update_json(json_loaded, data_year, pcl_pt_fc, project_fc, project_type, val
 
     total_trips = year_dict[params.col_persntrip_res]
 
+    output_dict = {} 
     k_chart_name = "Residential Mode Split"
     k_yeartag = f"{params.k_year} {data_year}"
     for i, mode in enumerate(list(tagdict.keys())):
         mode_label = tagdict[mode]
-        mode_share = year_dict[mode] / total_trips
+        mode_share = 0 if total_trips == 0 else year_dict[mode] / total_trips
         json_loaded[params.k_charts][k_chart_name][params.k_features][i][params.k_attrs][params.k_type] = mode_label
         json_loaded[params.k_charts][k_chart_name][params.k_features][i][params.k_attrs][k_yeartag] = mode_share
+
+        output_dict[mode_label] = mode_share
+
+    return output_dict
 
     print("calculated buffer values sucessfully")
 

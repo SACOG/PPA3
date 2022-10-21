@@ -63,6 +63,8 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_
 
     print("calculated accessibility values sucessfully")
 
+    return dict_data2
+
 
 if __name__ == '__main__':
     pass

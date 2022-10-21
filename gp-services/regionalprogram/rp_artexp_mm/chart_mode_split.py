@@ -33,6 +33,7 @@ def update_json(json_loaded, data_year, pcl_pt_fc, project_fc, project_type, val
 
     total_trips = year_dict[params.col_persntrip_res]
 
+    output_dict = {} 
     k_chart_name = "Residential Mode Split"
     k_yeartag = f"{params.k_year} {data_year}"
     for i, mode in enumerate(list(tagdict.keys())):
@@ -40,6 +41,10 @@ def update_json(json_loaded, data_year, pcl_pt_fc, project_fc, project_type, val
         mode_share = year_dict[mode] / total_trips
         json_loaded[params.k_charts][k_chart_name][params.k_features][i][params.k_attrs][params.k_type] = mode_label
         json_loaded[params.k_charts][k_chart_name][params.k_features][i][params.k_attrs][k_yeartag] = mode_share
+
+        output_dict[mode_label] = mode_share
+
+    return output_dict
 
     print("calculated buffer values sucessfully")
 

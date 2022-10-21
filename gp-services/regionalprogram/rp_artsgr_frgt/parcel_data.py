@@ -51,13 +51,13 @@ if __name__ == '__main__':
 
     dyear = 2016
     pcl_fc = params.parcel_pt_fc_yr(dyear)
-    pcl_project = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    buffdist = 1320
-    projtype = params.ptype_arterial
+    # pcl_project = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
+    # buffdist = 1320
+    # projtype = params.ptype_arterial
 
-    #=============RUN SCRIPT=========================
-    os.chdir(r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb')
-    print(arcpy.env.scratchGDB)
+    # #=============RUN SCRIPT=========================
+    # os.chdir(r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb')
+    # print(arcpy.env.scratchGDB)
 
-    get_buffer_parcels(fc_pclpt=pcl_fc, fc_project=pcl_project, 
-    buffdist=buffdist, project_type=projtype, data_year = dyear, parcel_cols=None)
+    # get_buffer_parcels(fc_pclpt=pcl_fc, fc_project=pcl_project, 
+    # buffdist=buffdist, project_type=projtype, data_year = dyear, parcel_cols=None)

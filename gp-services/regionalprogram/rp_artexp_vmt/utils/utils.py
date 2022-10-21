@@ -11,6 +11,7 @@
 # --------------------------------
 import os
 import sys
+import json
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
@@ -75,6 +76,48 @@ def rename_dict_keys(dict_in, new_key_dict):
         else:
             dict_out[v] = 0
     return dict_out
+
+
+def log_row_to_table(data_row_dict, dest_table):
+    """Writes row of values to table. Fields are data_row_dict keys, and the values
+    written are the values from data_row_dict's values."""
+
+    data_fields = list(data_row_dict.keys())
+    data_values = list(data_row_dict.values())
+
+    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+        cur.insertRow(data_values)
+
+    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+
+def get_project_uid(proj_name, proj_type, proj_jur, user_email):
+    """Find the project UID in the master table where project name, type, 
+    and user email match and it's the most recently-run one"""
+
+    master_fields = [params.logtbl_join_key, params.f_master_tstamp]
+
+    fc_mastertbl = os.path.join(params.log_fgdb, params.log_master)
+    fl_mastertbl = 'fl_mastertbl'
+    arcpy.MakeFeatureLayer_management(fc_mastertbl, fl_mastertbl)
+
+    uis = params.user_inputs
+    sql = f"""{params.f_master_projname} = '{proj_name}' AND {params.f_master_projtyp} = '{proj_type}'
+    AND {params.f_master_jur} = '{proj_jur}' AND {params.f_master_email} = '{user_email}'"""
+
+    arcpy.AddMessage(f"Finding project UID via {sql} in table {fc_mastertbl}")
+    
+    arcpy.management.SelectLayerByAttribute(fl_mastertbl, "NEW_SELECTION", sql)
+
+    df = esri_object_to_df(fl_mastertbl, esri_obj_fields=master_fields, index_field=None)
+
+    if df.shape[0] == 0:
+        uid = "UID_NOT_FOUND"
+        arcpy.AddWarning(f"No project records found in {fc_mastertbl} where {sql}")
+    else:
+        uid = df.sort_values(by=params.f_master_tstamp, ascending=False) \
+            [params.logtbl_join_key][0]
+
+    return uid
 
 
 if __name__ == '__main__':

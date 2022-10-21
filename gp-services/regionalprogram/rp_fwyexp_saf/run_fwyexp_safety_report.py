@@ -19,13 +19,14 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import commtype
 import collisions
 import get_agg_values as aggvals
 import utils.make_map_img as imgmaker
+import utils.utils as utils
 
 def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):
     """Updates project-level, community-type, and region-level values for simple tables in JSON file."
@@ -43,7 +44,13 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
     json_obj[k_chartname_metric][params.geo_region] = val_regn
 
 
-def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt):
+def make_safety_report_fwyexp(input_dict):
+
+    uis = params.user_inputs
+    fc_project = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]
+    proj_aadt = input_dict[uis.aadt]
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Safety_sample_dataSource.json")
 
@@ -75,7 +82,7 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
 
     
     # make collision heat map
-    img_obj_colln = imgmaker.MakeMapImage(fc_project, "CollisionHeat", project_name)
+    img_obj_colln = imgmaker.MakeMapImage(fc_project, "CollisionHeat_Fwy", project_name)
     colln_img_path = img_obj_colln.exportMap()
     loaded_json["Collision heat map Image Url"] = colln_img_path
     
@@ -111,6 +118,20 @@ def make_safety_report_fwyexp(fc_project, project_name, project_type, proj_aadt)
         loaded_json[params.k_charts][k_chartname_bpfatal][params.k_features][i] \
             [params.k_attrs][params.k_value] = f_val # update the JSON file accordingly so each geo type gets correct val
 
+    # log to data table
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+
+    data_to_log = {
+        'project_uid': project_uid, 'crash_cnt': tot_collns,
+        'crash_100mvmt': colln_rate_proj, 'crashpct_fatal': val_proj
+    }
+
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_fwy_saf'))
+
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"SafetyRpt{project_name}{output_sufx}.json"
@@ -127,27 +148,55 @@ if __name__ == '__main__':
 
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
+    # inputs from tool interface
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = int(arcpy.GetParameterAsText(5))
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
-    # specify project line feature class and attributes
-    project_fc = arcpy.GetParameterAsText(0)  
-    project_name = arcpy.GetParameterAsText(1)  
-    project_aadt = int(arcpy.GetParameterAsText(2))
+    # hard-coded vals for testing
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF' # Broadway16th_2226
+    # project_name = 'airport'
+    # jurisdiction = 'caltrans'
+    # project_type = params.ptype_fwy
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
-    # hard values for testing
-    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl'
-    # project_name = 'TestStockton'
-    # project_aadt = 27000
-
-    ptype = params.ptype_fwy
+    uis = params.user_inputs
+    input_parameter_dict = {
+        uis.geom: project_fc,
+        uis.name: project_name,
+        uis.jur: jurisdiction,
+        uis.ptype: project_type,
+        uis.perf_outcomes: perf_outcomes,
+        uis.aadt: aadt,
+        uis.posted_spd: posted_spd,
+        uis.pci: pci,
+        uis.email: email
+    }
     
 
     #=================BEGIN SCRIPT===========================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
+
+
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
-    result_path = make_safety_report_fwyexp(fc_project=project_fc, project_name=project_name,
-                                            project_type=ptype, proj_aadt=project_aadt)
+    result_path = make_safety_report_fwyexp(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(3, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
