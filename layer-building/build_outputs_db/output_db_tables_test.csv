@@ -12,6 +12,7 @@ project_master,cover page,1,POLYLINE,comm_type,self-explanatory,TEXT,100
 project_master,cover page,1,POLYLINE,time_created,time that run started,DATE,
 project_master,cover page,1,POLYLINE,user_email,self-explanatory,TEXT,100
 project_master,cover page,1,POLYLINE,perf_outcomes,semi-colon-separated list of the performance outcomes,TEXT,1000
+project_master,cover page,1,POLYLINE,for_review,1/0 flag. 1 = include project data in rollups; 0 = run was for testing only,SHORT,
 rp_artexp_vmt,arterial exp reduce vmt,1,,project_uid,unique project ID,TEXT,36
 rp_artexp_vmt,arterial exp reduce vmt,1,,jobs_base,self-explanatory,FLOAT,
 rp_artexp_vmt,arterial exp reduce vmt,1,,jobs_future,self-explanatory,FLOAT,
