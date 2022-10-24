@@ -28,6 +28,17 @@ from pandas_memory_optimization import memory_optimization
 # clean this up later
 lu_fac_cols = [params.col_area_ac, params.col_k12_enr, params.col_emptot, params.col_du]
 lu_vals_cols = [params.col_k12_enr, params.col_emptot, params.col_du]
+
+def trace():
+    import sys, traceback, inspect
+    tb = sys.exc_info()[2]
+    tbinfo = traceback.format_tb(tb)[0]
+    # script name + line number
+    line = tbinfo.split(", ")[1]
+    filename = inspect.getfile(inspect.currentframe())
+    # Get Python syntax error
+    synerror = traceback.format_exc().splitlines()[-1]
+    return line, filename, synerror #return line number, name of file with error line, and type of error
     
 def complete_streets_idx(gdf_pclpt, gdf_project, project_type, posted_speedlim, gdf_transit_event):
     '''Calculate complete street index (CSI) for project
@@ -161,6 +172,11 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, fc_ctypes, project_
 
     total_net_links = arcpy.GetCount_management(fl_network)[0]
     
+    exclude_ctypes = ['Ag', 'Arterials & Suburban Corridors', 'Developing']
+    if exclude_ctypes:
+            print(f"EXCLUDING COMMUNITY TYPES {exclude_ctypes}")
+            ctype_names = [n for n in ctype_names if n not in exclude_ctypes]
+
     print(f"inserting rows, starting at {start_time}...")
 
     for commtyp in ctype_names:
@@ -175,22 +191,29 @@ def make_fc_with_csi(network_fc, transit_event_fc, fc_pclpt, fc_ctypes, project_
         with arcpy.da.InsertCursor(output_fc, [fld_geom, fld_strtname, fld_spd, fld_csi]) as inscur:
             with arcpy.da.SearchCursor(fl_network, fields_network) as cur:
                 for i, row in enumerate(cur):
-                    if i % 1000 == 0:
-                        st_time = dt.datetime.now() - start_time
-                        print(f"{i} out of {total_net_links} rows processed, with {st_time} elapsed.")
-                    geom = row[0]
-                    stname = row[1]
-                    speedlim = row[2]
-                    
-                    dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
-                    dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
-                    project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
-                    
-                    csi_dict = complete_streets_idx(gdf_pcls_ctyp, project_gdf, project_type, speedlim, gdf_transit)
-                    csi = csi_dict['complete_street_score']
+                    try:
+                        if i % 1000 == 0:
+                            st_time = dt.datetime.now() - start_time
+                            print(f"{i} out of {total_net_links} rows processed, with {st_time} elapsed.")
+                        geom = row[0]
+                        stname = row[1]
+                        speedlim = row[2]
+                        
+                        dft = pd.DataFrame([geom.WKT], columns=['geometry_wkt'])
+                        dft['geometry'] = dft['geometry_wkt'].apply(shapely_wkt.loads)
+                        project_gdf = gpd.GeoDataFrame(dft, geometry='geometry')
+                        
+                        csi_dict = complete_streets_idx(gdf_pcls_ctyp, project_gdf, project_type, speedlim, gdf_transit)
+                        csi = csi_dict['complete_street_score']
 
-                    ins_row = [geom, stname, speedlim, csi]
-                    inscur.insertRow(ins_row)
+                        ins_row = [geom, stname, speedlim, csi]
+                        inscur.insertRow(ins_row)
+                    except:
+                        errmsg = trace()
+                        print(errmsg)
+                        print(f"row attempted to insert: {ins_row}")
+                        import pdb; pdb.set_trace()
+                        
     time_elapsed = dt.datetime.now() - start_time
     print("Finished! Processed {} rows in {}".format(i + 1, time_elapsed))
 
@@ -210,7 +233,7 @@ if __name__ == '__main__':
 
     # input line project for basing spatial selection
     # NOTE - input files should come from local drive in case network connections fail
-    input_network_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_formaxCS_2' # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS_rmIdentical' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
+    input_network_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS_rmIdentical' # r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\HERE_2019_forCtypAvgCS_rmIdentical' # 'Centerline_ArterialCollector10132021' # 'TestCenterlinesEastSac'
     
     # trnstops_fc = os.path.join(params.fgdb, params.trn_svc_fc)
     trnstops_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\transit_stopcount_2019'
