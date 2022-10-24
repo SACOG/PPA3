@@ -18,7 +18,7 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-    csv_in = r"\\arcserver-svr\D\PPA3_SVR\RegionalProgram\CSV\Agg_ppa_vals04222020_1017.csv"
+    csv_in = r"\\arcserver-svr\D\PPA3_SVR\RegionalProgram\CSV\Agg_ppa_vals20220829_1258.csv"
 
     df = pd.read_csv(csv_in)
     rowcnt = df.shape[0]
