@@ -178,6 +178,7 @@ if __name__ == '__main__':
                             
     df_out.to_csv(output_csv)
     print("summary completed as {}".format(output_csv))
+    print("NOTICE: YOU MAY WANT TO HARD-CODE FUTURE-YEAR REGIONAL MIX INDEX = 1.0. ")
     
     # for now, don't do FY mix index for region because base-year region LU mix is the basis for the
     # mix index values. If you want to get regional mix index for FY you'd need
