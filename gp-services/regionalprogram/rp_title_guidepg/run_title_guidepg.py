@@ -12,11 +12,8 @@ Python Version: 3.x
     
 
 import os
-<<<<<<< HEAD
-=======
 from uuid import uuid4
 import pickle
->>>>>>> dc/logging-rollup
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 # sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
@@ -25,17 +22,12 @@ import datetime as dt
 import json
 
 import arcpy
-<<<<<<< HEAD
-=======
 arcpy.env.overwriteOutput = True
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
->>>>>>> dc/logging-rollup
 
 import parameters as params
 import commtype
 import utils.make_map_img as imgmaker
-<<<<<<< HEAD
-=======
 import utils.utils as utils
 
 
@@ -54,7 +46,6 @@ def get_geom(in_fc):
             output_geom = row[0]
 
     return output_geom
->>>>>>> dc/logging-rollup
 
 
 def make_title_guidepg_regpgm(input_dict):
@@ -93,8 +84,6 @@ def make_title_guidepg_regpgm(input_dict):
     loaded_json["Image Url"] = map_img_path
 
 
-<<<<<<< HEAD
-=======
     # get shape of project 
     proj_shape = get_geom(project_fc)
 
@@ -123,7 +112,6 @@ def make_title_guidepg_regpgm(input_dict):
 
     utils.log_row_to_table(data_to_log, os.path.join(params.log_fgdb, params.log_master))
  
->>>>>>> dc/logging-rollup
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"RPCoverPg{project_name}{output_sufx}.json"
@@ -181,15 +169,6 @@ if __name__ == '__main__':
         uis.email: email
     }
 
-<<<<<<< HEAD
-    # specify project line feature class and attributes
-    proj_line = arcpy.GetParameterAsText(0)
-    proj_name = arcpy.GetParameterAsText(1)
-
-    # hard values for testing
-    # proj_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson'
-    # proj_name = "TestSGR"
-=======
     #=================BEGIN SCRIPT===========================
     try:
         arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
@@ -197,7 +176,6 @@ if __name__ == '__main__':
     except:
         pass
 
->>>>>>> dc/logging-rollup
 
     arcpy.env.workspace = params.fgdb
     output_dir = arcpy.env.scratchFolder
