@@ -89,6 +89,7 @@ def make_title_guidepg_regpgm(input_dict):
 
     # generate project unique ID to enable table joining
     project_uid = str(uuid4())
+    loaded_json["Project Unique ID"] = project_uid
 
     # write to applicable log table
 
