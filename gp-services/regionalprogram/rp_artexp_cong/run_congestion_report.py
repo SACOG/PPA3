@@ -163,7 +163,7 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_oneway_no_xing'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'
     # project_name = 'test'
     # jurisdiction = 'test'
     # project_type = params.ptype_arterial
