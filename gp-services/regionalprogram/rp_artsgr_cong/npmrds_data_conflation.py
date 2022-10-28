@@ -198,8 +198,7 @@ def simplify_outputs(in_df, proj_len_col):
     secdir = secndmax_col[:secndmax_col.find(dirlen_suffix)]
 
     outcols_max = [c for c in in_df.columns if re.match(maxdir, c)]
-    # outcols_sec = [c for c in in_df.columns if re.match(secdir, c)] 
-    outcols_sec = [f.replace(maxdir, secdir) for f in outcols_max] 
+    outcols_sec = [f.replace(maxdir, secdir) for f in outcols_max] # this ensures that all keys are present (e.g. ff_speed) even if data aren't
 
     outcols = outcols_max + outcols_sec
     
@@ -271,7 +270,7 @@ def get_npmrds_data(fc_projline, str_project_type):
     arcpy.MakeFeatureLayer_management(temp_tmcbuff, fl_tmc_buff)
 
     buff_sr_name = arcpy.Describe(temp_tmcbuff).spatialReference.name
-    arcpy.AddMessage(f"{temp_tmcbuff} SPATIAL REF NAME: {buff_sr_name}")
+    # arcpy.AddMessage(f"{temp_tmcbuff} SPATIAL REF NAME: {buff_sr_name}")
 
     # get "full" table with data for all directions
     projdata_df = conflate_tmc2projline(fl_projline, params.directions_tmc, params.col_tmcdir,

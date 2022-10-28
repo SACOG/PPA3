@@ -43,10 +43,9 @@ def direction_field_translator(in_congdata_dict):
         'lottr_ampk': 'lottr_am',
         'lottr_midday': 'lottr_md',
         'lottr_pmpk': 'lottr_pm',
-        'lottr_wknd': 'lottr_wknd',
-        'congrat': 'congrat'
+        'lottr_wknd': 'lottr_wknd'
     }
-    
+
     out_dict = {}
     for dname_in, dname_out in d_dirnames.items():
         for mname_in, mname_out in d_metrnames.items():
@@ -81,16 +80,12 @@ def make_congestion_rpt_artsgr(input_dict):
     cong_rpt_obj = chart_congestion.CongestionReport(congn_data, loaded_json)
     cong_rpt_obj.update_all_congestion_data()
 
-    # get congestion ratio for each direction
-    cong_data2 = cong_rpt_obj.parse_congestion()
-    cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
-    congn_data.update(cong_ratios)
-
     # update AADT
     loaded_json["projectAADT"] = aadt
 
     # log data to run archive table
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
+
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
                                         proj_type=input_dict[uis.ptype], 
                                         proj_jur=input_dict[uis.jur], 
@@ -99,10 +94,12 @@ def make_congestion_rpt_artsgr(input_dict):
     data_to_log = {
         'project_uid': project_uid, 'aadt': input_dict[uis.aadt]
         }
+        
     data_to_log.update(output_congn_data)
 
     # NOTE that outputs for arterial sgr congestion report log to same table as those for arterial expansion congestion report.
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
+
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"CongestnRpt{project_name}{output_sufx}.json"

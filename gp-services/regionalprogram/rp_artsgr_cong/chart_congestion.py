@@ -15,8 +15,6 @@ Python Version: 3.x
 import re
 import json
 
-from utils import utils
-import npmrds_data_conflation as npmrds
 import parameters as params
 
 
@@ -66,6 +64,14 @@ class CongestionReport(object):
 
         return out_list_unique
 
+    def add_empty_keys(self, in_dict):
+        # prevents KeyError in charts and other functions by setting value=0
+        # for all metrics with no data, rather than having the metric simply not exist.
+
+        for key in params.spd_data_calc_dict.keys():
+            if in_dict.get(key) is None:
+                in_dict[key] = 0
+
     def parse_congestion(self):
         # output dict: {direction: {key: congstion speed value}}
         out_dict = {}
@@ -73,9 +79,13 @@ class CongestionReport(object):
             data_dirn = {k.split(direcn)[1]:v for k, v in self.raw_data.items() if re.match(direcn, k)} # e.g. {'SOUTHBOUNDffs': 99, ...}
             dir_subdict = {k:v for k, v in data_dirn.items() if k in self.congtags} # return only data for free-flow speed and congested speed
 
+            # ensure all keys can be found, even if no data for them
+            self.add_empty_keys(dir_subdict)
+
             # add congestion ratio as a dict entry
-            congratio = 0 if dir_subdict[self.ffs] == 0 \
+            congratio = 0 if dir_subdict.get(self.ffs) == 0 \
                 else dir_subdict[self.congspd] / dir_subdict[self.ffs]
+
             dir_subdict[self.tag_congratio] =  congratio
 
             out_dict[direcn] = dir_subdict
@@ -89,6 +99,9 @@ class CongestionReport(object):
         for direcn in self.directions_used:
             data_dirn = {k.split(direcn)[1]:v for k, v in self.raw_data.items() if re.match(direcn, k)} # e.g. {'SOUTHBOUNDffs': 99, ...}
             dir_subdict = {k:v for k, v in data_dirn.items() if k in self.lottrtags} # return only data for free-flow speed and congested speed
+            
+            # ensure all keys can be found, even if no data for them
+            self.add_empty_keys(dir_subdict)
 
             out_dict[direcn] = dir_subdict
         

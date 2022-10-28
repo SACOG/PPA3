@@ -104,8 +104,6 @@ class CongestionReport(object):
             self.add_empty_keys(dir_subdict)
 
             out_dict[direcn] = dir_subdict
-
-        # import pdb; pdb.set_trace()
         
         return out_dict
 
