@@ -99,13 +99,14 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         # get TMCs whose buffers intersect the project line
         arcpy.SelectLayerByLocation_management(fl_tmcs_buffd, "INTERSECT", fl_proj)
         
-        # select TMC buffers that intersect the project and are in indicated direction
+        # select TMCs that intersect the project and are in indicated direction
         sql_sel_tmcxdir = g_ESRI_variable_3.format(tmc_dir_field, direcn)
         arcpy.SelectLayerByAttribute_management(fl_tmcs_buffd, "SUBSET_SELECTION", sql_sel_tmcxdir)
 
-        # if no TMC buffers intersect project line, then set TMC length for the direction to be zero
         out_dict_len_field = f"{direcn}_calc_len"
-        if int(arcpy.GetCount_management(fl_tmcs_buffd)[0]) == 0:
+
+        sel_feat_cnt = int(arcpy.GetCount_management(fl_tmcs_buffd)[0])
+        if sel_feat_cnt == 0:
             out_row_dict[out_dict_len_field] = 0
         else:
             # split the project line at the boundaries of the TMC buffer, creating points where project line intersects TMC buffer boundaries
@@ -198,7 +199,7 @@ def simplify_outputs(in_df, proj_len_col):
     secdir = secndmax_col[:secndmax_col.find(dirlen_suffix)]
 
     outcols_max = [c for c in in_df.columns if re.match(maxdir, c)]
-    outcols_sec = [f.replace(maxdir, secdir) for f in outcols_max] # this ensures that all keys are present (e.g. ff_speed) even if data aren't
+    outcols_sec = [f.replace(maxdir, secdir) for f in outcols_max] # this ensures that all keys are present (e.g. ff_speed) even if data aren't 
 
     outcols = outcols_max + outcols_sec
     
@@ -230,12 +231,6 @@ def make_df(in_dict):
     
     return df_out
 
-def remove_cross_streets(fl_project, intersecting_fl):
-    # intersecting_fl assumed to be subset that only contains segments that intersect
-    # fl_project. Goal of this function is to further filter intersecting_fl
-    # to only return fl with segments that intersect fl_project that are not cross streets
-
-    pass
 
 def get_npmrds_data(fc_projline, str_project_type):
     arcpy.AddMessage("Calculating congestion and reliability metrics...")
@@ -248,14 +243,8 @@ def get_npmrds_data(fc_projline, str_project_type):
     fl_speed_data = g_ESRI_variable_7
     arcpy.MakeFeatureLayer_management(params.fc_speed_data, fl_speed_data)
 
-    # select TMCs that intersect project
+    # make flat-ended buffers around TMCs that intersect project
     arcpy.SelectLayerByLocation_management(fl_speed_data, "WITHIN_A_DISTANCE", fl_projline, params.tmc_select_srchdist, "NEW_SELECTION")
-
-    # further filter to only get intersecting TMCs that are not obviously cross streets
-    # UPDATE NEEDED FOR THIS based on remove_cross_streets() placeholder function
-    # problem is that if user draws multi-piece project and each piece is different angle, 
-
-    # subset selection to only get TMCs that are same road type (fwy vs. arterial) as project line
     if str_project_type == params.ptype_fwy:
         sql = g_ESRI_variable_8.format(params.col_roadtype, params.roadtypes_fwy)
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
@@ -263,14 +252,11 @@ def get_npmrds_data(fc_projline, str_project_type):
         sql = "{} NOT IN {}".format(params.col_roadtype, params.roadtypes_fwy)
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
 
-    # create temporary buffer layer, flat-tipped, around TMCs; will be used to split project lines
-    temp_tmcbuff = os.path.join(arcpy.env.scratchGDB, "TEMP_linkbuff_4projsplit")
+    # create temporar buffer layer, flat-tipped, around TMCs; will be used to split project lines
+    temp_tmcbuff = os.path.join("memory", "TEMP_linkbuff_4projsplit")
     fl_tmc_buff = g_ESRI_variable_9
     arcpy.Buffer_analysis(fl_speed_data, temp_tmcbuff, params.tmc_buff_dist_ft, "FULL", "FLAT")
     arcpy.MakeFeatureLayer_management(temp_tmcbuff, fl_tmc_buff)
-
-    buff_sr_name = arcpy.Describe(temp_tmcbuff).spatialReference.name
-    # arcpy.AddMessage(f"{temp_tmcbuff} SPATIAL REF NAME: {buff_sr_name}")
 
     # get "full" table with data for all directions
     projdata_df = conflate_tmc2projline(fl_projline, params.directions_tmc, params.col_tmcdir,
@@ -293,18 +279,24 @@ if __name__ == '__main__':
     from time import perf_counter as perf
     start_time = perf()
 
-    # arcpy.env.workspace = params.fgdb # r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb'
+    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
-    # project_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_16thSt_oneway' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
-    # proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
+    project_line = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\PPAClientRun_SacCity_StocktonBl' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
+    proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
+
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
 
 
-    # test_dict = get_npmrds_data(project_line, proj_type)
+    test_dict = get_npmrds_data(project_line, proj_type)
 
-    # print(test_dict)
+    print(test_dict)
 
-    # elapsed_time = round((perf() - start_time)/60, 1)
-    # print("Success! Time elapsed: {} minutes".format(elapsed_time))    
+    elapsed_time = round((perf() - start_time)/60, 1)
+    print("Success! Time elapsed: {} minutes".format(elapsed_time))    
 
 
     

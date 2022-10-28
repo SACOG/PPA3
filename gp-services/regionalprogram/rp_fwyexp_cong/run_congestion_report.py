@@ -45,7 +45,8 @@ def direction_field_translator(in_congdata_dict):
         'lottr_ampk': 'lottr_am',
         'lottr_midday': 'lottr_md',
         'lottr_pmpk': 'lottr_pm',
-        'lottr_wknd': 'lottr_wknd'
+        'lottr_wknd': 'lottr_wknd',
+        'congrat': 'congrat'
     }
 
     out_dict = {}
@@ -103,11 +104,15 @@ def make_congestion_rpt_fwyexp(input_dict):
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
 
-    output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
-    
-
     cong_rpt_obj = chart_congestion.CongestionReport(congn_data, loaded_json)
     cong_rpt_obj.update_all_congestion_data()
+
+    # get congestion ratio for each direction
+    cong_data2 = cong_rpt_obj.parse_congestion()
+    cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
+    congn_data.update(cong_ratios)
+
+    output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
 
     # update AADT
     loaded_json["projectAADT"] = aadt
