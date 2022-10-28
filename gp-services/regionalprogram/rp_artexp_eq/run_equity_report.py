@@ -75,8 +75,9 @@ def make_equity_rpt_artexp(input_dict):
     year_dict = landuse_buff_calcs.LandUseBuffCalcs(base_buff_pcl_fc, fc_project, project_commtype, [params.col_pop_ilut], 
                 buffered_pcls=True, case_field=params.col_ej_ind).point_sum()
 
-    pop_ej = 0 if len(year_dict) == 1 else year_dict[1]
-    pop_non_ej = year_dict[0]
+
+    pop_non_ej = 0 if year_dict.get(0) is None else year_dict.get(0) # must use get() in case key is not in dict
+    pop_ej = 0 if year_dict.get(1) is None else year_dict.get(1)
 
     pop_tot = pop_non_ej + pop_ej
 
