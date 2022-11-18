@@ -19,7 +19,6 @@ g_ESRI_variable_1 = 'memory/temp_intersect_fc'
 # --------------------------------
 
 import arcpy
-import pdb
 
 from get_lutype_acres import GetLandUseArea
 import parameters as params
