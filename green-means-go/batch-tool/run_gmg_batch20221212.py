@@ -25,7 +25,6 @@ import arcpy
 import accessibility_calcs as acc
 import get_buff_netmiles as bikebuffmi
 import get_zone_comm_type as get_ctyp
-import mix_index_for_project as mixidx
 import parameters as params
 
 arcpy.overwriteOutput = True
@@ -41,7 +40,7 @@ def trace():
     synerror = traceback.format_exc().splitlines()[-1]
     return line, filename, synerror #return line number, name of file with error line, and type of error
 
-def get_zone_data(polygon_fl_selection, data_yr):
+def get_zone_data(polygon_fl_selection):
     """Compute applicable PPA metrics for single polygon representing green zone or other
     polygon-based analysis area.
 
@@ -51,11 +50,10 @@ def get_zone_data(polygon_fl_selection, data_yr):
 
     proj_type = params.ptype_area_agg
     
-    temp_zone_fc = os.path.join(arcpy.env.scratchGDB, "TEMP_green_zone_selection")
+    temp_zone_fc = "memory/TEMP_green_zone_selection"
     if arcpy.Exists(temp_zone_fc): arcpy.Delete_management(temp_zone_fc)
-
-    # import pdb; pdb.set_trace()
     arcpy.management.CopyFeatures(polygon_fl_selection, temp_zone_fc)
+
 
     output_data = {}
 
@@ -70,16 +68,17 @@ def get_zone_data(polygon_fl_selection, data_yr):
 
 
     # calculate land use diversity index
-    parcels = os.path.join(params.fgdb, params.parcel_pt_fc_yr(data_yr))
-    lu_mix_index = mixidx.get_mix_idx(fc_parcel=parcels, fc_project=temp_zone_fc, 
-                                    project_type=proj_type, buffered_pcls=False)
+    # 6/27/2022 - OMITTING FOR NOW, BUT KEEPING FUNCTION IN in case used in future uses.
+    # parcels = os.path.join(params.fgdb, params.parcel_pt_fc_yr(data_year))
+    # lu_mix_index = mixidx.get_mix_idx(fc_parcel=parcels, fc_project=temp_zone_fc, 
+    #                                 project_type=proj_type, buffered_pcls=False)
 
     # calculate percent of total road miles that are C2 bike lanes or C1 paths
     bikewy_mi = bikebuffmi.get_bikeway_mileage_share(project_fc=temp_zone_fc, proj_type=proj_type)
 
     # combine and return as single dict
-    
-    for d in [comm_typ, acc_data, lu_mix_index, bikewy_mi]: # [comm_typ, acc_data, lu_mix_index, bikewy_mi]
+    # import pdb; pdb.set_trace()
+    for d in [comm_typ, acc_data, bikewy_mi]: # [comm_typ, acc_data, lu_mix_index, bikewy_mi]
         output_data.update(d)
 
     return output_data
@@ -114,7 +113,7 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
                     zone_name = row[poly_fl_fields.index(f_gzname)]
                     sql_getzone = f"{f_id} = '{zone_id}'"
                     arcpy.SelectLayerByAttribute_management(in_poly_fl, where_clause=sql_getzone)
-                    zone_data = get_zone_data(in_poly_fl, data_year)
+                    zone_data = get_zone_data(in_poly_fl)
 
                     output_dict = {f_id: zone_id, f_jur: zone_jur, f_gzname: zone_name}
                     output_dict.update(zone_data)
@@ -141,16 +140,10 @@ def get_gmg_batch_data(in_poly_fc, out_csv_path):
 
 if __name__ == '__main__':
     # SHP or FC of green zone polygons
-    fc_zones = r'I:\Projects\Darren\PPA3_GIS\PPA3_GreenMeansGo.gdb\GreenZones_102422_Dissolve'
+    fc_zones = r'I:\Green_Means_Go\Green Zones-for new application\GreenZones_100622.shp'
     output_dir = r'I:\Projects\Darren\PPA3_GIS\CSV\GMG'
 
 #=============================RUN SCRIPT=================================
-    try:
-        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
-        print("Deleted arcpy scratch GDB to ensure reliability.")
-    except:
-        pass
-
     # specify output file path
     sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_csv = f'gmg_batch_results{sufx}.csv'
