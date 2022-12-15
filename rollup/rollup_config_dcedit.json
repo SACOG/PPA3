@@ -47,14 +47,14 @@
 				},
 				{
 					"targetFieldName": "du_base",
-					"targetFieldDisplayName": "Du Base",
+					"targetFieldDisplayName": "Dwelling Units Base",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "du_future",
-					"targetFieldDisplayName": "Du Future",
+					"targetFieldDisplayName": "Dwelling Units Future",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": false
@@ -395,14 +395,14 @@
 				},
 				{
 					"targetFieldName": "cs_index",
-					"targetFieldDisplayName": "Du Base",
+					"targetFieldDisplayName": "Dwelling Units Base",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "cs_index",
-					"targetFieldDisplayName": "Du Future",
+					"targetFieldDisplayName": "Dwelling Units Future",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": false
@@ -434,14 +434,14 @@
 				},
 				{
 					"targetFieldName": "du_base",
-					"targetFieldDisplayName": "Du Base",
+					"targetFieldDisplayName": "Dwelling Units Base",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "2",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "du_future",
-					"targetFieldDisplayName": "Du Future",
+					"targetFieldDisplayName": "Dwelling Units Future",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "2",
 					"sortAscending": false
@@ -476,6 +476,7 @@
 	],
 	"chartTemplates": [
 		{
+			"_comment1": "this is a test comment",
 			"chartItemId": "1",
 			"type": "BarComparison",
 			"chartDefinition": {
@@ -483,7 +484,7 @@
 					"type": "column"
 				},
 				"title": {
-					"text": "Comparision {targetFieldDisplayName} of project {proj_name} with juris {juris}"
+					"text": "Compare: {targetFieldDisplayName}"
 				},
 				"xAxis": {
 					"categoryPattern": "{proj_name}",
