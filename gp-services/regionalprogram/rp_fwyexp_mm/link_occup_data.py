@@ -57,6 +57,15 @@ def get_wtdavg_vehvol(in_df, col_vehtype):
 
     return output_vehvol
 
+def trantrp_per_lnmi(in_df):
+    # get average number of transit trips per lane-mile within project extent,
+    # this function assumes in_df is already filtering to relevant capclasses (e.g., fwy vs. arterial)
+    
+    tot_lnmi = in_df[params.col_lanemi].sum()
+    tot_trntrip = in_df[params.col_tranvol].sum()
+
+    return tot_trntrip / tot_lnmi
+
 
 def get_linkoccup_data(fc_project, project_type, fc_model_links):
     arcpy.AddMessage("Getting modeled vehicle occupancy data...")
@@ -81,8 +90,12 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     else:
         df_linkdata = df_linkdata.loc[df_linkdata[params.col_capclass].isin(params.capclass_arterials)]
 
-    df_trnlinkdata = df_linkdata.loc[pd.notnull(df_linkdata[params.col_tranvol])]
-    avg_proj_trantrips = get_wtdavg_vehvol(df_trnlinkdata, params.col_tranvol) if df_trnlinkdata.shape[0] > 0 else 0
+    # 12/16/22 - old method of computing avg transit trips. Problematic for HOV lane projects.
+    # df_trnlinkdata = df_linkdata.loc[pd.notnull(df_linkdata[params.col_tranvol])]
+    # avg_proj_trantrips = get_wtdavg_vehvol(df_trnlinkdata, params.col_tranvol) if df_trnlinkdata.shape[0] > 0 else 0
+    
+    avg_proj_trantrips = trantrp_per_lnmi(df_linkdata) if df_linkdata.shape[0] > 0 else 0
+    
     avg_proj_vehocc = get_wtdavg_vehocc(df_linkdata) if df_linkdata.shape[0] > 0 else 0
 
     out_dict = {"avg_2way_trantrips": avg_proj_trantrips, "avg_2way_vehocc": avg_proj_vehocc}
