@@ -54,7 +54,7 @@ def make_vmt_report_fwyexp(input_dict):
     
         # update transit trips values
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
-            [params.k_attrs][params.k_year] = year
+            [params.k_attrs][params.k_year] = str(year)
         loaded_json[params.k_charts][cname_trantrp][params.k_features][i] \
             [params.k_attrs][params.k_value] =  proj_trantrips
 
@@ -64,7 +64,7 @@ def make_vmt_report_fwyexp(input_dict):
         cname_vehocc = "Average Weekday Vehicle Occupancy"
 
         loaded_json[params.k_charts][cname_vehocc][params.k_features][i] \
-            [params.k_attrs][params.k_year] = year
+            [params.k_attrs][params.k_year] = str(year)
         loaded_json[params.k_charts][cname_vehocc][params.k_features][i] \
             [params.k_attrs][params.k_value] =  proj_vehocc       
 
