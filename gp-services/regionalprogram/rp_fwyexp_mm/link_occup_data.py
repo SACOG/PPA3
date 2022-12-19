@@ -32,19 +32,33 @@ def link_vehocc(row):
     vol_commveh = row[params.col_daycommvehvol]
     total_veh_vol = sum([vol_sov, vol_hov2, vol_hov3, vol_commveh])
 
-    out_row = (vol_commveh + vol_sov + vol_hov2 * params.fac_hov2 + vol_hov3 * params.fac_hov3) / total_veh_vol
+    # 12/19/22 old method: comput average vehicle occupancy
+    # out_row = (vol_commveh + vol_sov + vol_hov2 * params.fac_hov2 + vol_hov3 * params.fac_hov3) / total_veh_vol
+
+    # 12/19/22 - new method, compute total people in all vehs, rather than avg veh occupancy
+    out_row = (vol_commveh + vol_sov + vol_hov2 * params.fac_hov2 + vol_hov3 * params.fac_hov3)
     return out_row
 
 
 def get_wtdavg_vehocc(in_df):
 
-    col_wtdvol = 'col_wtdvol'
-    in_df = in_df.loc[in_df[params.col_dayvehvol] > 0]  # exclude links with daily volume of zero.
-    in_df[col_wtdvol] = in_df.apply(lambda x: link_vehocc(x), axis = 1)
+    # col_wtdvol = 'col_wtdvol'
+    col_persncnt = 'persncnt'
+    col_ppv = 'person_perveh'
 
-    sumprod = in_df[params.col_lanemi].dot(in_df[col_wtdvol])
-    lanemi_tot = in_df[params.col_lanemi].sum()
-    output_val = sumprod / lanemi_tot
+    in_df = in_df.loc[in_df[params.col_dayvehvol] > 0]  # exclude links with daily volume of zero.
+    in_df[col_persncnt] = in_df.apply(lambda x: link_vehocc(x), axis = 1)
+    in_df[col_ppv] = in_df[col_persncnt] / in_df[params.col_dayvehvol]
+
+    # import pdb; pdb.set_trace()
+
+    # old method: lane-mile weighted avg vehicle occupancy
+    # sumprod = in_df[params.col_lanemi].dot(in_df[col_wtdvol])
+    # lanemi_tot = in_df[params.col_lanemi].sum()
+    # output_val = sumprod / lanemi_tot
+
+    # new method: avg vehicle occupancy weighted by traffic vol on all links
+    output_val = (in_df[col_ppv] * in_df[params.col_dayvehvol]).sum() / in_df[params.col_dayvehvol].sum()
 
     return output_val
 
