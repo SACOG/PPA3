@@ -50,46 +50,47 @@ def get_wtdavg_vehocc(in_df):
     in_df[col_persncnt] = in_df.apply(lambda x: link_vehocc(x), axis = 1)
     in_df[col_ppv] = in_df[col_persncnt] / in_df[params.col_dayvehvol]
 
-    # import pdb; pdb.set_trace()
-
-    # old method: lane-mile weighted avg vehicle occupancy
-    # sumprod = in_df[params.col_lanemi].dot(in_df[col_wtdvol])
-    # lanemi_tot = in_df[params.col_lanemi].sum()
-    # output_val = sumprod / lanemi_tot
-
     # new method: avg vehicle occupancy weighted by traffic vol on all links
     output_val = (in_df[col_ppv] * in_df[params.col_dayvehvol]).sum() / in_df[params.col_dayvehvol].sum()
 
     return output_val
 
 
-def get_wtdavg_vehvol(in_df, col_vehtype):
+# def get_wtdavg_vehvol(in_df, col_vehtype):
 
-    sumprod = in_df[params.col_lanemi].dot(in_df[col_vehtype]) # sum product of lanemi * volume, for the occupancy class (sov, hov2, hov3+)
-    lanemi_tot = in_df[params.col_lanemi].sum()
-    output_vehvol = sumprod / lanemi_tot  # lanemi-weighted average volume for the occupancy class
+#     sumprod = in_df[params.col_lanemi].dot(in_df[col_vehtype]) # sum product of lanemi * volume, for the occupancy class (sov, hov2, hov3+)
+#     lanemi_tot = in_df[params.col_lanemi].sum()
+#     output_vehvol = sumprod / lanemi_tot  # lanemi-weighted average volume for the occupancy class
 
-    return output_vehvol
+#     return output_vehvol
 
-def trantrp_per_gplink(in_df):
-    in_df_gp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
+def trantrp_per_link(in_df, project_type):
+    # compute average # of transit trips per road link
 
-    cnt_gplinks = in_df_gp.shape[0]
+    in_df_ptyp = in_df
+    if project_type == params.ptype_fwy:
+        # if project is fwy project, then only use GP links; adding HOV or aux links may
+        # make it appear as if decrease in transit trips because % change in links may exceed % change in transit trips
+        in_df_ptyp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
+
+    cnt_gplinks = in_df_ptyp.shape[0]
     tot_trntrip = in_df[params.col_tranvol].sum()
+
+    # if freeway, is (total transit trips on all fwy link types) / (# of GP fwy links)
     return tot_trntrip / cnt_gplinks
 
 
-def trantrp_per_lnkmi(in_df):
-    # get average number of transit trips per lane-mile within project extent,
-    # this function assumes in_df is already filtering to relevant capclasses (e.g., fwy vs. arterial)
+# def trantrp_per_lnkmi(in_df):
+#     # get average number of transit trips per lane-mile within project extent,
+#     # this function assumes in_df is already filtering to relevant capclasses (e.g., fwy vs. arterial)
     
-    in_df_gp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
+#     in_df_gp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
 
-    # tot_lnmi = in_df[params.col_lanemi].sum()
-    tot_lnkmi_gp = in_df_gp[params.col_distance].sum()
-    tot_trntrip = in_df[params.col_tranvol].sum()
+#     # tot_lnmi = in_df[params.col_lanemi].sum()
+#     tot_lnkmi_gp = in_df_gp[params.col_distance].sum()
+#     tot_trntrip = in_df[params.col_tranvol].sum()
 
-    return tot_trntrip / tot_lnkmi_gp
+#     return tot_trntrip / tot_lnkmi_gp
 
 
 def get_linkoccup_data(fc_project, project_type, fc_model_links):
@@ -117,6 +118,8 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
 
     df_linkdata = df_linkdata.fillna(0)
 
+    import pdb; pdb.set_trace()
+
     # 12/16/22 - old method of computing avg transit trips. Problematic for HOV lane projects.
     # df_trnlinkdata = df_linkdata.loc[pd.notnull(df_linkdata[params.col_tranvol])]
     # avg_proj_trantrips = get_wtdavg_vehvol(df_trnlinkdata, params.col_tranvol) if df_trnlinkdata.shape[0] > 0 else 0
@@ -126,7 +129,7 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     # if '2040' in fc_model_links:
     #     import pdb; pdb.set_trace()
     
-    avg_proj_trantrips = trantrp_per_gplink(df_linkdata) if df_linkdata.shape[0] > 0 else 0
+    avg_proj_trantrips = trantrp_per_link(df_linkdata, project_type) if df_linkdata.shape[0] > 0 else 0
     
     avg_proj_vehocc = get_wtdavg_vehocc(df_linkdata) if df_linkdata.shape[0] > 0 else 0
 
