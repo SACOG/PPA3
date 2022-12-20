@@ -1,0 +1,26 @@
+
+{
+    "tableName": "ItemsToShare_PPA3_MIL1 - cd_mixeduse",
+    "performanceOutcomeDisplayName": "Community Design - Mixed-Use Development",
+    "queryWhere": "project_uid = '{projectJoinId}'",
+    "defaultChartTargetFieldName": "jobs_base",
+    "fields": {
+        "projectJoinIdFieldName": "project_uid"
+    },
+    "charts": [
+        {
+            "targetFieldName": "lumix_base",
+            "targetFieldDisplayName": "lumix_base",
+            "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+            "chartTemplateId": "2",
+            "sortAscending": true
+        },
+        {
+            "targetFieldName": "lumix_future",
+            "targetFieldDisplayName": "lumix_future",
+            "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+            "chartTemplateId": "2",
+            "sortAscending": false
+        }
+    ]
+}

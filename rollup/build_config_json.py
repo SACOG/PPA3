@@ -11,9 +11,18 @@ Python Version: 3.x
 """
 
 import json
-from csv import DictReader
-from shlex import join
+import pandas as pd
 
+config_csv = r"C:\Users\dconly\GitRepos\PPA3\rollup\chartname_config.csv"
+subreport_name = 'rp_artexp_frgt'
+
+update_template_id = True
+chart_template_id = "2" # must be string--consider whether you want this template ID to apply to ALL charts in this report!
+
+#=================RUN SCRIPT=================
+f_rptname = 'rptname'
+f_fname = 'fname'
+f_dispname = 'dispname'
 
 template = {
             "targetFieldName": "jobs_added",
@@ -25,16 +34,22 @@ template = {
 
 out_list = []
 
-with open(r"C:\Users\dconly\GitRepos\PPA3\rollup\chartname_config.csv", 'r') as f:
-    reader = DictReader(f)
-    for row in reader:
-        t = template
-        t["targetFieldName"] = row['fname']
-        t['targetFieldDisplayName'] = row['dispname']
+df = pd.read_csv(config_csv)
+df = df.loc[df['rptname'] == subreport_name][[f_fname, f_dispname]]
 
-        ts = json.dumps(template, indent=4)
+name_dict = df.to_dict(orient='records') 
 
-        out_list.append(ts)
+for d in name_dict:
+    t = template
+    t["targetFieldName"] = d['fname']
+    t['targetFieldDisplayName'] = d['dispname']
+
+    if update_template_id:
+        t["chartTemplateId"] = chart_template_id
+
+    ts = json.dumps(template, indent=4)
+
+    out_list.append(ts)
 
 
 for i in out_list:

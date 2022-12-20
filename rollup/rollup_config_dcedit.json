@@ -489,7 +489,7 @@
 		},
 		{
 			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_cong",
-			"performanceOutcomeDisplayName": "Arterial Expansion - Reduce Congestion",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce Congestion",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
 			"fields": {
@@ -731,7 +731,7 @@
 		},
 		{
 			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_econ",
-			"performanceOutcomeDisplayName": "Arterial Expansion - Promote Economic Prosperity",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Promote Economic Prosperity",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_added",
 			"fields": {
@@ -823,6 +823,59 @@
 					"sortAscending": "true"
 				}
 			]
+		},
+		{
+			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_eq",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Promote Socioeconomic Equity",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "pop_ej_area",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "pop_ej_area",
+					"targetFieldDisplayName": "Population in EJ Areas",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "2",
+					"sortAscending": "true"
+				},
+				{
+					"targetFieldName": "pctpot_ej_area",
+					"targetFieldDisplayName": "Percent Population in EJ Areas",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "2",
+					"sortAscending": "true"
+				},
+				{
+					"targetFieldName": "acc_walk_alljob_ej",
+					"targetFieldDisplayName": "EJ Walk Access to Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "2",
+					"sortAscending": "true"
+				},
+				{
+					"targetFieldName": "acc_bike_alljob_ej",
+					"targetFieldDisplayName": "EJ Bike Access to Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "2",
+					"sortAscending": "true"
+				},
+				{
+					"targetFieldName": "acc_drive_alljob_ej",
+					"targetFieldDisplayName": "EJ Drive Access to Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "2",
+					"sortAscending": "true"
+				},
+				{
+					"targetFieldName": "acc_transit_alljob_ej",
+					"targetFieldDisplayName": "EJ Transit Access to Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "2",
+					"sortAscending": "true"
+				}
+			]
 		}
 	],
 	"chartTemplates": [
@@ -855,7 +908,7 @@
 						"allowNegativeLog": true
 					},
 					"title": {
-						"text": "{targetFieldName}"
+						"text": "{targetFieldDisplayName}"
 					},
 					"labels": {
 						"overflow": "justify"
@@ -924,7 +977,7 @@
 					"type": "column"
 				},
 				"title": {
-					"text": "Another Comparision of {targetFieldDisplayName} of project {proj_name}"
+					"text": "Compare: {targetFieldDisplayName}"
 				},
 				"xAxis": {
 					"categoryPattern": "{proj_name}",
@@ -944,7 +997,7 @@
 						"allowNegativeLog": true
 					},
 					"title": {
-						"text": "{targetFieldName}"
+						"text": "{targetFieldDisplayName}"
 					},
 					"labels": {
 						"overflow": "justify"
@@ -977,7 +1030,11 @@
 							"f",
 							"color"
 						],
-						"data": []
+						"data": [],
+						"dataLabels": {
+							"enabled": "true",
+							"format": "{y:,.1f}"
+						}
 					}
 				],
 				"legend": {
