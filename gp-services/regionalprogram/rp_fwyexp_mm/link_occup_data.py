@@ -71,14 +71,25 @@ def get_wtdavg_vehvol(in_df, col_vehtype):
 
     return output_vehvol
 
-def trantrp_per_lnmi(in_df):
+def trantrp_per_gplink(in_df):
+    in_df_gp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
+
+    cnt_gplinks = in_df_gp.shape[0]
+    tot_trntrip = in_df[params.col_tranvol].sum()
+    return tot_trntrip / cnt_gplinks
+
+
+def trantrp_per_lnkmi(in_df):
     # get average number of transit trips per lane-mile within project extent,
     # this function assumes in_df is already filtering to relevant capclasses (e.g., fwy vs. arterial)
     
-    tot_lnmi = in_df[params.col_lanemi].sum()
+    in_df_gp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
+
+    # tot_lnmi = in_df[params.col_lanemi].sum()
+    tot_lnkmi_gp = in_df_gp[params.col_distance].sum()
     tot_trntrip = in_df[params.col_tranvol].sum()
 
-    return tot_trntrip / tot_lnmi
+    return tot_trntrip / tot_lnkmi_gp
 
 
 def get_linkoccup_data(fc_project, project_type, fc_model_links):
@@ -95,8 +106,8 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     arcpy.SelectLayerByLocation_management(fl_model_links, 'HAVE_THEIR_CENTER_IN', fl_project, params.modlink_searchdist)
 
     # load data into dataframe then subselect only ones that are on same road type as project (e.g. fwy vs. arterial)
-    df_cols = [params.col_capclass, params.col_lanemi, params.col_tranvol, params.col_dayvehvol, params.col_sovvol, params.col_hov2vol, params.col_hov3vol,
-               params.col_daycommvehvol]
+    df_cols = [params.col_capclass, params.col_distance, params.col_lanemi, params.col_tranvol, params.col_dayvehvol, params.col_sovvol,  
+               params.col_hov2vol, params.col_hov3vol, params.col_daycommvehvol]
     df_linkdata = ut.esri_object_to_df(fl_model_links, df_cols)
 
     if project_type == params.ptype_fwy:
@@ -104,11 +115,18 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     else:
         df_linkdata = df_linkdata.loc[df_linkdata[params.col_capclass].isin(params.capclass_arterials)]
 
+    df_linkdata = df_linkdata.fillna(0)
+
     # 12/16/22 - old method of computing avg transit trips. Problematic for HOV lane projects.
     # df_trnlinkdata = df_linkdata.loc[pd.notnull(df_linkdata[params.col_tranvol])]
     # avg_proj_trantrips = get_wtdavg_vehvol(df_trnlinkdata, params.col_tranvol) if df_trnlinkdata.shape[0] > 0 else 0
+
+    # arcpy.AddMessage(f"transit trips: {df_linkdata.TOT_TRNVOL.sum()}")
+    # arcpy.AddMessage(f"lane-miles: {df_linkdata.LANEMI.sum()}\n")
+    # if '2040' in fc_model_links:
+    #     import pdb; pdb.set_trace()
     
-    avg_proj_trantrips = trantrp_per_lnmi(df_linkdata) if df_linkdata.shape[0] > 0 else 0
+    avg_proj_trantrips = trantrp_per_gplink(df_linkdata) if df_linkdata.shape[0] > 0 else 0
     
     avg_proj_vehocc = get_wtdavg_vehocc(df_linkdata) if df_linkdata.shape[0] > 0 else 0
 
