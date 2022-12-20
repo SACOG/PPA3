@@ -1,22 +1,22 @@
-rptname,fname,dispname,include_in_report
-rp_artexp_econ,enr_k12,K-12 Enrollment,1
-rp_artexp_econ,jobs_added,Jobs Added,1
-rp_artexp_econ,agac_pct_base,Base Percent Ag Acres,1
-rp_artexp_econ,agac_pct_future,Future Percent Ag Acres,1
-rp_artexp_econ,acc_walk_alljob,Walk Access to Jobs,1
-rp_artexp_econ,acc_bike_alljob,Bike Access to Jobs,1
-rp_artexp_econ,acc_drive_alljob,Drive Access to Jobs,1
-rp_artexp_econ,acc_transit_alljob,Transit Access to Jobs,1
-rp_artexp_econ,acc_walk_edu,Walk Access to Ed Facilities,1
-rp_artexp_econ,acc_bike_edu,Bike Access to Ed Facilities,1
-rp_artexp_econ,acc_drive_edu,Drive Access to Ed Facilities,1
-rp_artexp_econ,acc_transit_edu,Transit Access to Ed Facilities,1
-rp_artexp_eq,pop_ej_area,Population in EJ Areas,1
-rp_artexp_eq,pctpot_ej_area,Percent Population in EJ Areas,1
-rp_artexp_eq,acc_walk_alljob_ej,EJ Walk Access to Jobs,1
-rp_artexp_eq,acc_bike_alljob_ej,EJ Bike Access to Jobs,1
-rp_artexp_eq,acc_drive_alljob_ej,EJ Drive Access to Jobs,1
-rp_artexp_eq,acc_transit_alljob_ej,EJ Transit Access to Jobs,1
-rp_artexp_frgt,pct_staa,Percent of Project on STAA Truck Route,
-rp_artexp_frgt,pct_empind_base,Base Percent Industrial Jobs,
-rp_artexp_frgt,pct_empind_fut,Future Percent Industrial Jobs,
+rptname,fname,dispname,include_in_report,chart_template
+rp_artexp_econ,enr_k12,K-12 Enrollment,1,WholeNum
+rp_artexp_econ,jobs_added,Jobs Added,1,WholeNum
+rp_artexp_econ,agac_pct_base,Base Percent Ag Acres,1,
+rp_artexp_econ,agac_pct_future,Future Percent Ag Acres,1,
+rp_artexp_econ,acc_walk_alljob,Walk Access to Jobs,1,0p1
+rp_artexp_econ,acc_bike_alljob,Bike Access to Jobs,1,0p1
+rp_artexp_econ,acc_drive_alljob,Drive Access to Jobs,1,0p1
+rp_artexp_econ,acc_transit_alljob,Transit Access to Jobs,1,0p1
+rp_artexp_econ,acc_walk_edu,Walk Access to Ed Facilities,1,0p1
+rp_artexp_econ,acc_bike_edu,Bike Access to Ed Facilities,1,0p1
+rp_artexp_econ,acc_drive_edu,Drive Access to Ed Facilities,1,0p1
+rp_artexp_econ,acc_transit_edu,Transit Access to Ed Facilities,1,0p1
+rp_artexp_eq,pop_ej_area,Population in EJ Areas,1,WholeNum
+rp_artexp_eq,pctpot_ej_area,Percent Population in EJ Areas,1,
+rp_artexp_eq,acc_walk_alljob_ej,EJ Walk Access to Jobs,1,0p1
+rp_artexp_eq,acc_bike_alljob_ej,EJ Bike Access to Jobs,1,0p1
+rp_artexp_eq,acc_drive_alljob_ej,EJ Drive Access to Jobs,1,0p1
+rp_artexp_eq,acc_transit_alljob_ej,EJ Transit Access to Jobs,1,0p1
+rp_artexp_frgt,pct_staa,Percent of Project on STAA Truck Route,1,
+rp_artexp_frgt,pct_empind_base,Base Percent Industrial Jobs,1,
+rp_artexp_frgt,pct_empind_fut,Future Percent Industrial Jobs,1,

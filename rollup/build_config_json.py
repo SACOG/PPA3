@@ -23,6 +23,7 @@ chart_template_id = "2" # must be string--consider whether you want this templat
 f_rptname = 'rptname'
 f_fname = 'fname'
 f_dispname = 'dispname'
+f_ctemplate = 'chart_template'
 
 template = {
             "targetFieldName": "jobs_added",
@@ -35,17 +36,17 @@ template = {
 out_list = []
 
 df = pd.read_csv(config_csv)
-df = df.loc[df['rptname'] == subreport_name][[f_fname, f_dispname]]
+df = df.loc[df['rptname'] == subreport_name][[f_fname, f_dispname, f_ctemplate]]
 
 name_dict = df.to_dict(orient='records') 
 
 for d in name_dict:
     t = template
-    t["targetFieldName"] = d['fname']
-    t['targetFieldDisplayName'] = d['dispname']
+    t["targetFieldName"] = d[f_fname]
+    t['targetFieldDisplayName'] = d[f_dispname]
 
     if update_template_id:
-        t["chartTemplateId"] = chart_template_id
+        t["chartTemplateId"] = d[f_ctemplate]
 
     ts = json.dumps(template, indent=4)
 
