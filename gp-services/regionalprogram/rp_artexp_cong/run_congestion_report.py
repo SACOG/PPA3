@@ -112,9 +112,27 @@ def make_congestion_rpt_artexp(input_dict):
 
     # get congestion ratio for each direction
     cong_data2 = cong_rpt_obj.parse_congestion()
-    import pdb; pdb.set_trace()
+    
+    # get congestion ratio and congested speed for worst direction
+    worst_data = {}
 
-    cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
+    k_congratio = 'congestionRatio'
+    for kname in [k_congratio, params.col_congest_speed]:
+        worstval = min([v[kname] for k, v in cong_data2.items()])
+        kname_worst = f"{kname}_wrst"
+        worst_data[kname_worst] = worstval
+
+    # get LOTTR for worst direction for each LOTTR period
+    rel_data = cong_rpt_obj.parse_reliability()
+    lottr_tags = [params.col_reliab_ampk, params.col_reliab_md, params.col_reliab_pmpk,
+                params.col_reliab_wknd]
+
+    for tag in lottr_tags:
+        worstval = max([v[tag] for k, v in rel_data.items()])
+        kname_worst = f"{tag}_wrst"
+        worst_data[kname_worst] = worstval
+
+    cong_ratios = {f"{k}congrat":v[k_congratio] for k, v in cong_data2.items()}
     congn_data.update(cong_ratios)
 
     # update AADT
@@ -132,6 +150,8 @@ def make_congestion_rpt_artexp(input_dict):
     # log data to run archive table
 
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
+    output_congn_data.update(worst_data)
+
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
                                         proj_type=input_dict[uis.ptype], 
                                         proj_jur=input_dict[uis.jur], 
