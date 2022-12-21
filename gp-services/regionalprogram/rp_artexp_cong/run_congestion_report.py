@@ -82,27 +82,27 @@ def make_congestion_rpt_artexp(input_dict):
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
-    for year in data_years:
-        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-        pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
-                            buffdist=lu_buffdist_ft, project_type=ptype, data_year=year)
-        parcel_fc_dict[year] = pcl_buff_fc
+    # for year in data_years:
+    #     in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
+    #     pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
+    #                         buffdist=lu_buffdist_ft, project_type=ptype, data_year=year)
+    #     parcel_fc_dict[year] = pcl_buff_fc
 
-    # calc land use buffer values (job + du totals)
+    # # calc land use buffer values (job + du totals)
 
-    d_lubuff = {}
-    for i, year in enumerate(data_years):
-        in_pcl_pt_fc = parcel_fc_dict[year]
-        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-                                    project_fc=project_fc, project_type=ptype)
+    # d_lubuff = {}
+    # for i, year in enumerate(data_years):
+    #     in_pcl_pt_fc = parcel_fc_dict[year]
+    #     d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
+    #                                 project_fc=project_fc, project_type=ptype)
 
-        # {f"jobs": jobs, f"dwellingUnits": du}
-        d_lubuff[year] = d_jobdu
+    #     # {f"jobs": jobs, f"dwellingUnits": du}
+    #     d_lubuff[year] = d_jobdu
 
-    job_base = d_lubuff[data_years[0]]["jobs"]
-    job_future = d_lubuff[data_years[1]]["jobs"]
-    du_base = d_lubuff[data_years[0]]["dwellingUnits"]
-    du_future = d_lubuff[data_years[1]]["dwellingUnits"]
+    # job_base = d_lubuff[data_years[0]]["jobs"]
+    # job_future = d_lubuff[data_years[1]]["jobs"]
+    # du_base = d_lubuff[data_years[0]]["dwellingUnits"]
+    # du_future = d_lubuff[data_years[1]]["dwellingUnits"]
 
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
@@ -112,6 +112,8 @@ def make_congestion_rpt_artexp(input_dict):
 
     # get congestion ratio for each direction
     cong_data2 = cong_rpt_obj.parse_congestion()
+    import pdb; pdb.set_trace()
+
     cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
     congn_data.update(cong_ratios)
 
@@ -152,26 +154,26 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     # inputs from tool interface
-    project_fc = arcpy.GetParameterAsText(0)
-    project_name = arcpy.GetParameterAsText(1)
-    jurisdiction = arcpy.GetParameterAsText(2)
-    project_type = arcpy.GetParameterAsText(3)
-    perf_outcomes = arcpy.GetParameterAsText(4)
-    aadt = arcpy.GetParameterAsText(5)
-    posted_spd = arcpy.GetParameterAsText(6)
-    pci = arcpy.GetParameterAsText(7)
-    email = arcpy.GetParameterAsText(8)
+    # project_fc = arcpy.GetParameterAsText(0)
+    # project_name = arcpy.GetParameterAsText(1)
+    # jurisdiction = arcpy.GetParameterAsText(2)
+    # project_type = arcpy.GetParameterAsText(3)
+    # perf_outcomes = arcpy.GetParameterAsText(4)
+    # aadt = arcpy.GetParameterAsText(5)
+    # posted_spd = arcpy.GetParameterAsText(6)
+    # pci = arcpy.GetParameterAsText(7)
+    # email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'
-    # project_name = 'test'
-    # jurisdiction = 'test'
-    # project_type = params.ptype_arterial
-    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    # aadt = 30000
-    # posted_spd = 65   
-    # pci = 80
-    # email = 'fake@test.com'
+    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th'
+    project_name = 'test'
+    jurisdiction = 'test'
+    project_type = params.ptype_arterial
+    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    aadt = 30000
+    posted_spd = 65   
+    pci = 80
+    email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {
