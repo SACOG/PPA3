@@ -2,7 +2,7 @@
 	"chartingWorkflowId": "ccdd7064-a809-450e-bc3b-e8b800b227d7",
 	"chartingPanelId": "chart-9a8b9ee8",
 	"masterProjectLayer": {
-		"layerName": "ItemsToShare_PPA3_MIL1",
+		"layerName": "ItemsToShare_MIL1",
 		"isFeatureLayer": false,
 		"queryWhere": "for_review = 1",
 		"subLayerId": "0",
@@ -23,7 +23,7 @@
 	},
 	"relatedTables": [
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_vmt",
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_vmt",
 			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce VMT",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
@@ -104,7 +104,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_fwy_vmt",
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_vmt",
 			"performanceOutcomeDisplayName": "Freeway Expansion - Reduce VMT",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "base_trntrip",
@@ -143,7 +143,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_fwy_cong",
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_cong",
 			"performanceOutcomeDisplayName": "Freeway Expansion - Reduce Congestion",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "du_base",
@@ -385,7 +385,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artsgr_sgr",
+			"tableName": "ItemsToShare_MIL1 - rp_artsgr_sgr",
 			"performanceOutcomeDisplayName": "Arterial State of Good Repair - Promote Complete Streets and State of Good Repair",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "cs_index",
@@ -424,7 +424,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - cd_compactdev",
+			"tableName": "ItemsToShare_MIL1 - cd_compactdev",
 			"performanceOutcomeDisplayName": "Community Design - Compact Development",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
@@ -463,7 +463,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - cd_mixeduse",
+			"tableName": "ItemsToShare_MIL1 - cd_mixeduse",
 			"performanceOutcomeDisplayName": "Community Design - Mixed-Use Development",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
@@ -488,7 +488,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_cong",
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_cong",
 			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce Congestion",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
@@ -730,7 +730,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_econ",
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_econ",
 			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Promote Economic Prosperity",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_added",
@@ -825,7 +825,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_eq",
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_eq",
 			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Promote Socioeconomic Equity",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "pop_ej_area",
