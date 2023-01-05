@@ -104,6 +104,97 @@
 			]
 		},
 		{
+<<<<<<< HEAD
+=======
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_cong",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce Congestion",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "jobs_base",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "jobs_base",
+					"targetFieldDisplayName": "Jobs Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "jobs_future",
+					"targetFieldDisplayName": "Jobs Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": false
+				},
+				{
+					"targetFieldName": "du_base",
+					"targetFieldDisplayName": "Dwelling Units Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "du_future",
+					"targetFieldDisplayName": "Dwelling Units Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": false
+				},
+				{
+					"targetFieldName": "congspd_wrst",
+					"targetFieldDisplayName": "Congested Speed (MPH)",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "congrat_wrst",
+					"targetFieldDisplayName": "Congestion Ratio (Congested / Free-Flow Speed)",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_ampk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - AM Peak",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_midday_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Midday",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_pmpk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - PM Peak",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_wknd_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Weekend",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "aadt",
+					"targetFieldDisplayName": "AADT",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+>>>>>>> dc/get-worst-congn
 			"tableName": "ItemsToShare_MIL1 - rp_fwy_vmt",
 			"performanceOutcomeDisplayName": "Freeway Expansion - Reduce VMT",
 			"queryWhere": "project_uid = '{projectJoinId}'",
@@ -181,7 +272,7 @@
 				},
 				{
 					"targetFieldName": "aadt",
-					"targetFieldDisplayName": "aadt",
+					"targetFieldDisplayName": "AADT",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "WholeNum",
 					"sortAscending": true
@@ -402,7 +493,7 @@
 				},
 				{
 					"targetFieldName": "aadt",
-					"targetFieldDisplayName": "aadt",
+					"targetFieldDisplayName": "AADT",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "WholeNum",
 					"sortAscending": false

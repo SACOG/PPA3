@@ -75,6 +75,7 @@ class CongestionReport(object):
     def parse_congestion(self):
         # output dict: {direction: {key: congstion speed value}}
         out_dict = {}
+        
         for direcn in self.directions_used:
             data_dirn = {k.split(direcn)[1]:v for k, v in self.raw_data.items() if re.match(direcn, k)} # e.g. {'SOUTHBOUNDffs': 99, ...}
             dir_subdict = {k:v for k, v in data_dirn.items() if k in self.congtags} # return only data for free-flow speed and congested speed

@@ -99,6 +99,7 @@ def make_congestion_rpt_artsgr(input_dict):
     data_to_log = {
         'project_uid': project_uid, 'aadt': input_dict[uis.aadt]
         }
+        
     data_to_log.update(output_congn_data)
 
     # NOTE that outputs for arterial sgr congestion report log to same table as those for arterial expansion congestion report.
