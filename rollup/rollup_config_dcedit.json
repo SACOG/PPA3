@@ -148,6 +148,41 @@
 					"sortAscending": true
 				},
 				{
+					"targetFieldName": "congrat_wrst",
+					"targetFieldDisplayName": "Congestion Ratio (Congested / Free-Flow Speed)",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_ampk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - AM Peak",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_midday_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Midday",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_pmpk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - PM Peak",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_wknd_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Weekend",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
 					"targetFieldName": "aadt",
 					"targetFieldDisplayName": "AADT",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",

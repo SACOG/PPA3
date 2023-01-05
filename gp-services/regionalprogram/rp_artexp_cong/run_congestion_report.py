@@ -82,27 +82,27 @@ def make_congestion_rpt_artexp(input_dict):
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
-    # for year in data_years:
-    #     in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-    #     pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
-    #                         buffdist=lu_buffdist_ft, project_type=ptype, data_year=year)
-    #     parcel_fc_dict[year] = pcl_buff_fc
+    for year in data_years:
+        in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
+        pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=fc_project,
+                            buffdist=lu_buffdist_ft, project_type=ptype, data_year=year)
+        parcel_fc_dict[year] = pcl_buff_fc
 
-    # # calc land use buffer values (job + du totals)
+    # calc land use buffer values (job + du totals)
 
-    # d_lubuff = {}
-    # for i, year in enumerate(data_years):
-    #     in_pcl_pt_fc = parcel_fc_dict[year]
-    #     d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-    #                                 project_fc=project_fc, project_type=ptype)
+    d_lubuff = {}
+    for i, year in enumerate(data_years):
+        in_pcl_pt_fc = parcel_fc_dict[year]
+        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
+                                    project_fc=project_fc, project_type=ptype)
 
-    #     # {f"jobs": jobs, f"dwellingUnits": du}
-    #     d_lubuff[year] = d_jobdu
+        # {f"jobs": jobs, f"dwellingUnits": du}
+        d_lubuff[year] = d_jobdu
 
-    # job_base = d_lubuff[data_years[0]]["jobs"]
-    # job_future = d_lubuff[data_years[1]]["jobs"]
-    # du_base = d_lubuff[data_years[0]]["dwellingUnits"]
-    # du_future = d_lubuff[data_years[1]]["dwellingUnits"]
+    job_base = d_lubuff[data_years[0]]["jobs"]
+    job_future = d_lubuff[data_years[1]]["jobs"]
+    du_base = d_lubuff[data_years[0]]["dwellingUnits"]
+    du_future = d_lubuff[data_years[1]]["dwellingUnits"]
 
     # get congestion data
     congn_data = npmrds.get_npmrds_data(fc_project, project_type)
@@ -133,8 +133,6 @@ def make_congestion_rpt_artexp(input_dict):
         worstval = max([v[tag] for k, v in rel_data.items()])
         kname_worst = f"{tag}_wrst"
         worst_data[kname_worst] = worstval
-
-    
 
     # update AADT
     loaded_json["projectAADT"] = aadt
