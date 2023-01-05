@@ -2,7 +2,7 @@
 	"chartingWorkflowId": "ccdd7064-a809-450e-bc3b-e8b800b227d7",
 	"chartingPanelId": "chart-9a8b9ee8",
 	"masterProjectLayer": {
-		"layerName": "ItemsToShare_PPA3_MIL1",
+		"layerName": "ItemsToShare_MIL1",
 		"isFeatureLayer": false,
 		"queryWhere": "for_review = 1",
 		"subLayerId": "0",
@@ -23,7 +23,7 @@
 	},
 	"relatedTables": [
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artexp_vmt",
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_vmt",
 			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce VMT",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
@@ -67,7 +67,7 @@
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "lumix_base",
+					"targetFieldName": "lumix_future",
 					"targetFieldDisplayName": "Lumix Future",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
@@ -104,7 +104,60 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_fwy_vmt",
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_cong",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce Congestion",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "jobs_base",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "jobs_base",
+					"targetFieldDisplayName": "Jobs Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "jobs_future",
+					"targetFieldDisplayName": "Jobs Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": false
+				},
+				{
+					"targetFieldName": "du_base",
+					"targetFieldDisplayName": "Dwelling Units Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "du_future",
+					"targetFieldDisplayName": "Dwelling Units Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": false
+				},
+				{
+					"targetFieldName": "congspd_wrst",
+					"targetFieldDisplayName": "Congested Speed (MPH)",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "aadt",
+					"targetFieldDisplayName": "AADT",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_vmt",
 			"performanceOutcomeDisplayName": "Freeway Expansion - Reduce VMT",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "base_trntrip",
@@ -143,7 +196,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_fwy_cong",
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_cong",
 			"performanceOutcomeDisplayName": "Freeway Expansion - Reduce Congestion",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "du_base",
@@ -167,7 +220,7 @@
 				},
 				{
 					"targetFieldName": "aadt",
-					"targetFieldDisplayName": "aadt",
+					"targetFieldDisplayName": "AADT",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
@@ -371,7 +424,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - rp_artsgr_sgr",
+			"tableName": "ItemsToShare_MIL1 - rp_artsgr_sgr",
 			"performanceOutcomeDisplayName": "Arterial State of Good Repair - Promote Complete Streets and State of Good Repair",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "cs_index",
@@ -388,7 +441,7 @@
 				},
 				{
 					"targetFieldName": "aadt",
-					"targetFieldDisplayName": "aadt",
+					"targetFieldDisplayName": "AADT",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": false
@@ -410,7 +463,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - cd_compactdev",
+			"tableName": "ItemsToShare_MIL1 - cd_compactdev",
 			"performanceOutcomeDisplayName": "Community Design - Compact Development",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
@@ -449,7 +502,7 @@
 			]
 		},
 		{
-			"tableName": "ItemsToShare_PPA3_MIL1 - cd_mixeduse",
+			"tableName": "ItemsToShare_MIL1 - cd_mixeduse",
 			"performanceOutcomeDisplayName": "Community Design - Mixed-Use Development",
 			"queryWhere": "project_uid = '{projectJoinId}'",
 			"defaultChartTargetFieldName": "jobs_base",
