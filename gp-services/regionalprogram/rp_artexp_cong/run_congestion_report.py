@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import parcel_data
@@ -112,8 +112,27 @@ def make_congestion_rpt_artexp(input_dict):
 
     # get congestion ratio for each direction
     cong_data2 = cong_rpt_obj.parse_congestion()
-    cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
+    
+    # get congestion ratio and congested speed for worst direction
+    worst_data = {}
+    cong_ratios = {f"{k}congrat":v[cong_rpt_obj.tag_congratio] for k, v in cong_data2.items()}
     congn_data.update(cong_ratios)
+    
+    worst_congrat = min([v[cong_rpt_obj.tag_congratio] for k, v in cong_data2.items()])
+    worst_data["congrat_wrst"] = worst_congrat
+
+    worst_congspd = min([v[params.col_congest_speed] for k, v in cong_data2.items()])
+    worst_data["congspd_wrst"] = worst_congspd
+
+    # get LOTTR for worst direction for each LOTTR period
+    rel_data = cong_rpt_obj.parse_reliability()
+    lottr_tags = [params.col_reliab_ampk, params.col_reliab_md, params.col_reliab_pmpk,
+                params.col_reliab_wknd]
+
+    for tag in lottr_tags:
+        worstval = max([v[tag] for k, v in rel_data.items()])
+        kname_worst = f"{tag}_wrst"
+        worst_data[kname_worst] = worstval
 
     # update AADT
     loaded_json["projectAADT"] = aadt
@@ -128,8 +147,9 @@ def make_congestion_rpt_artexp(input_dict):
         json.dump(loaded_json, f_out, indent=4)
 
     # log data to run archive table
-
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
+    output_congn_data.update(worst_data)
+
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
                                         proj_type=input_dict[uis.ptype], 
                                         proj_jur=input_dict[uis.jur], 
@@ -140,8 +160,8 @@ def make_congestion_rpt_artexp(input_dict):
         'jobs_base': job_base, 'jobs_future': job_future, 
         'du_base': du_base, 'du_future': du_future,
         }
+        
     data_to_log.update(output_congn_data)
-
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
 
     return out_file
@@ -163,7 +183,7 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestLineEastSac'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th'
     # project_name = 'test'
     # jurisdiction = 'test'
     # project_type = params.ptype_arterial
