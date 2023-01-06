@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import parcel_data
@@ -162,7 +162,6 @@ def make_congestion_rpt_artexp(input_dict):
         }
         
     data_to_log.update(output_congn_data)
-
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
 
     return out_file

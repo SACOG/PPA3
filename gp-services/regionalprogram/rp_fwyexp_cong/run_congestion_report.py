@@ -26,6 +26,7 @@ import chart_congestion
 import npmrds_data_conflation as npmrds
 import utils.utils as utils
 
+
 def direction_field_translator(in_congdata_dict):
 
     """Takes in dict with congestion data returned by npmrds_data_conflation module
@@ -109,29 +110,30 @@ def make_congestion_rpt_fwyexp(input_dict):
 
     # get congestion ratio for each direction
     cong_data2 = cong_rpt_obj.parse_congestion()
-    cong_ratios = {f"{k}congrat":v['congestionRatio'] for k, v in cong_data2.items()}
+    
+    # get congestion ratio and congested speed for worst direction
+    worst_data = {}
+    cong_ratios = {f"{k}congrat":v[cong_rpt_obj.tag_congratio] for k, v in cong_data2.items()}
     congn_data.update(cong_ratios)
+    
+    worst_congrat = min([v[cong_rpt_obj.tag_congratio] for k, v in cong_data2.items()])
+    worst_data["congrat_wrst"] = worst_congrat
 
-    output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
+    worst_congspd = min([v[params.col_congest_speed] for k, v in cong_data2.items()])
+    worst_data["congspd_wrst"] = worst_congspd
+
+    # get LOTTR for worst direction for each LOTTR period
+    rel_data = cong_rpt_obj.parse_reliability()
+    lottr_tags = [params.col_reliab_ampk, params.col_reliab_md, params.col_reliab_pmpk,
+                params.col_reliab_wknd]
+
+    for tag in lottr_tags:
+        worstval = max([v[tag] for k, v in rel_data.items()])
+        kname_worst = f"{tag}_wrst"
+        worst_data[kname_worst] = worstval
 
     # update AADT
     loaded_json["projectAADT"] = aadt
-
-    # log to data table
-    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
-                                        proj_type=input_dict[uis.ptype], 
-                                        proj_jur=input_dict[uis.jur], 
-                                        user_email=input_dict[uis.email])
-
-    data_to_log = {
-        'project_uid': project_uid, 'aadt': input_dict[uis.aadt],
-        'jobs_base': job_base, 'jobs_future': job_future, 
-        'du_base': du_base, 'du_future': du_future,
-        }
-    data_to_log.update(output_congn_data)
-
-
-    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_fwy_cong'))
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
@@ -142,6 +144,24 @@ def make_congestion_rpt_fwyexp(input_dict):
     with open(out_file, 'w') as f_out:
         json.dump(loaded_json, f_out, indent=4)
 
+    # log data to run archive table
+    output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
+    output_congn_data.update(worst_data)
+
+    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
+                                        proj_type=input_dict[uis.ptype], 
+                                        proj_jur=input_dict[uis.jur], 
+                                        user_email=input_dict[uis.email])
+
+    data_to_log = {
+        'project_uid': project_uid, 'aadt': input_dict[uis.aadt],
+        'jobs_base': job_base, 'jobs_future': job_future, 
+        'du_base': du_base, 'du_future': du_future,
+        }
+        
+    data_to_log.update(output_congn_data)
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_fwy_cong'))
+
     return out_file
 
 
@@ -150,26 +170,26 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     # inputs from tool interface
-    project_fc = arcpy.GetParameterAsText(0)
-    project_name = arcpy.GetParameterAsText(1)
-    jurisdiction = arcpy.GetParameterAsText(2)
-    project_type = arcpy.GetParameterAsText(3)
-    perf_outcomes = arcpy.GetParameterAsText(4)
-    aadt = arcpy.GetParameterAsText(5)
-    posted_spd = arcpy.GetParameterAsText(6)
-    pci = arcpy.GetParameterAsText(7)
-    email = arcpy.GetParameterAsText(8)
+    # project_fc = arcpy.GetParameterAsText(0)
+    # project_name = arcpy.GetParameterAsText(1)
+    # jurisdiction = arcpy.GetParameterAsText(2)
+    # project_type = arcpy.GetParameterAsText(3)
+    # perf_outcomes = arcpy.GetParameterAsText(4)
+    # aadt = arcpy.GetParameterAsText(5)
+    # posted_spd = arcpy.GetParameterAsText(6)
+    # pci = arcpy.GetParameterAsText(7)
+    # email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway' # Broadway16th_2226
-    # project_name = 'causeway'
-    # jurisdiction = 'caltrans'
-    # project_type = params.ptype_fwy
-    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    # aadt = 150000
-    # posted_spd = 65
-    # pci = 80
-    # email = 'fake@test.com'
+    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway' # Broadway16th_2226
+    project_name = 'causeway'
+    jurisdiction = 'caltrans'
+    project_type = params.ptype_fwy
+    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    aadt = 150000
+    posted_spd = 65
+    pci = 80
+    email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {
