@@ -147,7 +147,6 @@ def make_congestion_rpt_artexp(input_dict):
         json.dump(loaded_json, f_out, indent=4)
 
     # log data to run archive table
-
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
     output_congn_data.update(worst_data)
 
@@ -161,6 +160,7 @@ def make_congestion_rpt_artexp(input_dict):
         'jobs_base': job_base, 'jobs_future': job_future, 
         'du_base': du_base, 'du_future': du_future,
         }
+        
     data_to_log.update(output_congn_data)
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
