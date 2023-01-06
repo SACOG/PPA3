@@ -75,7 +75,6 @@ def make_mm_report_fwyexp(input_dict):
         'future_trntrip': future_trntrip
     }
 
-
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_fwy_mm'))
 
     # write out to new JSON file
@@ -106,7 +105,7 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway' # Broadway16th_2226
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF' # Broadway16th_2226
     # project_name = 'causeway'
     # jurisdiction = 'caltrans'
     # project_type = params.ptype_fwy
