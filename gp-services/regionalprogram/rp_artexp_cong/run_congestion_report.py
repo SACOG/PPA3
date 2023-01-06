@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 import json
 import arcpy
-
+arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
 import parcel_data
@@ -147,10 +147,8 @@ def make_congestion_rpt_artexp(input_dict):
         json.dump(loaded_json, f_out, indent=4)
 
     # log data to run archive table
-
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
     output_congn_data.update(worst_data)
-    import pdb; pdb.set_trace()
 
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
                                         proj_type=input_dict[uis.ptype], 
@@ -162,8 +160,8 @@ def make_congestion_rpt_artexp(input_dict):
         'jobs_base': job_base, 'jobs_future': job_future, 
         'du_base': du_base, 'du_future': du_future,
         }
+        
     data_to_log.update(output_congn_data)
-
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
 
     return out_file
@@ -174,26 +172,26 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     # inputs from tool interface
-    # project_fc = arcpy.GetParameterAsText(0)
-    # project_name = arcpy.GetParameterAsText(1)
-    # jurisdiction = arcpy.GetParameterAsText(2)
-    # project_type = arcpy.GetParameterAsText(3)
-    # perf_outcomes = arcpy.GetParameterAsText(4)
-    # aadt = arcpy.GetParameterAsText(5)
-    # posted_spd = arcpy.GetParameterAsText(6)
-    # pci = arcpy.GetParameterAsText(7)
-    # email = arcpy.GetParameterAsText(8)
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th'
-    project_name = 'test'
-    jurisdiction = 'test'
-    project_type = params.ptype_arterial
-    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    aadt = 30000
-    posted_spd = 65   
-    pci = 80
-    email = 'fake@test.com'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th'
+    # project_name = 'test'
+    # jurisdiction = 'test'
+    # project_type = params.ptype_arterial
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 30000
+    # posted_spd = 65   
+    # pci = 80
+    # email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {

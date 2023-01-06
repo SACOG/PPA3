@@ -266,6 +266,7 @@ modlink_searchdist = 700 # in feet, might have projection-related issues in onli
 col_capclass = "CAPCLASS"
 
 capclasses_fwy = (1, 8, 51, 56) # freeway gen purpose, aux, and HOV lanes
+capclass_gp = (1,) # general-purpose lane or equivalent
 capclasses_ramps = (6, 16, 18, 26, 36, 46) # onramps, offramps, freeway-freeway connectors, HOV onramp meter byp lanes, metered onramp lanes
 capclass_arterials = (2, 3, 4, 5, 12, 22, 24)
 capclasses_nonroad = (7, 62, 63, 99)
