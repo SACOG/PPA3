@@ -17,11 +17,13 @@ import pandas as pd
 config_csv = r"C:\Users\dconly\GitRepos\PPA3\rollup\chartname_config.csv"
 subreport_name = 'rp_artexp_frgt'
 
-update_template_id = True
+update_template_id = False
+update_sort_flag = False
 chart_template_id = "2" # must be string--consider whether you want this template ID to apply to ALL charts in this report!
 
 #=================RUN SCRIPT=================
 # fields in the config table
+f_makechart = "make_chart"
 f_rptname = 'TableName'
 f_fname = 'FieldName'
 f_dispname = 'DisplayName'
@@ -39,18 +41,18 @@ template = {
 out_list = []
 
 df = pd.read_csv(config_csv)
-df = df.loc[df['rptname'] == subreport_name][[f_fname, f_dispname, f_ctemplate]]
+fields_to_use = [f_fname, f_dispname, f_ctemplate, f_sort_asc]
+df = df.loc[(df[f_rptname] == subreport_name) & (df[f_makechart] == 1)][fields_to_use]
 
 name_dicts = df.to_dict(orient='records') 
-import pdb; pdb.set_trace()
 
 for d in name_dicts:
     t = template
     t["targetFieldName"] = d[f_fname]
     t['targetFieldDisplayName'] = d[f_dispname]
-
-    if update_template_id:
-        t["chartTemplateId"] = d[f_ctemplate]
+    t["chartTemplateId"] = d[f_ctemplate]
+    t["sortAscending"] = d[f_sort_asc]
+    
 
     ts = json.dumps(template, indent=4)
 
