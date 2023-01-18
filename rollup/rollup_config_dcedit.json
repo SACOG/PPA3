@@ -153,234 +153,80 @@
 			"charts": [
 				{
 					"targetFieldName": "jobs_base",
-					"targetFieldDisplayName": "jobs_base",
+					"targetFieldDisplayName": "Base Jobs",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "jobs_future",
-					"targetFieldDisplayName": "jobs_future",
+					"targetFieldDisplayName": "Future Jobs",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
-					"sortAscending": false
+					"sortAscending": true
 				},
 				{
 					"targetFieldName": "du_base",
-					"targetFieldDisplayName": "du_base",
+					"targetFieldDisplayName": "Base Dwelling Units",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "du_future",
-					"targetFieldDisplayName": "du_future",
+					"targetFieldDisplayName": "Future Dwelling Units",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
-					"sortAscending": false
+					"sortAscending": true
 				},
 				{
 					"targetFieldName": "aadt",
-					"targetFieldDisplayName": "aadt",
+					"targetFieldDisplayName": "AADT",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "congspd_nb",
-					"targetFieldDisplayName": "congspd_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congspd_sb",
-					"targetFieldDisplayName": "congspd_sb",
+					"targetFieldName": "congspd_wrst",
+					"targetFieldDisplayName": "Congested Speed (MPH)",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "congspd_eb",
-					"targetFieldDisplayName": "congspd_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congspd_wb",
-					"targetFieldDisplayName": "congspd_wb",
+					"targetFieldName": "congrat_wrst",
+					"targetFieldDisplayName": "Congested Speed As Pct Of Free-Flow",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "ffspd_nb",
-					"targetFieldDisplayName": "ffspd_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "ffspd_sb",
-					"targetFieldDisplayName": "ffspd_sb",
+					"targetFieldName": "lottr_ampk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Am Peak",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "ffspd_eb",
-					"targetFieldDisplayName": "ffspd_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "ffspd_wb",
-					"targetFieldDisplayName": "ffspd_wb",
+					"targetFieldName": "lottr_midday_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Midday",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "congrat_nb",
-					"targetFieldDisplayName": "congrat_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congrat_sb",
-					"targetFieldDisplayName": "congrat_sb",
+					"targetFieldName": "lottr_pmpk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Pm Peak",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
-					"targetFieldName": "congrat_eb",
-					"targetFieldDisplayName": "congrat_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congrat_wb",
-					"targetFieldDisplayName": "congrat_wb",
+					"targetFieldName": "lottr_wknd_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Weekend",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_am_nb",
-					"targetFieldDisplayName": "lottr_am_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_am_sb",
-					"targetFieldDisplayName": "lottr_am_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_am_eb",
-					"targetFieldDisplayName": "lottr_am_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_am_wb",
-					"targetFieldDisplayName": "lottr_am_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_pm_nb",
-					"targetFieldDisplayName": "lottr_pm_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_pm_sb",
-					"targetFieldDisplayName": "lottr_pm_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_pm_eb",
-					"targetFieldDisplayName": "lottr_pm_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_pm_wb",
-					"targetFieldDisplayName": "lottr_pm_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_md_nb",
-					"targetFieldDisplayName": "lottr_md_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_md_sb",
-					"targetFieldDisplayName": "lottr_md_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_md_eb",
-					"targetFieldDisplayName": "lottr_md_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_md_wb",
-					"targetFieldDisplayName": "lottr_md_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_wknd_nb",
-					"targetFieldDisplayName": "lottr_wknd_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_wknd_sb",
-					"targetFieldDisplayName": "lottr_wknd_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_wknd_eb",
-					"targetFieldDisplayName": "lottr_wknd_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_wknd_wb",
-					"targetFieldDisplayName": "lottr_wknd_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
 				}
 			]
 		},
@@ -497,235 +343,81 @@
 			},
 			"charts": [
 				{
+					"targetFieldName": "aadt",
+					"targetFieldDisplayName": "AADT",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "congspd_wrst",
+					"targetFieldDisplayName": "Congested Speed (MPH)",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "congrat_wrst",
+					"targetFieldDisplayName": "Congested Speed As Pct Of Free-Flow",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_ampk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Am Peak",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_midday_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Midday",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_pmpk_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Pm Peak",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "lottr_wknd_wrst",
+					"targetFieldDisplayName": "Travel Time Reliability - Weekend",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
 					"targetFieldName": "jobs_base",
-					"targetFieldDisplayName": "jobs_base",
+					"targetFieldDisplayName": "Base Jobs",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "jobs_future",
-					"targetFieldDisplayName": "jobs_future",
+					"targetFieldDisplayName": "Future Jobs",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
-					"sortAscending": false
+					"sortAscending": true
 				},
 				{
 					"targetFieldName": "du_base",
-					"targetFieldDisplayName": "du_base",
+					"targetFieldDisplayName": "Base Dwelling Units",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "du_future",
-					"targetFieldDisplayName": "du_future",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "aadt",
-					"targetFieldDisplayName": "aadt",
+					"targetFieldDisplayName": "Future Dwelling Units",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "1",
 					"sortAscending": true
-				},
-				{
-					"targetFieldName": "congspd_nb",
-					"targetFieldDisplayName": "congspd_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congspd_sb",
-					"targetFieldDisplayName": "congspd_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "congspd_eb",
-					"targetFieldDisplayName": "congspd_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congspd_wb",
-					"targetFieldDisplayName": "congspd_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "ffspd_nb",
-					"targetFieldDisplayName": "ffspd_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "ffspd_sb",
-					"targetFieldDisplayName": "ffspd_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "ffspd_eb",
-					"targetFieldDisplayName": "ffspd_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "ffspd_wb",
-					"targetFieldDisplayName": "ffspd_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "congrat_nb",
-					"targetFieldDisplayName": "congrat_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congrat_sb",
-					"targetFieldDisplayName": "congrat_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "congrat_eb",
-					"targetFieldDisplayName": "congrat_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "congrat_wb",
-					"targetFieldDisplayName": "congrat_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_am_nb",
-					"targetFieldDisplayName": "lottr_am_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_am_sb",
-					"targetFieldDisplayName": "lottr_am_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_am_eb",
-					"targetFieldDisplayName": "lottr_am_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_am_wb",
-					"targetFieldDisplayName": "lottr_am_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_pm_nb",
-					"targetFieldDisplayName": "lottr_pm_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_pm_sb",
-					"targetFieldDisplayName": "lottr_pm_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_pm_eb",
-					"targetFieldDisplayName": "lottr_pm_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_pm_wb",
-					"targetFieldDisplayName": "lottr_pm_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_md_nb",
-					"targetFieldDisplayName": "lottr_md_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_md_sb",
-					"targetFieldDisplayName": "lottr_md_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_md_eb",
-					"targetFieldDisplayName": "lottr_md_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_md_wb",
-					"targetFieldDisplayName": "lottr_md_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_wknd_nb",
-					"targetFieldDisplayName": "lottr_wknd_nb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_wknd_sb",
-					"targetFieldDisplayName": "lottr_wknd_sb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
-				},
-				{
-					"targetFieldName": "lottr_wknd_eb",
-					"targetFieldDisplayName": "lottr_wknd_eb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": true
-				},
-				{
-					"targetFieldName": "lottr_wknd_wb",
-					"targetFieldDisplayName": "lottr_wknd_wb",
-					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "1",
-					"sortAscending": false
 				}
 			]
 		},
@@ -874,6 +566,38 @@
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
 					"chartTemplateId": "2",
 					"sortAscending": "true"
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_frgt",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Improve Freight Movement",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "pct_staa",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "pct_staa",
+					"targetFieldDisplayName": "Percent Of Project On Staa Truck Route",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "pct_empind_base",
+					"targetFieldDisplayName": "Base Percent Industrial Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "pct_empind_fut",
+					"targetFieldDisplayName": "Future Percent Industrial Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
 				}
 			]
 		}

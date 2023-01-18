@@ -14,50 +14,54 @@ import json
 import pandas as pd
 
 
-config_csv = r"C:\Users\dconly\GitRepos\PPA3\rollup\chartname_config.csv"
-subreport_name = 'rp_artexp_frgt'
+def strip_decimal(in_val):
+    out_val = str(in_val)
+    if out_val[-2:] == '.0':
+        out_val = out_val[:-2]
 
-update_template_id = False
-update_sort_flag = False
-chart_template_id = "2" # must be string--consider whether you want this template ID to apply to ALL charts in this report!
+    return out_val
 
-#=================RUN SCRIPT=================
-# fields in the config table
-f_makechart = "make_chart"
-f_rptname = 'TableName'
-f_fname = 'FieldName'
-f_dispname = 'DisplayName'
-f_ctemplate = 'chart_template_id'
-f_sort_asc = 'sort_asc_flag'
+if __name__ == '__main__':
+    config_csv = r"C:\Users\dconly\GitRepos\PPA3\rollup\chartname_config.csv"
+    subreport_name = 'rp_artexp_frgt'
 
-template = {
-            "targetFieldName": "jobs_added",
-            "targetFieldDisplayName": "jobs_added",
-            "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09", # 1/6/2023: chartID value, for now, remains unchanged
-            "chartTemplateId": "2",
-            "sortAscending": 'true'
-			}
+    #=================RUN SCRIPT=================
+    # fields in the config table
+    f_makechart = "make_chart"
+    f_rptname = 'TableName'
+    f_fname = 'FieldName'
+    f_dispname = 'DisplayName'
+    f_ctemplate = 'chart_template_id'
+    f_sort_asc = 'sort_asc_flag'
 
-out_list = []
+    template = {
+                "targetFieldName": "jobs_added",
+                "targetFieldDisplayName": "jobs_added",
+                "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09", # 1/6/2023: chartID value, for now, remains unchanged
+                "chartTemplateId": "2",
+                "sortAscending": 'true'
+                }
 
-df = pd.read_csv(config_csv)
-fields_to_use = [f_fname, f_dispname, f_ctemplate, f_sort_asc]
-df = df.loc[(df[f_rptname] == subreport_name) & (df[f_makechart] == 1)][fields_to_use]
+    out_list = []
 
-name_dicts = df.to_dict(orient='records') 
+    df = pd.read_csv(config_csv)
+    fields_to_use = [f_fname, f_dispname, f_ctemplate, f_sort_asc]
+    df = df.loc[(df[f_rptname] == subreport_name) & (df[f_makechart] == 1)][fields_to_use]
 
-for d in name_dicts:
-    t = template
-    t["targetFieldName"] = d[f_fname]
-    t['targetFieldDisplayName'] = d[f_dispname]
-    t["chartTemplateId"] = d[f_ctemplate]
-    t["sortAscending"] = d[f_sort_asc]
-    
+    name_dicts = df.to_dict(orient='records') 
 
-    ts = json.dumps(template, indent=4)
+    for d in name_dicts:
+        t = template
+        t["targetFieldName"] = d[f_fname]
+        t['targetFieldDisplayName'] = d[f_dispname]
+        t["chartTemplateId"] = strip_decimal(d[f_ctemplate]) # remove decimal points and convert to string
+        t["sortAscending"] = d[f_sort_asc]
+        
 
-    out_list.append(ts)
+        ts = json.dumps(template, indent=4)
+
+        out_list.append(ts)
 
 
-for i in out_list:
-    print(f"{i},")
+    for i in out_list:
+        print(f"{i},")
