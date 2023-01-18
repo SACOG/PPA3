@@ -702,6 +702,127 @@
 					"sortAscending": true
 				}
 			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_saf",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Make a Safer Transportation System",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "crash_cnt",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "crash_cnt",
+					"targetFieldDisplayName": "Total Crashes",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "crash_100mvmt",
+					"targetFieldDisplayName": "Crashes Per 100 MVMT",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "crash_bkpd_clmile",
+					"targetFieldDisplayName": "Bike/Ped Crashes Per Centerline Mile",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "crashpct_fatal",
+					"targetFieldDisplayName": "Fatal Crash Count",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "crash_bkpd_pct",
+					"targetFieldDisplayName": "Percent Of Crashes With Bike/Ped",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_sgr",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - State of Good Repair",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "pci",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "aadt",
+					"targetFieldDisplayName": "AADT",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "pci",
+					"targetFieldDisplayName": "Pavement Condition",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_mm",
+			"performanceOutcomeDisplayName": "Freeway Expansion - Encourage Multimodal Travel",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "base_trntrip",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "base_trntrip",
+					"targetFieldDisplayName": "Base Year Transit Trips",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "future_trntrip",
+					"targetFieldDisplayName": "Future Year Transit Trips",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_econ",
+			"performanceOutcomeDisplayName": "Freeway Expansion - Promote Economic Prosperity",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "acc_drive_alljob",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "acc_drive_alljob",
+					"targetFieldDisplayName": "Drive Access To Jobs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "acc_drive_edu",
+					"targetFieldDisplayName": "Drive Access To Ed Facilities",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
 		}
 	],
 	"chartTemplates": [
