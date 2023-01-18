@@ -600,6 +600,108 @@
 					"sortAscending": true
 				}
 			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_artexp_mm",
+			"performanceOutcomeDisplayName": "Arterial or Transit Expansion - Encourage Multimodal Travel",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "base_sovpct",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "intxndens",
+					"targetFieldDisplayName": "Intersections Per Acre",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "bikeway_pct",
+					"targetFieldDisplayName": "Share Of Road Miles With Bike Lane Or Path",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "transit_svc_dens",
+					"targetFieldDisplayName": "Daily Transit Stops Per Acre",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_sovpct",
+					"targetFieldDisplayName": "SOV Mode Share - Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_hovpct",
+					"targetFieldDisplayName": "HOV Mode Share - Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_ptpct",
+					"targetFieldDisplayName": "Transit Mode Share - Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_bikepct",
+					"targetFieldDisplayName": "Bike Mode Share - Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_walkpct",
+					"targetFieldDisplayName": "Walk Mode Share - Base",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_sovpct",
+					"targetFieldDisplayName": "SOV Mode Share - Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_hovpct",
+					"targetFieldDisplayName": "HOV Mode Share - Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_ptpct",
+					"targetFieldDisplayName": "Transit Mode Share - Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_bikepct",
+					"targetFieldDisplayName": "Bike Mode Share - Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_walkpct",
+					"targetFieldDisplayName": "Walk Mode Share - Future",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
 		}
 	],
 	"chartTemplates": [
@@ -665,7 +767,11 @@
 							"f",
 							"color"
 						],
-						"data": []
+						"data": [],
+						"dataLabels": {
+							"enabled": "true",
+							"format": "{y:.2f}"
+						}
 					}
 				],
 				"legend": {

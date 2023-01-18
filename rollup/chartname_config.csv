@@ -55,9 +55,9 @@ rp_artexp_cong,arterial exp reduce congestion,1,,lottr_wknd_eb,None,0,,,FLOAT,,T
 rp_artexp_cong,arterial exp reduce congestion,1,,lottr_wknd_wb,None,0,,,FLOAT,,Table + GP task updated,NA
 rp_artexp_cong,arterial exp reduce congestion,1,,congspd_wrst,Congested Speed (MPH),1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,congrat_wrst,Congested Speed As Pct Of Free-Flow,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_cong,arterial exp reduce congestion,1,,lottr_ampk_wrst,Travel Time Reliability - Am Peak,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,lottr_ampk_wrst,Travel Time Reliability - AM Peak,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,lottr_midday_wrst,Travel Time Reliability - Midday,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_cong,arterial exp reduce congestion,1,,lottr_pmpk_wrst,Travel Time Reliability - Pm Peak,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,lottr_pmpk_wrst,Travel Time Reliability - PM Peak,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,lottr_wknd_wrst,Travel Time Reliability - Weekend,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
@@ -82,12 +82,12 @@ rp_artexp_econ,arterial expansion economy support,1,,acc_drive_edu,Drive Access 
 rp_artexp_econ,arterial expansion economy support,1,,acc_transit_edu,Transit Access To Ed Facilities,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,pop_tot,Total Population,0,,,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,pop_ej_area,Population In Ej Areas,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,pctpot_ej_area,Percent Population In Ej Areas,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,acc_walk_alljob_ej,Ej Walk Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,acc_bike_alljob_ej,Ej Bike Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,acc_drive_alljob_ej,Ej Drive Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,acc_transit_alljob_ej,Ej Transit Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,pop_ej_area,Population In EJ Areas,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,pctpot_ej_area,Percent Population In EJ Areas,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,acc_walk_alljob_ej,EJ Walk Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,acc_bike_alljob_ej,EJ Bike Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,acc_drive_alljob_ej,EJ Drive Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,acc_transit_alljob_ej,EJ Transit Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,0,,pop_pov200,Population In Hhs Earning < 200% Fed Poverty,0,,,FLOAT,,,
 rp_artexp_eq,arterial expansion equity report,0,,pct_pov200,Share Of Pop In Hhs Earning < 200% Fed Poverty,0,,,FLOAT,,,
 rp_artexp_eq,arterial expansion equity report,0,,p_white_nh,White Non-Hisp Population,0,,,FLOAT,,,
@@ -97,23 +97,23 @@ rp_artexp_eq,arterial expansion equity report,0,,p_other_nh,Other Non-Hisp Popul
 rp_artexp_eq,arterial expansion equity report,0,,p_hisp,Hispanic Population,0,,,FLOAT,,,
 rp_artexp_eq,arterial expansion equity report,0,,du_lowinc_perm,Number Of Low-Income Du Permitted Per Rhna Plans,0,,,FLOAT,,,
 rp_artexp_frgt,arterial expansion freight report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
-rp_artexp_frgt,arterial expansion freight report,1,,pct_staa,Percent Of Project On Staa Truck Route,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_frgt,arterial expansion freight report,1,,pct_empind_base,Base Percent Industrial Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_frgt,arterial expansion freight report,1,,pct_empind_fut,Future Percent Industrial Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_frgt,arterial expansion freight report,1,,pct_staa,Percent Of Project On Staa Truck Route,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_frgt,arterial expansion freight report,1,,pct_empind_base,Base Percent Industrial Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_frgt,arterial expansion freight report,1,,pct_empind_fut,Future Percent Industrial Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_mm,arterial expansion mulitmodal report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
 rp_artexp_mm,arterial expansion mulitmodal report,1,,intxndens,Intersections Per Acre,1,TRUE,1,FLOAT,,Table + GP task updated,
 rp_artexp_mm,arterial expansion mulitmodal report,1,,bikeway_pct,Share Of Road Miles With Bike Lane Or Path,1,TRUE,1,FLOAT,,Table + GP task updated,
 rp_artexp_mm,arterial expansion mulitmodal report,1,,transit_svc_dens,Daily Transit Stops Per Acre,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,base_sovpct,Sov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,base_hovpct,Hov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,base_ptpct,Transit Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,base_bikepct,Bike Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,base_walkpct,Walk Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_sovpct,Sov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_hovpct,Hov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_ptpct,Transit Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_bikepct,Bike Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_walkpct,Walk Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,base_sovpct,SOV Mode Share - Base,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,base_hovpct,HOV Mode Share - Base,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,base_ptpct,Transit Mode Share - Base,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,base_bikepct,Bike Mode Share - Base,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,base_walkpct,Walk Mode Share - Base,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_sovpct,SOV Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_hovpct,HOV Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_ptpct,Transit Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_bikepct,Bike Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,
+rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_walkpct,Walk Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,
 rp_artexp_saf,arterial expansion safety report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
 rp_artexp_saf,arterial expansion safety report,1,,crash_cnt,Total Crashes,1,TRUE,1,SHORT,,Table + GP task updated,
 rp_artexp_saf,arterial expansion safety report,1,,crash_100mvmt,Crashes Per 100 MVMT,1,TRUE,1,FLOAT,,Table + GP task updated,
@@ -130,12 +130,12 @@ rp_fwy_vmt,freeway VMT report,1,,base_trntrip,Base Year Transit Trips,1,TRUE,1,F
 rp_fwy_vmt,freeway VMT report,1,,base_vehocc,Base Avg Vehicle Occupancy,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_vmt,freeway VMT report,1,,future_trntrip,Future Year Transit Trips,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_vmt,freeway VMT report,1,,future_vehocc,Future Avg Vehicle Occupancy,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_cong,freeway congestion report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done - needs followup re: directions
-rp_fwy_cong,freeway congestion report,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done - needs followup re: directions
-rp_fwy_cong,freeway congestion report,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done - needs followup re: directions
-rp_fwy_cong,freeway congestion report,1,,du_base,Base Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done - needs followup re: directions
-rp_fwy_cong,freeway congestion report,1,,du_future,Future Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done - needs followup re: directions
-rp_fwy_cong,freeway congestion report,1,,aadt,AADT,1,TRUE,1,LONG,,Table + GP task updated,Done - needs followup re: directions
+rp_fwy_cong,freeway congestion report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,du_base,Base Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,du_future,Future Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,aadt,AADT,1,TRUE,1,LONG,,Table + GP task updated,Done
 rp_fwy_cong,freeway congestion report,1,,congspd_nb,Congested Speed For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,congspd_sb,Congested Speed For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,congspd_eb,Congested Speed For Direction,0,,,FLOAT,,Table + GP task updated,NA
@@ -156,19 +156,19 @@ rp_fwy_cong,freeway congestion report,1,,lottr_pm_nb,PM TT Reliability For Direc
 rp_fwy_cong,freeway congestion report,1,,lottr_pm_sb,PM TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,lottr_pm_eb,PM TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,lottr_pm_wb,PM TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_md_nb,Midday Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_md_sb,Midday Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_md_eb,Midday Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_md_wb,Midday Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_wknd_nb,Weekend Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_wknd_sb,Weekend Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_wknd_eb,Weekend Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
-rp_fwy_cong,freeway congestion report,1,,lottr_wknd_wb,Weekend Tt Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_md_nb,Midday TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_md_sb,Midday TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_md_eb,Midday TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_md_wb,Midday TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_wknd_nb,Weekend TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_wknd_sb,Weekend TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_wknd_eb,Weekend TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
+rp_fwy_cong,freeway congestion report,1,,lottr_wknd_wb,Weekend TT Reliability For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,congspd_wrst,Congested Speed (MPH),1,TRUE,1,FLOAT,,,
 rp_fwy_cong,freeway congestion report,1,,congrat_wrst,Congested Speed As Pct Of Free-Flow,1,TRUE,1,FLOAT,,,
-rp_fwy_cong,freeway congestion report,1,,lottr_ampk_wrst,Travel Time Reliability - Am Peak,1,TRUE,1,FLOAT,,,
+rp_fwy_cong,freeway congestion report,1,,lottr_ampk_wrst,Travel Time Reliability - AM Peak,1,TRUE,1,FLOAT,,,
 rp_fwy_cong,freeway congestion report,1,,lottr_midday_wrst,Travel Time Reliability - Midday,1,TRUE,1,FLOAT,,,
-rp_fwy_cong,freeway congestion report,1,,lottr_pmpk_wrst,Travel Time Reliability - Pm Peak,1,TRUE,1,FLOAT,,,
+rp_fwy_cong,freeway congestion report,1,,lottr_pmpk_wrst,Travel Time Reliability - PM Peak,1,TRUE,1,FLOAT,,,
 rp_fwy_cong,freeway congestion report,1,,lottr_wknd_wrst,Travel Time Reliability - Weekend,1,TRUE,1,FLOAT,,,
 rp_fwy_mm,freeway multimodal report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
 rp_fwy_mm,freeway multimodal report,1,,base_trntrip,Base Year Transit Trips,1,TRUE,1,FLOAT,,Table + GP task updated,
@@ -190,13 +190,13 @@ cd_trnchoice,community design transportation choice report,1,,project_uid,Unique
 cd_trnchoice,community design transportation choice report,1,,intxndens,Intersection Density Per Acre,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,bikeway_pct,Share Of Centerline Miles That Have Bike Lane Or Path,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,transit_svc_dens,Transit Stops Per Day Per Acre,1,TRUE,1,FLOAT,,Table + GP task updated,
-cd_trnchoice,community design transportation choice report,1,,base_sovpct,Sov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-cd_trnchoice,community design transportation choice report,1,,base_hovpct,Hov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
+cd_trnchoice,community design transportation choice report,1,,base_sovpct,SOV Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
+cd_trnchoice,community design transportation choice report,1,,base_hovpct,HOV Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,base_ptpct,Transit Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,base_bikepct,Bike Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,base_walkpct,Walk Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-cd_trnchoice,community design transportation choice report,1,,fut_sovpct,Sov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
-cd_trnchoice,community design transportation choice report,1,,fut_hovpct,Hov Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
+cd_trnchoice,community design transportation choice report,1,,fut_sovpct,SOV Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
+cd_trnchoice,community design transportation choice report,1,,fut_hovpct,HOV Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,fut_ptpct,Transit Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,fut_bikepct,Bike Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,fut_walkpct,Walk Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,
