@@ -312,24 +312,183 @@
 			"tableName": "ItemsToShare_MIL1 - cd_mixeduse",
 			"performanceOutcomeDisplayName": "Community Design - Mixed-Use Development",
 			"queryWhere": "project_uid = '{projectJoinId}'",
-			"defaultChartTargetFieldName": "jobs_base",
+			"defaultChartTargetFieldName": "lumix_base",
 			"fields": {
 				"projectJoinIdFieldName": "project_uid"
 			},
 			"charts": [
 				{
 					"targetFieldName": "lumix_base",
-					"targetFieldDisplayName": "lumix_base",
+					"targetFieldDisplayName": "Base Land Use Mix",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "2",
+					"chartTemplateId": "1",
 					"sortAscending": true
 				},
 				{
 					"targetFieldName": "lumix_future",
-					"targetFieldDisplayName": "lumix_future",
+					"targetFieldDisplayName": "Future Land Use Mix",
 					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-					"chartTemplateId": "2",
-					"sortAscending": false
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - cd_houschoice",
+			"performanceOutcomeDisplayName": "Community Design - Housing Choice",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "mixuse_base",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "res_vld_base",
+					"targetFieldDisplayName": "Base Residential Units - Very Low Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_ld_base",
+					"targetFieldDisplayName": "Base Residential Units - Low Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_md_base",
+					"targetFieldDisplayName": "Base Residential Units - Medium Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_mhd_base",
+					"targetFieldDisplayName": "Base Residential Units - Med-Hi Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_hid_base",
+					"targetFieldDisplayName": "Base Residential Units - High Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "mixuse_base",
+					"targetFieldDisplayName": "Base Residential Units - In Mixed Use Dev",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_vld_fut",
+					"targetFieldDisplayName": "Future Residential Units - Very Low Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_ld_fut",
+					"targetFieldDisplayName": "Future Residential Units - Low Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_md_fut",
+					"targetFieldDisplayName": "Future Residential Units - Medium Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_mhd_fut",
+					"targetFieldDisplayName": "Future Residential Units - Med-Hi Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "res_hid_fut",
+					"targetFieldDisplayName": "Future Residential Units - High Density",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "mixuse_fut",
+					"targetFieldDisplayName": "Future Residential Units - In Mixed Use Dev",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - cd_existgasset",
+			"performanceOutcomeDisplayName": "Community Design - Use Existing Assets",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "acc_svc_walk",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "acc_svc_walk",
+					"targetFieldDisplayName": "Walk Access To Services",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",  
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "acc_svc_bike",
+					"targetFieldDisplayName": "Bike Access To Services", 
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",   
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "acc_svc_drive",
+					"targetFieldDisplayName": "Drive Access To Services",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",   
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "acc_svc_pubtrn",
+					"targetFieldDisplayName": "Transit Access To Services",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - cd_naturpres",
+			"performanceOutcomeDisplayName": "Community Design - Natural Resource Preservation",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "ac_natlands_base",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "ac_natlands_base",
+					"targetFieldDisplayName": "Total Park, Forest, And Ag Lands Near Project - Base Year",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "ac_natlands_fut",
+					"targetFieldDisplayName": "Total Park, Forest, And Ag Lands Near Project - Future Year",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
 				}
 			]
 		},

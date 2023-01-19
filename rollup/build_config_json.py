@@ -23,7 +23,7 @@ def strip_decimal(in_val):
 
 if __name__ == '__main__':
     config_csv = r"C:\Users\dconly\GitRepos\PPA3\rollup\chartname_config.csv"
-    subreport_name = 'cd_trnchoice'
+    subreport_name = 'cd_naturpres'
 
     #=================RUN SCRIPT=================
     # fields in the config table
