@@ -823,6 +823,158 @@
 					"sortAscending": true
 				}
 			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_frgt",
+			"performanceOutcomeDisplayName": "Freeway Expansion - Improve Freight Movement",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "pct_truckvol",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "pct_truckvol",
+					"targetFieldDisplayName": "Percent Of Traffic That Is Trucks",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - rp_fwy_saf",
+			"performanceOutcomeDisplayName": "Freeway Expansion - Make a Safer Transportation System",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "crash_cnt",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "crash_cnt",
+					"targetFieldDisplayName": "Total Crashs",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "crash_100mvmt",
+					"targetFieldDisplayName": "Crashes Per 100 MVMT",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "crashpct_fatal",
+					"targetFieldDisplayName": "Percent Of Crashes That Are Fatal",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
+		},
+		{
+			"tableName": "ItemsToShare_MIL1 - cd_trnchoice",
+			"performanceOutcomeDisplayName": "Community Design - Transportation Choice",
+			"queryWhere": "project_uid = '{projectJoinId}'",
+			"defaultChartTargetFieldName": "base_sovpct",
+			"fields": {
+				"projectJoinIdFieldName": "project_uid"
+			},
+			"charts": [
+				{
+					"targetFieldName": "intxndens",
+					"targetFieldDisplayName": "Intersection Density Per Acre",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "bikeway_pct",
+					"targetFieldDisplayName": "Share Of Centerline Miles That Have Bike Lane Or Path",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "transit_svc_dens",
+					"targetFieldDisplayName": "Transit Stops Per Day Per Acre",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_sovpct",
+					"targetFieldDisplayName": "SOV Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_hovpct",
+					"targetFieldDisplayName": "HOV Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_ptpct",
+					"targetFieldDisplayName": "Transit Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_bikepct",
+					"targetFieldDisplayName": "Bike Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "base_walkpct",
+					"targetFieldDisplayName": "Walk Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_sovpct",
+					"targetFieldDisplayName": "SOV Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_hovpct",
+					"targetFieldDisplayName": "HOV Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_ptpct",
+					"targetFieldDisplayName": "Transit Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_bikepct",
+					"targetFieldDisplayName": "Bike Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				},
+				{
+					"targetFieldName": "fut_walkpct",
+					"targetFieldDisplayName": "Walk Mode Share",
+					"chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+					"chartTemplateId": "1",
+					"sortAscending": true
+				}
+			]
 		}
 	],
 	"chartTemplates": [
