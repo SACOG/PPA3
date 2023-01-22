@@ -102,7 +102,6 @@ def check_report(pdf, file_geodatabase):
             .values[0].split('; ')
 
         for po in perf_outcomes:
-
             subrpt_run = fgdb.check_subrpt_tbl(project_uid=project_uid, project_type=project_type, \
                 perf_outcome=po)
             
@@ -111,7 +110,7 @@ def check_report(pdf, file_geodatabase):
             elif subrpt_run is False:
                 failed_rpts.append(po)
             else:
-                print(subrpt_run)
+                print(subrpt_run) # this will come up if the project type-perf outcome combo weren't found in ReportDataBase.subrpt_dict
 
         out_dict['Successful Subrpts'] = '; '.join(successful_rpts)
         out_dict['Failed Subrpts'] = '; '.join(failed_rpts)

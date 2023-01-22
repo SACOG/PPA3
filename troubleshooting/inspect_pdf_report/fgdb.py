@@ -40,6 +40,8 @@ class ReportDatabase:
         self.f_uid = 'project_uid'
         self.f_poutcomes = 'perf_outcomes'
 
+        # Based on the project type and performance outcome, select the correct subreport table in the subreport file geodatabase
+        # Structure - {project type: {perf_outcome1: srtable1, ...}}
         self.subrpt_dict = {
             "Freeway Expansion": {
                 "Reduce VMT": "rp_fwy_vmt",
@@ -68,6 +70,14 @@ class ReportDatabase:
                 "Make a Safer Transportation System": 'rp_artexp_saf',
                 "Promote Complete Streets and State of Good Repair": 'rp_artsgr_sgr',
                 "Promote Socioeconomic Equity": "rp_artexp_eq"
+            },
+            "Community Design": {
+                "Transportation Choice": 'cd_trnchoice',
+                "Compact Development": 'cd_compactdev',
+                "Mixed-Use Development": 'cd_mixeduse',
+                "Housing Choice": 'cd_houschoice',
+                "Use Existing Assets": 'cd_existgasset',
+                "Preserve Natural Resources": 'cd_naturpres'
             }
 
         }
