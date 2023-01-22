@@ -21,10 +21,25 @@ Copyright:   (c) SACOG
 Python Version: 3.x
 """
 
+from pathlib import Path
+import os
 import warnings as w
 import datetime as dt
 
+import arcpy
+import pandas as pd
 import PyPDF2 
+
+def esri_object_to_df(in_esri_obj, esri_obj_fields, index_field=None):
+    '''converts esri gdb table, feature class, feature layer, or SHP to pandas dataframe'''
+    data_rows = []
+    with arcpy.da.SearchCursor(in_esri_obj, esri_obj_fields) as cur:
+        for row in cur:
+            out_row = list(row)
+            data_rows.append(out_row)
+
+    out_df = pd.DataFrame(data_rows, index=index_field, columns=esri_obj_fields)
+    return out_df
 
 class CoverPage:
     """Class to create object with all relevant data/attributes from the PDF report cover page"""
@@ -44,17 +59,19 @@ class CoverPage:
         self.f_dt = 'Time Stamp'
         self.dtformat = '%A, %B %d, %Y %I:%M %p' # Example: 'Friday, January 20, 2023 03:01 PM'
 
-        self.out_dict = {}
+        self.covpg_info = {}
 
         for f in [self.f_pname, self.f_jur, self.f_ptype, self.f_uid]:
-            self.out_dict[f] = self.get_val(f)
+            self.covpg_info[f] = self.get_val(f)
 
         creation_date = self.ptext_list[-1]
-        self.out_dict[self.f_dt] = self.report_dt_check(creation_date)
+        self.covpg_info[self.f_dt] = self.report_dt_check(creation_date)
 
     def get_val(self, fname):
         entry = [e for e in self.ptext_list if fname in e][0]
         val = entry.replace(f"{fname} ", "")
+        if val == entry: val = ''
+        # if entry == 'Project UID': import pdb; pdb.set_trace()
         return val
 
     def report_dt_check(self, dt_string):
@@ -68,38 +85,106 @@ class CoverPage:
         
         return dt_string
 
+class reportDatabase:
+    def __init__(self, fgdb_path):
 
+        self.fgdb_path = fgdb_path
+        self.fc_master = 'project_master'
 
-def get_pdf_field_val(pdf_path, page_idx, field_delim=None, field_name=None):
-    """
-    Args:
-        pdf_path (_type_): path to pdf file
-        page_idx (_type_): page of PDF to pull text from (first page is 0)
-        field_delim (_type_): separator between different fields on the PDF document
-        field_name (_type_): name of field whose value you want to retrieve. must include last character before value (e.g., space, colon, etc.).
+        # fields in project_master table
+        self.f_uid = 'project_uid'
+        self.f_poutcomes = 'perf_outcomes'
 
-    Returns: list of project UIDs from PDFs in folder. These UIDs will have their review flag updated in
-    project master table
-    """
-    
-    reader = PyPDF2.PdfReader(pdf_path)
-    page = reader.pages[page_idx]
-    pgtext = page.extract_text()
+        self.subrpt_dict = {
+            "Freeway Expansion": {
+                "Reduce VMT": "rp_fwy_vmt"
+            }
+        }
 
-    import pdb; pdb.set_trace()
-    pg_textlist = pgtext.split(field_delim)
+        fc_pmaster = os.path.join(self.fgdb_path, self.fc_master)
+        self.df_pmaster = esri_object_to_df(fc_pmaster, [f.name for f in arcpy.ListFields(fc_pmaster)])
 
-    
+    def check_subrpt_tbl(self, project_uid, project_type, perf_outcome):
+        # checks if indicated project uid is in subreport table corresponding
+        # to project_Type and project_outcome. 
+        try:
+            subrpt_tbl = self.subrpt_dict[project_type][perf_outcome]
 
-    value_out = [i for i in pg_textlist if field_name in i][0].split(field_name)[1]
+            sr_tbl_path = os.path.join(self.fgdb_path, subrpt_tbl)
+            
+            uid_matches = []
+            with arcpy.da.SearchCursor(sr_tbl_path, [self.f_uid]) as cur:
+                for row in cur:
+                    row_uid = row[0]
+                    if row_uid == project_uid: uid_matches.append(row_uid)
 
-    return value_out
+            # if not matches returned, means that subreport failed to run for the project
+            uid_in_subreport = len(uid_matches) > 0
+        except:
+            uid_in_subreport = f'Warning: keys [{project_type}][{perf_outcome}] do not work. Check reportDatabase.subrpt_dict'
 
+        return uid_in_subreport
 
+        
+
+def check_report(pdf, file_geodatabase):
+
+    covpg = CoverPage(pdf)
+    fgdb = reportDatabase(file_geodatabase)
+
+    project_uid = covpg.covpg_info[covpg.f_uid]
+    project_type = covpg.covpg_info[covpg.f_ptype]
+
+    successful_rpts = []
+    failed_rpts = []
+
+    out_dict = covpg.covpg_info
+
+    if project_uid == '':
+        out_dict['Successful Subrpts'] = "PROJECT UID NOT IN DATABASE. ASK USER TO RE-RUN PROJECT"
+        out_dict['Failed Subrpts'] = ''
+    else:
+        perf_outcomes = fgdb.df_pmaster.loc[fgdb.df_pmaster[fgdb.f_uid] == project_uid][fgdb.f_poutcomes] \
+            .values[0].split('; ')
+
+        for po in perf_outcomes:
+
+            subrpt_run = fgdb.check_subrpt_tbl(project_uid=project_uid, project_type=project_type, \
+                perf_outcome=po)
+            
+            if subrpt_run is True:
+                successful_rpts.append(po)
+            elif subrpt_run is False:
+                failed_rpts.append(po)
+            else:
+                print(subrpt_run)
+
+        out_dict['Successful Subrpts'] = '; '.join(successful_rpts)
+        out_dict['Failed Subrpts'] = '; '.join(failed_rpts)
+
+    return out_dict
 
 
 if __name__ == '__main__':
-    pdf_file = r"C:\Users\dconly\Sacramento Area Council of Governments\PPA Development - General\PPA3\Development\Testing\reports_with_errors\fwy_all_noerrors.pdf"
-    page_ival = 0
+    pdf_folder = r"C:\Users\dconly\Sacramento Area Council of Governments\PPA Development - General\PPA3\Development\Testing\reports_with_errors"
 
-    get_pdf_field_val(pdf_file, page_ival)
+
+    fgdb = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_run_data.gdb'
+
+    #================RUN SCRIPT=======================================
+    pdf_dir = Path(pdf_folder)
+    pdfs_list = [f for f in pdf_dir.glob("*.pdf")]
+
+    results_list = []
+    for pdf_file in pdfs_list:
+        report_results = check_report(pdf_file, fgdb)
+        results_list.append(report_results)
+
+    df = pd.DataFrame(results_list)
+
+    sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
+    output_csv = os.path.join(pdf_folder, f"report_inspection{sufx}.csv")
+    # df.to_csv(output_csv, index=False)
+
+
+    import pdb; pdb.set_trace()
