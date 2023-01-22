@@ -131,6 +131,7 @@ if __name__ == '__main__':
     results_list = []
     for pdf_file in pdfs_list:
         report_results = check_report(pdf_file, fgdb)
+        report_results["ReportFilePath"] = pdf_file
         results_list.append(report_results)
 
     df = pd.DataFrame(results_list)
