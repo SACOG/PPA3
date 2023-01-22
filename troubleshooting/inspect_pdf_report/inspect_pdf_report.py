@@ -26,20 +26,10 @@ import os
 import warnings as w
 import datetime as dt
 
-import arcpy
 import pandas as pd
 import PyPDF2 
 
-def esri_object_to_df(in_esri_obj, esri_obj_fields, index_field=None):
-    '''converts esri gdb table, feature class, feature layer, or SHP to pandas dataframe'''
-    data_rows = []
-    with arcpy.da.SearchCursor(in_esri_obj, esri_obj_fields) as cur:
-        for row in cur:
-            out_row = list(row)
-            data_rows.append(out_row)
-
-    out_df = pd.DataFrame(data_rows, index=index_field, columns=esri_obj_fields)
-    return out_df
+from fgdb import ReportDatabase
 
 class CoverPage:
     """Class to create object with all relevant data/attributes from the PDF report cover page"""
@@ -48,6 +38,8 @@ class CoverPage:
         page = reader.pages[page_idx]
         self.pgtext = page.extract_text()
         self.ptext_list = self.pgtext.split('\n')
+
+        self.covpg_name = 'Title Report'
 
         # Tags used to know which field or part of PDF to refer to--
         # will need to have spaces converted to underlines for final table names?
@@ -75,8 +67,10 @@ class CoverPage:
         return val
 
     def report_dt_check(self, dt_string):
+        # import pdb; pdb.set_trace()
         try:
-            dt.datetime.strptime(self.f_dt, self.dtformat)
+            dts = dt.datetime.strptime(dt_string, self.dtformat)
+            dt_string = dts.strftime('%Y-%m-%d %H:%M')
         except:
             warning = f"""Unable to parse report creation time stamp value
             {dt_string}. Please confirm this is the correct value."""
@@ -85,52 +79,12 @@ class CoverPage:
         
         return dt_string
 
-class reportDatabase:
-    def __init__(self, fgdb_path):
 
-        self.fgdb_path = fgdb_path
-        self.fc_master = 'project_master'
-
-        # fields in project_master table
-        self.f_uid = 'project_uid'
-        self.f_poutcomes = 'perf_outcomes'
-
-        self.subrpt_dict = {
-            "Freeway Expansion": {
-                "Reduce VMT": "rp_fwy_vmt"
-            }
-        }
-
-        fc_pmaster = os.path.join(self.fgdb_path, self.fc_master)
-        self.df_pmaster = esri_object_to_df(fc_pmaster, [f.name for f in arcpy.ListFields(fc_pmaster)])
-
-    def check_subrpt_tbl(self, project_uid, project_type, perf_outcome):
-        # checks if indicated project uid is in subreport table corresponding
-        # to project_Type and project_outcome. 
-        try:
-            subrpt_tbl = self.subrpt_dict[project_type][perf_outcome]
-
-            sr_tbl_path = os.path.join(self.fgdb_path, subrpt_tbl)
-            
-            uid_matches = []
-            with arcpy.da.SearchCursor(sr_tbl_path, [self.f_uid]) as cur:
-                for row in cur:
-                    row_uid = row[0]
-                    if row_uid == project_uid: uid_matches.append(row_uid)
-
-            # if not matches returned, means that subreport failed to run for the project
-            uid_in_subreport = len(uid_matches) > 0
-        except:
-            uid_in_subreport = f'Warning: keys [{project_type}][{perf_outcome}] do not work. Check reportDatabase.subrpt_dict'
-
-        return uid_in_subreport
-
-        
 
 def check_report(pdf, file_geodatabase):
 
     covpg = CoverPage(pdf)
-    fgdb = reportDatabase(file_geodatabase)
+    fgdb = ReportDatabase(file_geodatabase)
 
     project_uid = covpg.covpg_info[covpg.f_uid]
     project_type = covpg.covpg_info[covpg.f_ptype]
@@ -141,8 +95,8 @@ def check_report(pdf, file_geodatabase):
     out_dict = covpg.covpg_info
 
     if project_uid == '':
-        out_dict['Successful Subrpts'] = "PROJECT UID NOT IN DATABASE. ASK USER TO RE-RUN PROJECT"
-        out_dict['Failed Subrpts'] = ''
+        out_dict['Successful Subrpts'] = "PROJECT LINE NOT SAVED TO DATABASE. ASK USER TO RE-RUN PROJECT"
+        out_dict['Failed Subrpts'] = covpg.covpg_name
     else:
         perf_outcomes = fgdb.df_pmaster.loc[fgdb.df_pmaster[fgdb.f_uid] == project_uid][fgdb.f_poutcomes] \
             .values[0].split('; ')
@@ -184,7 +138,6 @@ if __name__ == '__main__':
 
     sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     output_csv = os.path.join(pdf_folder, f"report_inspection{sufx}.csv")
-    # df.to_csv(output_csv, index=False)
+    df.to_csv(output_csv, index=False)
 
-
-    import pdb; pdb.set_trace()
+    print(f"Success! Inspection results in {output_csv}")
