@@ -52,20 +52,14 @@ def build_subrpt_config(config_csv, subreport_name):
 
     out_list = []
     for nd in name_dicts:
-        t = template
+        t = {} # t = template
         t["targetFieldName"] = nd[f_fname]
         t['targetFieldDisplayName'] = nd[f_dispname]
+        t["chartId"] = "6fdf6349-73f0-4ff6-8f0f-28f6904fed09"
         t["chartTemplateId"] = strip_decimal(nd[f_ctemplate]) # remove decimal points and convert to string
         t["sortAscending"] = str(nd[f_sort_asc]).lower()
         
-        print(nd)
-        print(f"\t{t}")
-        print('----------------')
         out_list.append(t)
-        print(out_list)
-        print('\n')
-
-    import pdb; pdb.set_trace()
 
     return out_list
 
