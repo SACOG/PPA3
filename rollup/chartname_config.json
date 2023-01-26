@@ -169,14 +169,14 @@
                     "targetFieldDisplayName": "Congested Speed (MPH)",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "congrat_wrst",
                     "targetFieldDisplayName": "Congested Speed As Pct Of Free-Flow",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "lottr_ampk_wrst",
@@ -222,7 +222,7 @@
                     "targetFieldDisplayName": "Pavement Condition",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "aadt",
@@ -484,14 +484,14 @@
                     "targetFieldDisplayName": "Congested Speed (MPH)",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "congrat_wrst",
                     "targetFieldDisplayName": "Congested Speed As Pct Of Free-Flow",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "lottr_ampk_wrst",
@@ -710,7 +710,7 @@
             "charts": [
                 {
                     "targetFieldName": "pct_staa",
-                    "targetFieldDisplayName": "Percent Of Project On Staa Truck Route",
+                    "targetFieldDisplayName": "Percent Of Project On STAA Truck Route",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
                     "sortAscending": "true"
@@ -766,7 +766,7 @@
                     "targetFieldDisplayName": "SOV Mode Share - Base",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "base_hovpct",
@@ -801,7 +801,7 @@
                     "targetFieldDisplayName": "SOV Mode Share - Future",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "fut_hovpct",
@@ -900,7 +900,7 @@
                     "targetFieldDisplayName": "Pavement Condition",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 }
             ]
         },
@@ -1039,7 +1039,7 @@
                     "targetFieldDisplayName": "SOV Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "base_hovpct",
@@ -1074,7 +1074,7 @@
                     "targetFieldDisplayName": "SOV Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": "false"
                 },
                 {
                     "targetFieldName": "fut_hovpct",
