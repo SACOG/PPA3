@@ -2,7 +2,7 @@
     "relatedTables": [
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_vmt",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce VMT",
+            "performanceOutcomeDisplayName": "Reduce VMT",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "jobs_base",
             "fields": {
@@ -14,76 +14,76 @@
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lumix_base",
                     "targetFieldDisplayName": "Base Land Use Mix",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lumix_future",
                     "targetFieldDisplayName": "Future Land Use Mix",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_walk",
                     "targetFieldDisplayName": "Walk Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_bike",
                     "targetFieldDisplayName": "Bike Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_drive",
                     "targetFieldDisplayName": "Drive Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_pubtrn",
                     "targetFieldDisplayName": "Transit Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_fwy_vmt",
-            "performanceOutcomeDisplayName": "Freeway Expansion - Reduce VMT",
+            "performanceOutcomeDisplayName": "Reduce VMT",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "base_trntrip",
             "fields": {
@@ -95,34 +95,34 @@
                     "targetFieldDisplayName": "Base Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_vehocc",
                     "targetFieldDisplayName": "Base Avg Vehicle Occupancy",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "future_trntrip",
                     "targetFieldDisplayName": "Future Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "future_vehocc",
                     "targetFieldDisplayName": "Future Avg Vehicle Occupancy",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_fwy_cong",
-            "performanceOutcomeDisplayName": "Freeway Expansion - Reduce Congestion",
+            "performanceOutcomeDisplayName": "Reduce Congestion",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "du_base",
             "fields": {
@@ -134,83 +134,83 @@
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "aadt",
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "congspd_wrst",
                     "targetFieldDisplayName": "Congested Speed (MPH)",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "congrat_wrst",
                     "targetFieldDisplayName": "Congested Speed As Pct Of Free-Flow",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "lottr_ampk_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - AM Peak",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lottr_midday_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - Midday",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lottr_pmpk_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - PM Peak",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lottr_wknd_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - Weekend",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artsgr_sgr",
-            "performanceOutcomeDisplayName": "Arterial State of Good Repair - Promote Complete Streets and State of Good Repair",
+            "performanceOutcomeDisplayName": "Promote Complete Streets and State of Good Repair",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "cs_index",
             "fields": {
@@ -222,27 +222,27 @@
                     "targetFieldDisplayName": "Pavement Condition",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "aadt",
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "cs_index",
                     "targetFieldDisplayName": "Complete Streets Index (0-100)",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - cd_compactdev",
-            "performanceOutcomeDisplayName": "Community Design - Compact Development",
+            "performanceOutcomeDisplayName": "Compact Development",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "jobs_base",
             "fields": {
@@ -254,34 +254,34 @@
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - cd_mixeduse",
-            "performanceOutcomeDisplayName": "Community Design - Mixed-Use Development",
+            "performanceOutcomeDisplayName": "Mixed-Use Development",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "lumix_base",
             "fields": {
@@ -293,20 +293,20 @@
                     "targetFieldDisplayName": "Base Land Use Mix",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lumix_future",
                     "targetFieldDisplayName": "Future Land Use Mix",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - cd_houschoice",
-            "performanceOutcomeDisplayName": "Community Design - Housing Choice",
+            "performanceOutcomeDisplayName": "Housing Choice",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "mixuse_base",
             "fields": {
@@ -318,90 +318,90 @@
                     "targetFieldDisplayName": "Base Residential Units - Very Low Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_ld_base",
                     "targetFieldDisplayName": "Base Residential Units - Low Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_md_base",
                     "targetFieldDisplayName": "Base Residential Units - Medium Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_mhd_base",
                     "targetFieldDisplayName": "Base Residential Units - Med-Hi Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_hid_base",
                     "targetFieldDisplayName": "Base Residential Units - High Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "mixuse_base",
                     "targetFieldDisplayName": "Base Residential Units - In Mixed Use Dev",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_vld_fut",
                     "targetFieldDisplayName": "Future Residential Units - Very Low Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_ld_fut",
                     "targetFieldDisplayName": "Future Residential Units - Low Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_md_fut",
                     "targetFieldDisplayName": "Future Residential Units - Medium Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_mhd_fut",
                     "targetFieldDisplayName": "Future Residential Units - Med-Hi Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "res_hid_fut",
                     "targetFieldDisplayName": "Future Residential Units - High Density",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "mixuse_fut",
                     "targetFieldDisplayName": "Future Residential Units - In Mixed Use Dev",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - cd_existgasset",
-            "performanceOutcomeDisplayName": "Community Design - Use Existing Assets",
+            "performanceOutcomeDisplayName": "Use Existing Assets",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "acc_svc_walk",
             "fields": {
@@ -413,34 +413,34 @@
                     "targetFieldDisplayName": "Walk Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_bike",
                     "targetFieldDisplayName": "Bike Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_drive",
                     "targetFieldDisplayName": "Drive Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_svc_pubtrn",
                     "targetFieldDisplayName": "Transit Access To Services",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - cd_naturpres",
-            "performanceOutcomeDisplayName": "Community Design - Natural Resource Preservation",
+            "performanceOutcomeDisplayName": "Natural Resource Preservation",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "ac_natlands_base",
             "fields": {
@@ -452,20 +452,20 @@
                     "targetFieldDisplayName": "Total Park, Forest, And Ag Lands Near Project - Base Year",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "ac_natlands_fut",
                     "targetFieldDisplayName": "Total Park, Forest, And Ag Lands Near Project - Future Year",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_cong",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Reduce Congestion",
+            "performanceOutcomeDisplayName": "Reduce Congestion",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "jobs_base",
             "fields": {
@@ -477,83 +477,83 @@
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "congspd_wrst",
                     "targetFieldDisplayName": "Congested Speed (MPH)",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "congrat_wrst",
                     "targetFieldDisplayName": "Congested Speed As Pct Of Free-Flow",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "lottr_ampk_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - AM Peak",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lottr_midday_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - Midday",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lottr_pmpk_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - PM Peak",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "lottr_wknd_wrst",
                     "targetFieldDisplayName": "Travel Time Reliability - Weekend",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_base",
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_econ",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Promote Economic Prosperity",
+            "performanceOutcomeDisplayName": "Promote Economic Prosperity",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "jobs_added",
             "fields": {
@@ -565,90 +565,90 @@
                     "targetFieldDisplayName": "K-12 Enrollment",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_added",
                     "targetFieldDisplayName": "Jobs Added",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "agac_pct_base",
                     "targetFieldDisplayName": "Base Percent Ag Acres",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "agac_pct_future",
                     "targetFieldDisplayName": "Future Percent Ag Acres",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_walk_alljob",
                     "targetFieldDisplayName": "Walk Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_bike_alljob",
                     "targetFieldDisplayName": "Bike Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_drive_alljob",
                     "targetFieldDisplayName": "Drive Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_transit_alljob",
                     "targetFieldDisplayName": "Transit Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_walk_edu",
                     "targetFieldDisplayName": "Walk Access To Ed Facilities",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_bike_edu",
                     "targetFieldDisplayName": "Bike Access To Ed Facilities",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_drive_edu",
                     "targetFieldDisplayName": "Drive Access To Ed Facilities",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_transit_edu",
                     "targetFieldDisplayName": "Transit Access To Ed Facilities",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_eq",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Promote Socioeconomic Equity",
+            "performanceOutcomeDisplayName": "Promote Socioeconomic Equity",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "pop_ej_area",
             "fields": {
@@ -660,48 +660,48 @@
                     "targetFieldDisplayName": "Population In EJ Areas",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "pctpot_ej_area",
                     "targetFieldDisplayName": "Percent Population In EJ Areas",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_walk_alljob_ej",
                     "targetFieldDisplayName": "EJ Walk Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_bike_alljob_ej",
                     "targetFieldDisplayName": "EJ Bike Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_drive_alljob_ej",
                     "targetFieldDisplayName": "EJ Drive Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_transit_alljob_ej",
                     "targetFieldDisplayName": "EJ Transit Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_frgt",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Improve Freight Movement",
+            "performanceOutcomeDisplayName": "Improve Freight Movement",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "pct_staa",
             "fields": {
@@ -713,27 +713,27 @@
                     "targetFieldDisplayName": "Percent Of Project On STAA Truck Route",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "pct_empind_base",
                     "targetFieldDisplayName": "Base Percent Industrial Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "pct_empind_fut",
                     "targetFieldDisplayName": "Future Percent Industrial Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_mm",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Encourage Multimodal Travel",
+            "performanceOutcomeDisplayName": "Encourage Multimodal Travel",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "base_sovpct",
             "fields": {
@@ -745,97 +745,97 @@
                     "targetFieldDisplayName": "Intersections Per Acre",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "bikeway_pct",
                     "targetFieldDisplayName": "Share Of Road Miles With Bike Lane Or Path",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "transit_svc_dens",
                     "targetFieldDisplayName": "Daily Transit Stops Per Acre",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_sovpct",
                     "targetFieldDisplayName": "SOV Mode Share - Base",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "base_hovpct",
                     "targetFieldDisplayName": "HOV Mode Share - Base",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_ptpct",
                     "targetFieldDisplayName": "Transit Mode Share - Base",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_bikepct",
                     "targetFieldDisplayName": "Bike Mode Share - Base",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_walkpct",
                     "targetFieldDisplayName": "Walk Mode Share - Base",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_sovpct",
                     "targetFieldDisplayName": "SOV Mode Share - Future",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "fut_hovpct",
                     "targetFieldDisplayName": "HOV Mode Share - Future",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_ptpct",
                     "targetFieldDisplayName": "Transit Mode Share - Future",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_bikepct",
                     "targetFieldDisplayName": "Bike Mode Share - Future",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_walkpct",
                     "targetFieldDisplayName": "Walk Mode Share - Future",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_saf",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - Make a Safer Transportation System",
+            "performanceOutcomeDisplayName": "Make a Safer Transportation System",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "crash_cnt",
             "fields": {
@@ -847,41 +847,41 @@
                     "targetFieldDisplayName": "Total Crashes",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "crash_100mvmt",
                     "targetFieldDisplayName": "Crashes Per 100 MVMT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "crash_bkpd_clmile",
                     "targetFieldDisplayName": "Bike/Ped Crashes Per Centerline Mile",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "crashpct_fatal",
                     "targetFieldDisplayName": "Fatal Crash Count",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "crash_bkpd_pct",
                     "targetFieldDisplayName": "Percent Of Crashes With Bike/Ped",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_artexp_sgr",
-            "performanceOutcomeDisplayName": "Arterial or Transit Expansion - State of Good Repair",
+            "performanceOutcomeDisplayName": "State of Good Repair",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "pci",
             "fields": {
@@ -893,20 +893,20 @@
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "pci",
                     "targetFieldDisplayName": "Pavement Condition",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_fwy_mm",
-            "performanceOutcomeDisplayName": "Freeway Expansion - Encourage Multimodal Travel",
+            "performanceOutcomeDisplayName": "Encourage Multimodal Travel",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "base_trntrip",
             "fields": {
@@ -918,20 +918,20 @@
                     "targetFieldDisplayName": "Base Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "future_trntrip",
                     "targetFieldDisplayName": "Future Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_fwy_econ",
-            "performanceOutcomeDisplayName": "Freeway Expansion - Promote Economic Prosperity",
+            "performanceOutcomeDisplayName": "Promote Economic Prosperity",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "acc_drive_alljob",
             "fields": {
@@ -943,20 +943,20 @@
                     "targetFieldDisplayName": "Drive Access To Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "acc_drive_edu",
                     "targetFieldDisplayName": "Drive Access To Ed Facilities",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_fwy_frgt",
-            "performanceOutcomeDisplayName": "Freeway Expansion - Improve Freight Movement",
+            "performanceOutcomeDisplayName": "Improve Freight Movement",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "pct_truckvol",
             "fields": {
@@ -968,13 +968,13 @@
                     "targetFieldDisplayName": "Percent Of Traffic That Is Trucks",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - rp_fwy_saf",
-            "performanceOutcomeDisplayName": "Freeway Expansion - Make a Safer Transportation System",
+            "performanceOutcomeDisplayName": "Make a Safer Transportation System",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "crash_cnt",
             "fields": {
@@ -986,27 +986,27 @@
                     "targetFieldDisplayName": "Total Crashs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "crash_100mvmt",
                     "targetFieldDisplayName": "Crashes Per 100 MVMT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "crashpct_fatal",
                     "targetFieldDisplayName": "Percent Of Crashes That Are Fatal",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         },
         {
             "tableName": "ItemsToShare_MIL1 - cd_trnchoice",
-            "performanceOutcomeDisplayName": "Community Design - Transportation Choice",
+            "performanceOutcomeDisplayName": "Transportation Choice",
             "queryWhere": "project_uid = '{projectJoinId}'",
             "defaultChartTargetFieldName": "base_sovpct",
             "fields": {
@@ -1018,91 +1018,91 @@
                     "targetFieldDisplayName": "Intersection Density Per Acre",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "bikeway_pct",
                     "targetFieldDisplayName": "Share Of Centerline Miles That Have Bike Lane Or Path",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "transit_svc_dens",
                     "targetFieldDisplayName": "Transit Stops Per Day Per Acre",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_sovpct",
                     "targetFieldDisplayName": "SOV Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "base_hovpct",
                     "targetFieldDisplayName": "HOV Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_ptpct",
                     "targetFieldDisplayName": "Transit Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_bikepct",
                     "targetFieldDisplayName": "Bike Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "base_walkpct",
                     "targetFieldDisplayName": "Walk Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_sovpct",
                     "targetFieldDisplayName": "SOV Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "false"
+                    "sortAscending": false
                 },
                 {
                     "targetFieldName": "fut_hovpct",
                     "targetFieldDisplayName": "HOV Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_ptpct",
                     "targetFieldDisplayName": "Transit Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_bikepct",
                     "targetFieldDisplayName": "Bike Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 },
                 {
                     "targetFieldName": "fut_walkpct",
                     "targetFieldDisplayName": "Walk Mode Share",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
                     "chartTemplateId": "1",
-                    "sortAscending": "true"
+                    "sortAscending": true
                 }
             ]
         }

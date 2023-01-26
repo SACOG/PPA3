@@ -57,7 +57,7 @@ def build_subrpt_config(config_csv, subreport_name):
         t['targetFieldDisplayName'] = nd[f_dispname]
         t["chartId"] = "6fdf6349-73f0-4ff6-8f0f-28f6904fed09"
         t["chartTemplateId"] = strip_decimal(nd[f_ctemplate]) # remove decimal points and convert to string
-        t["sortAscending"] = str(nd[f_sort_asc]).lower()
+        t["sortAscending"] = nd[f_sort_asc]
         
         out_list.append(t)
 
