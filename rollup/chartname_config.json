@@ -13,28 +13,28 @@
                     "targetFieldName": "jobs_base",
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -94,7 +94,7 @@
                     "targetFieldName": "base_trntrip",
                     "targetFieldDisplayName": "Base Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -108,7 +108,7 @@
                     "targetFieldName": "future_trntrip",
                     "targetFieldDisplayName": "Future Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -133,35 +133,35 @@
                     "targetFieldName": "jobs_base",
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "aadt",
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -221,14 +221,14 @@
                     "targetFieldName": "pci",
                     "targetFieldDisplayName": "Pavement Condition",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": false
                 },
                 {
                     "targetFieldName": "aadt",
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -253,28 +253,28 @@
                     "targetFieldName": "jobs_base",
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 }
             ]
@@ -476,7 +476,7 @@
                     "targetFieldName": "aadt",
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -525,28 +525,28 @@
                     "targetFieldName": "jobs_base",
                     "targetFieldDisplayName": "Base Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_future",
                     "targetFieldDisplayName": "Future Jobs",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_base",
                     "targetFieldDisplayName": "Base Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "du_future",
                     "targetFieldDisplayName": "Future Dwelling Units",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 }
             ]
@@ -564,14 +564,14 @@
                     "targetFieldName": "enr_k12",
                     "targetFieldDisplayName": "K-12 Enrollment",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "jobs_added",
                     "targetFieldDisplayName": "Jobs Added",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -659,7 +659,7 @@
                     "targetFieldName": "pop_ej_area",
                     "targetFieldDisplayName": "Population In EJ Areas",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -846,7 +846,7 @@
                     "targetFieldName": "crash_cnt",
                     "targetFieldDisplayName": "Total Crashes",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -867,7 +867,7 @@
                     "targetFieldName": "crashpct_fatal",
                     "targetFieldDisplayName": "Fatal Crash Count",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
@@ -892,14 +892,14 @@
                     "targetFieldName": "aadt",
                     "targetFieldDisplayName": "AADT",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "pci",
                     "targetFieldDisplayName": "Pavement Condition",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": false
                 }
             ]
@@ -917,14 +917,14 @@
                     "targetFieldName": "base_trntrip",
                     "targetFieldDisplayName": "Base Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {
                     "targetFieldName": "future_trntrip",
                     "targetFieldDisplayName": "Future Year Transit Trips",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 }
             ]
@@ -983,9 +983,9 @@
             "charts": [
                 {
                     "targetFieldName": "crash_cnt",
-                    "targetFieldDisplayName": "Total Crashs",
+                    "targetFieldDisplayName": "Total Crashes",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "1",
+                    "chartTemplateId": "2",
                     "sortAscending": true
                 },
                 {

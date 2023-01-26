@@ -13,10 +13,10 @@ project_master,cover page,1,POLYLINE,time_created,Time That Run Started,0,,,DATE
 project_master,cover page,1,POLYLINE,user_email,Self-Explanatory,0,,,TEXT,100,Table + GP task updated,NA
 project_master,cover page,1,POLYLINE,perf_outcomes,Semi-Colon-Separated List Of The Performance Outcomes,0,,,TEXT,1000,Table + GP task updated,NA
 rp_artexp_vmt,arterial exp reduce vmt,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,NA
-rp_artexp_vmt,arterial exp reduce vmt,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_vmt,arterial exp reduce vmt,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_vmt,arterial exp reduce vmt,1,,du_base,Base Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_vmt,arterial exp reduce vmt,1,,du_future,Future Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_vmt,arterial exp reduce vmt,1,,jobs_base,Base Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_vmt,arterial exp reduce vmt,1,,jobs_future,Future Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_vmt,arterial exp reduce vmt,1,,du_base,Base Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_vmt,arterial exp reduce vmt,1,,du_future,Future Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_artexp_vmt,arterial exp reduce vmt,1,,lumix_base,Base Land Use Mix,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_vmt,arterial exp reduce vmt,1,,lumix_future,Future Land Use Mix,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_vmt,arterial exp reduce vmt,1,,acc_svc_walk,Walk Access To Services,1,TRUE,1,FLOAT,,Table + GP task updated,Done
@@ -24,7 +24,7 @@ rp_artexp_vmt,arterial exp reduce vmt,1,,acc_svc_bike,Bike Access To Services,1,
 rp_artexp_vmt,arterial exp reduce vmt,1,,acc_svc_drive,Drive Access To Services,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_vmt,arterial exp reduce vmt,1,,acc_svc_pubtrn,Transit Access To Services,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,NA
-rp_artexp_cong,arterial exp reduce congestion,1,,aadt,AADT,1,TRUE,1,LONG,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,aadt,AADT,1,TRUE,2,LONG,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,congspd_nb,None,0,,,FLOAT,,Table + GP task updated,NA
 rp_artexp_cong,arterial exp reduce congestion,1,,congspd_sb,None,0,,,FLOAT,,Table + GP task updated,NA
 rp_artexp_cong,arterial exp reduce congestion,1,,congspd_eb,None,0,,,FLOAT,,Table + GP task updated,NA
@@ -59,17 +59,17 @@ rp_artexp_cong,arterial exp reduce congestion,1,,lottr_ampk_wrst,Travel Time Rel
 rp_artexp_cong,arterial exp reduce congestion,1,,lottr_midday_wrst,Travel Time Reliability - Midday,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,lottr_pmpk_wrst,Travel Time Reliability - PM Peak,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,1,,lottr_wknd_wrst,Travel Time Reliability - Weekend,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_cong,arterial exp reduce congestion,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_cong,arterial exp reduce congestion,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_cong,arterial exp reduce congestion,1,,du_base,Base Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_cong,arterial exp reduce congestion,1,,du_future,Future Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,jobs_base,Base Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,jobs_future,Future Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,du_base,Base Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_cong,arterial exp reduce congestion,1,,du_future,Future Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_artexp_cong,arterial exp reduce congestion,0,,jobdens_base,Base Year Job Density Near Project,0,,,,,,
 rp_artexp_cong,arterial exp reduce congestion,0,,dudens_base,Base Year Dwelling Density Near Project,0,,,,,,
 rp_artexp_cong,arterial exp reduce congestion,0,,jobdens_future,Future Year Job Density Near Project,0,,,,,,
 rp_artexp_cong,arterial exp reduce congestion,0,,dudens_future,Future Year Dwelling Density Near Project,0,,,,,,
 rp_artexp_econ,arterial expansion economy support,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
-rp_artexp_econ,arterial expansion economy support,1,,enr_k12,K-12 Enrollment,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_econ,arterial expansion economy support,1,,jobs_added,Jobs Added,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_econ,arterial expansion economy support,1,,enr_k12,K-12 Enrollment,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_econ,arterial expansion economy support,1,,jobs_added,Jobs Added,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_artexp_econ,arterial expansion economy support,1,,agac_pct_base,Base Percent Ag Acres,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_econ,arterial expansion economy support,1,,agac_pct_future,Future Percent Ag Acres,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_econ,arterial expansion economy support,1,,acc_walk_alljob,Walk Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
@@ -82,7 +82,7 @@ rp_artexp_econ,arterial expansion economy support,1,,acc_drive_edu,Drive Access 
 rp_artexp_econ,arterial expansion economy support,1,,acc_transit_edu,Transit Access To Ed Facilities,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,pop_tot,Total Population,0,,,FLOAT,,Table + GP task updated,Done
-rp_artexp_eq,arterial expansion equity report,1,,pop_ej_area,Population In EJ Areas,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_eq,arterial expansion equity report,1,,pop_ej_area,Population In EJ Areas,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,pctpot_ej_area,Percent Population In EJ Areas,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,acc_walk_alljob_ej,EJ Walk Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_eq,arterial expansion equity report,1,,acc_bike_alljob_ej,EJ Bike Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
@@ -115,27 +115,27 @@ rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_ptpct,Transit Mode Shar
 rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_bikepct,Bike Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_mm,arterial expansion mulitmodal report,1,,fut_walkpct,Walk Mode Share - Future,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
-rp_artexp_saf,arterial expansion safety report,1,,crash_cnt,Total Crashes,1,TRUE,1,SHORT,,Table + GP task updated,Done
+rp_artexp_saf,arterial expansion safety report,1,,crash_cnt,Total Crashes,1,TRUE,2,SHORT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,crash_100mvmt,Crashes Per 100 MVMT,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,crash_bkpd_clmile,Bike/Ped Crashes Per Centerline Mile,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_saf,arterial expansion safety report,1,,crashpct_fatal,Fatal Crash Count,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_artexp_saf,arterial expansion safety report,1,,crashpct_fatal,Fatal Crash Count,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,crash_bkpd_pct,Percent Of Crashes With Bike/Ped,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,0,,<collisions by type>,<Collisions By Type>,0,,,,,,
 rp_artexp_saf,arterial expansion safety report,0,,<collision by primary cause>,<Collision By Primary Cause>,0,,,,,,
 rp_artexp_sgr,arterial expansion state-of-good-repair report,1,,project_uid,<Tcac Score Placeholder>,0,,,TEXT,36,Table + GP task updated,
-rp_artexp_sgr,arterial expansion state-of-good-repair report,1,,aadt,AADT,1,TRUE,1,LONG,,Table + GP task updated,Done
-rp_artexp_sgr,arterial expansion state-of-good-repair report,1,,pci,Pavement Condition,1,FALSE,1,SHORT,,Table + GP task updated,Done
+rp_artexp_sgr,arterial expansion state-of-good-repair report,1,,aadt,AADT,1,TRUE,2,LONG,,Table + GP task updated,Done
+rp_artexp_sgr,arterial expansion state-of-good-repair report,1,,pci,Pavement Condition,1,FALSE,2,SHORT,,Table + GP task updated,Done
 rp_fwy_vmt,freeway VMT report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
-rp_fwy_vmt,freeway VMT report,1,,base_trntrip,Base Year Transit Trips,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_vmt,freeway VMT report,1,,base_trntrip,Base Year Transit Trips,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_fwy_vmt,freeway VMT report,1,,base_vehocc,Base Avg Vehicle Occupancy,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_vmt,freeway VMT report,1,,future_trntrip,Future Year Transit Trips,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_vmt,freeway VMT report,1,,future_trntrip,Future Year Transit Trips,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_fwy_vmt,freeway VMT report,1,,future_vehocc,Future Avg Vehicle Occupancy,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_cong,freeway congestion report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
-rp_fwy_cong,freeway congestion report,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_cong,freeway congestion report,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_cong,freeway congestion report,1,,du_base,Base Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_cong,freeway congestion report,1,,du_future,Future Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_cong,freeway congestion report,1,,aadt,AADT,1,TRUE,1,LONG,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,jobs_base,Base Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,jobs_future,Future Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,du_base,Base Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,du_future,Future Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_fwy_cong,freeway congestion report,1,,aadt,AADT,1,TRUE,2,LONG,,Table + GP task updated,Done
 rp_fwy_cong,freeway congestion report,1,,congspd_nb,Congested Speed For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,congspd_sb,Congested Speed For Direction,0,,,FLOAT,,Table + GP task updated,NA
 rp_fwy_cong,freeway congestion report,1,,congspd_eb,Congested Speed For Direction,0,,,FLOAT,,Table + GP task updated,NA
@@ -171,20 +171,20 @@ rp_fwy_cong,freeway congestion report,1,,lottr_midday_wrst,Travel Time Reliabili
 rp_fwy_cong,freeway congestion report,1,,lottr_pmpk_wrst,Travel Time Reliability - PM Peak,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_cong,freeway congestion report,1,,lottr_wknd_wrst,Travel Time Reliability - Weekend,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_mm,freeway multimodal report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
-rp_fwy_mm,freeway multimodal report,1,,base_trntrip,Base Year Transit Trips,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_fwy_mm,freeway multimodal report,1,,future_trntrip,Future Year Transit Trips,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+rp_fwy_mm,freeway multimodal report,1,,base_trntrip,Base Year Transit Trips,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_fwy_mm,freeway multimodal report,1,,future_trntrip,Future Year Transit Trips,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 rp_fwy_econ,freeway economy report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
 rp_fwy_econ,freeway economy report,1,,acc_drive_alljob,Drive Access To Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_econ,freeway economy report,1,,acc_drive_edu,Drive Access To Ed Facilities,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_frgt,freeway freight report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
 rp_fwy_frgt,freeway freight report,1,,pct_truckvol,Percent Of Traffic That Is Trucks,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_saf,freeway safety report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
-rp_fwy_saf,freeway safety report,1,,crash_cnt,Total Crashs,1,TRUE,1,SHORT,,Table + GP task updated,Done
+rp_fwy_saf,freeway safety report,1,,crash_cnt,Total Crashes,1,TRUE,2,SHORT,,Table + GP task updated,Done
 rp_fwy_saf,freeway safety report,1,,crash_100mvmt,Crashes Per 100 MVMT,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_fwy_saf,freeway safety report,1,,crashpct_fatal,Percent Of Crashes That Are Fatal,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artsgr_sgr,arterial SGR complete streets and SGR report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
-rp_artsgr_sgr,arterial SGR complete streets and SGR report,1,,pci,Pavement Condition,1,FALSE,1,SHORT,,Table + GP task updated,Done
-rp_artsgr_sgr,arterial SGR complete streets and SGR report,1,,aadt,AADT,1,TRUE,1,LONG,,Table + GP task updated,Done
+rp_artsgr_sgr,arterial SGR complete streets and SGR report,1,,pci,Pavement Condition,1,FALSE,2,SHORT,,Table + GP task updated,Done
+rp_artsgr_sgr,arterial SGR complete streets and SGR report,1,,aadt,AADT,1,TRUE,2,LONG,,Table + GP task updated,Done
 rp_artsgr_sgr,arterial SGR complete streets and SGR report,1,,cs_index,Complete Streets Index (0-100),1,TRUE,1,FLOAT,,Table + GP task updated,Done
 cd_trnchoice,community design transportation choice report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,
 cd_trnchoice,community design transportation choice report,1,,intxndens,Intersection Density Per Acre,1,TRUE,1,FLOAT,,Table + GP task updated,Done
@@ -201,10 +201,10 @@ cd_trnchoice,community design transportation choice report,1,,fut_ptpct,Transit 
 cd_trnchoice,community design transportation choice report,1,,fut_bikepct,Bike Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 cd_trnchoice,community design transportation choice report,1,,fut_walkpct,Walk Mode Share,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 cd_compactdev,community design compact development report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
-cd_compactdev,community design compact development report,1,,jobs_base,Base Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-cd_compactdev,community design compact development report,1,,jobs_future,Future Jobs,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-cd_compactdev,community design compact development report,1,,du_base,Base Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-cd_compactdev,community design compact development report,1,,du_future,Future Dwelling Units,1,TRUE,1,FLOAT,,Table + GP task updated,Done
+cd_compactdev,community design compact development report,1,,jobs_base,Base Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+cd_compactdev,community design compact development report,1,,jobs_future,Future Jobs,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+cd_compactdev,community design compact development report,1,,du_base,Base Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+cd_compactdev,community design compact development report,1,,du_future,Future Dwelling Units,1,TRUE,2,FLOAT,,Table + GP task updated,Done
 cd_mixeduse,community design mixed use development report,1,,project_uid,Unique Project ID,0,,,TEXT,36,Table + GP task updated,Done
 cd_mixeduse,community design mixed use development report,1,,lumix_base,Base Land Use Mix,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 cd_mixeduse,community design mixed use development report,1,,lumix_future,Future Land Use Mix,1,TRUE,1,FLOAT,,Table + GP task updated,Done
