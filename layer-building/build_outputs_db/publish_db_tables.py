@@ -6,8 +6,11 @@ Purpose: Publishes all user-selected file geodatabase tables to Portal
 
     https://pro.arcgis.com/en/pro-app/latest/arcpy/sharing/featuresharingdraft-class.htm
 
+    NOTE 12/20/22 - DO NOT USE THIS TO PUBLISH REGISTERED TABLES. IT WILL ONLY COPY THE TABLES AND THEY
+    WON'T HAVE A LINK TO A REGISTERED DATA STORE. ONLY USE FOR TABLES THAT WILL REMAIN STATIC ONCE PUBLISHED.
+
 Author: Darren Conly
-Last Updated: 
+Last Updated: Dec 2022
 Updated by: 
 Copyright:   (c) SACOG
 Python Version: 3.x

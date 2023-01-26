@@ -1,3 +1,11 @@
+# Esri start of added imports
+import sys, os, arcpy
+# Esri end of added imports
+
+# Esri start of added variables
+g_ESRI_variable_1 = os.path.join(arcpy.env.packageWorkspace,'..\\cd\\rp_artsgr_sgr\\data_paths.yaml')
+# Esri end of added variables
+
 """
 Name: parameters.py
 Purpose: Stores all input parameter values for SACOG Project Performance Assessment Tool v3,
@@ -15,7 +23,7 @@ from arcpy import env
 
 import yaml
 
-yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
+yaml_file = os.path.join(os.path.dirname(__file__), g_ESRI_variable_1)
 
 with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
@@ -83,10 +91,10 @@ def model_links_fc(in_year=base_year):
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
 aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
-
+# aggvals_csv = r"C:\Users\dconly\GitRepos\PPA2\ppa\Input_Template\CSV\Agg_ppa_vals04222020_1017.csv"
 
 # project type
-ptype_fwy = 'Freeway Expansion'
+ptype_fwy = 'Freeway'
 ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
@@ -315,7 +323,7 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 #                  * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
-cs_buffdist = 2640 # feet
+cs_buffdist = '2640 Feet' # feet
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
 cs_threshold_speed = 40 # MPH
@@ -325,8 +333,8 @@ cs_spd_pen_fac = 0.04 # speed penalty factor
 # no projects will be submitted for streets with posted speed <= 15mph
 cs_region_max = 372.83636475 # source fc = I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\CompleteStreetMap102020220915forMaxCS_V2
 
-intersxn_dens_buff = 1320 # distance in feet
-bikeway_buff = 1320 # distance in feet
+intersxn_dens_buff = '1320 Feet' # distance in feet
+bikeway_buff = '1320 Feet' # distance in feet
 
 col_intxn_lnks = 'LINKS'
 

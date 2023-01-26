@@ -1,0 +1,25 @@
+{
+    "tableName": "ItemsToShare_MIL1 - <NEW_VALUE>",
+    "performanceOutcomeDisplayName": "<NEW_VALUE>",
+    "queryWhere": "project_uid = '{projectJoinId}'",
+    "defaultChartTargetFieldName": "<NEW_VALUE>",
+    "fields": {
+        "projectJoinIdFieldName": "project_uid"
+    },
+    "charts": [
+        {
+            "targetFieldName": "intxndens",
+            "targetFieldDisplayName": "Intersections Per Acre",
+            "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+            "chartTemplateId": "1",
+            "sortAscending": true
+        },
+        {
+            "targetFieldName": "bikeway_pct",
+            "targetFieldDisplayName": "Share Of Road Miles With Bike Lane Or Path",
+            "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
+            "chartTemplateId": "1",
+            "sortAscending": true
+        }
+    ]
+}
