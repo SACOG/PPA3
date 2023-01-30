@@ -119,14 +119,18 @@ def check_report(pdf, file_geodatabase):
 
 
 if __name__ == '__main__':
-    pdf_folder = r"C:\Users\dconly\Sacramento Area Council of Governments\PPA Development - General\PPA3\Development\Testing\reports_with_errors"
-
+    pdf_folder = r"D:\PPA Folders to Scan\MaintMod\Applications"
+    ppa_rpt_fname = 'PPA Report.pdf'
+    pdf_dir = Path(pdf_folder)
+    pdfs_list = []
+    for po in pdf_dir.rglob("*"):
+        if po.name == ppa_rpt_fname:
+            pdfs_list.append(str(po))
+    # import pdb; pdb.set_trace()
 
     fgdb = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_run_data.gdb'
 
     #================RUN SCRIPT=======================================
-    pdf_dir = Path(pdf_folder)
-    pdfs_list = [f for f in pdf_dir.glob("*.pdf")]
 
     results_list = []
     for pdf_file in pdfs_list:
