@@ -21,6 +21,14 @@ from pathlib import Path
 import arcpy
 import PyPDF2 
 
+def is_ppa_pdf(in_path_obj):
+    is_pdf = in_path_obj.suffix.lower() == '.pdf'
+    ppa_in_name = 'PPA ' in in_path_obj.name
+
+    output = is_pdf and ppa_in_name
+
+    return output
+
 def get_pdf_field_val(pdf_path, page_idx, field_delim, field_name):
     """
     Args:
@@ -38,9 +46,17 @@ def get_pdf_field_val(pdf_path, page_idx, field_delim, field_name):
     pgtext = page.extract_text()
     pg_textlist = pgtext.split(field_delim)
 
-    value_out = [i for i in pg_textlist if field_name in i][0].split(field_name)[1]
+    # value_out = [i for i in pg_textlist if field_name in i][0].split(field_name)[1]
+    field_tags = [i for i in pg_textlist if field_name in i]
 
-    return value_out
+    try:
+        value_out = field_tags[0].split(field_name)[1]
+        return value_out
+    except:
+        print(f"{pdf_path} has an empty {field_name} field. Skipping processing...")
+        pass
+
+    
 
 def update_review_flag(master_fc, pdf_dir, setval=1):
     """
@@ -56,8 +72,12 @@ def update_review_flag(master_fc, pdf_dir, setval=1):
     pdf_page_idx_val = 0 # 0 for first page, 1 for second page, etc.
     
     # retrieve list of UIDs from PDFs
-    pdfs_list = [f for f in pdf_dir.glob("*.pdf")]
     uid_list = {}
+    pdfs_list = []
+    for f in pdf_dir.rglob("*.pdf"):
+        if is_ppa_pdf(f):
+            pdfs_list.append(f)
+
     for pdf in pdfs_list:
         result = get_pdf_field_val(pdf_path=pdf, page_idx=pdf_page_idx_val, 
                                     field_delim=pdf_field_del, field_name=pdf_fieldname)
@@ -101,7 +121,7 @@ OVERALL PROCESS:
 
 
 if __name__ == '__main__':
-    pdf_folder = Path(r'C:\Users\dconly\Desktop\TempLocalPPA\TestPDFOutputs')
+    pdf_folder = Path(r'D:\PPA Folders to Scan\MaintMod20230203\Applications')
 
     master_fc_table = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_run_data.gdb\project_master'
     set_value = 1
