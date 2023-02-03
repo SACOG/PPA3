@@ -887,9 +887,9 @@
                 },
                 {
                     "targetFieldName": "crashpct_fatal",
-                    "targetFieldDisplayName": "Fatal Crash Count",
+                    "targetFieldDisplayName": "Percent Of Crashes That Are Fatal",
                     "chartId": "6fdf6349-73f0-4ff6-8f0f-28f6904fed09",
-                    "chartTemplateId": "2",
+                    "chartTemplateId": "1",
                     "sortAscending": true
                 },
                 {

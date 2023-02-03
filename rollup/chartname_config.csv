@@ -118,7 +118,7 @@ rp_artexp_saf,arterial expansion safety report,1,,project_uid,Unique Project ID,
 rp_artexp_saf,arterial expansion safety report,1,,crash_cnt,Total Crashes,1,TRUE,2,SHORT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,crash_100mvmt,Crashes Per 100 MVMT,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,crash_bkpd_clmile,Bike/Ped Crashes Per Centerline Mile,1,TRUE,1,FLOAT,,Table + GP task updated,Done
-rp_artexp_saf,arterial expansion safety report,1,,crashpct_fatal,Fatal Crash Count,1,TRUE,2,FLOAT,,Table + GP task updated,Done
+rp_artexp_saf,arterial expansion safety report,1,,crashpct_fatal,Percent Of Crashes That Are Fatal,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,1,,crash_bkpd_pct,Percent Of Crashes With Bike/Ped,1,TRUE,1,FLOAT,,Table + GP task updated,Done
 rp_artexp_saf,arterial expansion safety report,0,,<collisions by type>,<Collisions By Type>,0,,,,,,
 rp_artexp_saf,arterial expansion safety report,0,,<collision by primary cause>,<Collision By Primary Cause>,0,,,,,,
