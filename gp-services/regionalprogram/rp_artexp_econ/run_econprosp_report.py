@@ -24,7 +24,7 @@ import parcel_data
 import landuse_buff_calcs 
 import chart_accessibility
 import chart_lu_acre_change
-import utils.utils as utils
+from utils import utils as utils
 
 
 def convert_acc_fnames(in_dict):

@@ -22,7 +22,7 @@ import arcpy
 import pandas as pd
 
 import parameters as params
-import utils.utils as ut
+from utils import utils as ut
 
 
 # for aggregate, polygon-based avgs (e.g., community type, whole region), use model for VMT; for

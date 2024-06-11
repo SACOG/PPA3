@@ -21,8 +21,8 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 import parameters as params
 import commtype
 import chart_access_xctyp as acc_chart
-import utils.make_map_img as imgmaker
-import utils.utils as utils
+from utils import make_map_img as imgmaker
+from utils import utils as utils
 
 def convert_acc_fnames(in_dict):
     d_modenames = {'WALKDESTS': 'acc_walk', 'BIKEDESTS': 'acc_bike', 

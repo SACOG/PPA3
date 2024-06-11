@@ -24,7 +24,7 @@ import arcpy
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 import parameters as params
-import utils.utils as utils
+from utils import utils as utils
 
 
 def make_sgr_report_artexp(input_dict):

@@ -24,7 +24,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 
 import parameters as params
 import complete_street_score as cs
-import utils.utils as utils
+from utils import utils as utils
 
 # def make_sgr_report_artsgr(proj_fc, project_pci, proj_aadt, proj_postedspd, proj_typ):
 def make_sgr_report_artsgr(input_dict):

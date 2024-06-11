@@ -22,7 +22,7 @@ import pandas as pd
 import arcpy
 
 import parameters as params
-import utils.utils as ut
+from utils import utils as ut
 
 
 def link_vehocc(row):

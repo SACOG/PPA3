@@ -22,7 +22,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 
 import parameters as params
 import get_truck_data_fwy as truckdata
-import utils.utils as utils
+from utils import utils as utils
 
 def make_freight_rept_fwyexp(input_dict):
 

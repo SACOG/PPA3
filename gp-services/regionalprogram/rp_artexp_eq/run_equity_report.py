@@ -24,7 +24,7 @@ import parcel_data
 import landuse_buff_calcs 
 import chart_accessibility_projonly as chart_acc
 import get_agg_values as aggvals
-import utils.utils as utils
+from utils import utils as utils
 
 
 def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):

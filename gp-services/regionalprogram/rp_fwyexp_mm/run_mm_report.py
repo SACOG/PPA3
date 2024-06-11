@@ -23,7 +23,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 
 import parameters as params
 import link_occup_data
-import utils.utils as utils
+from utils import utils as utils
 
 
 # def make_vmt_report_fwyexp(fc_project, project_name, project_type):

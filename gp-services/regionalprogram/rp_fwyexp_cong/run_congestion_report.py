@@ -24,7 +24,7 @@ import parcel_data
 import chart_job_du_tot
 import chart_congestion
 import npmrds_data_conflation as npmrds
-import utils.utils as utils
+from utils import utils as utils
 
 
 def direction_field_translator(in_congdata_dict):

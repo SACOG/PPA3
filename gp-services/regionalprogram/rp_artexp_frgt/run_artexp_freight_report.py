@@ -26,8 +26,8 @@ import parcel_data
 import landuse_buff_calcs 
 import get_line_overlap as glo
 import get_agg_values as aggvals
-import utils.make_map_img as imgmaker
-import utils.utils as utils
+from utils import make_map_img as imgmaker
+from utils import utils as utils
 
 
 def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):

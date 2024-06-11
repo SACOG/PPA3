@@ -18,7 +18,7 @@ from time import perf_counter as perf
 import arcpy
 
 import parameters as params
-import utils.utils as ut
+from utils import utils as ut
 
 
 def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):

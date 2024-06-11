@@ -16,7 +16,6 @@ from uuid import uuid4
 import pickle
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
-# sys.path.append("utils") # attempting this so that the utils folder will copy to server during publishing (3/11/2022)
 
 import datetime as dt
 import json
@@ -27,8 +26,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 
 import parameters as params
 import commtype
-import utils.make_map_img as imgmaker
-import utils.utils as utils
+from utils import utils, make_map_img
 
 
 def get_geom(in_fc):
@@ -79,7 +77,7 @@ def make_title_guidepg_regpgm(input_dict):
     loaded_json["Project Community Type"] = project_commtype
 
     # insert project map
-    img_obj = imgmaker.MakeMapImage(project_fc, 'CoverPage', project_name)
+    img_obj = make_map_img.MakeMapImage(project_fc, 'CoverPage', project_name)
     map_img_path = img_obj.exportMap()
     loaded_json["Image Url"] = map_img_path
 

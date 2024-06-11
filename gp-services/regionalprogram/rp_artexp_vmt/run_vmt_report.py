@@ -18,18 +18,17 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import datetime as dt
 from time import perf_counter as perf
 import json
-import pandas as pd
 import arcpy
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 
 import parameters as params
-from commtype import get_proj_ctype
-from parcel_data import get_buffer_parcels
+import commtype
+import parcel_data
 import chart_job_du_tot
 import chart_accessibility
 import chart_mixindex
-import utils.utils as utils
+from utils import utils as utils
 
 
 def make_vmt_report_artexp(input_dict):
@@ -46,13 +45,13 @@ def make_vmt_report_artexp(input_dict):
         loaded_json = json.load(j_in)
 
     # get project community type
-    project_commtype = get_proj_ctype(project_fc, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
     for year in data_years:
         in_pcl_pt_fc = params.parcel_pt_fc_yr(year)
-        pcl_buff_fc = get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=project_fc,
+        pcl_buff_fc = parcel_data.get_buffer_parcels(fc_pclpt=in_pcl_pt_fc, fc_project=project_fc,
                             buffdist=lu_buffdist_ft, project_type=proj_type, data_year=year)
         parcel_fc_dict[year] = pcl_buff_fc
 

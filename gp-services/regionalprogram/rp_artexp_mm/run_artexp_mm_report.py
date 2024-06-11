@@ -30,8 +30,8 @@ import intersection_density
 import get_buff_netmiles
 import get_agg_values as aggvals
 import transit_svc_measure
-import utils.make_map_img as imgmaker
-import utils.utils as utils
+from utils import make_map_img as imgmaker
+from utils import utils as utils
 
 def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):
     """Updates project-level, community-type, and region-level values for simple tables in JSON file."
