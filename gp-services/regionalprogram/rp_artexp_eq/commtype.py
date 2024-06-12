@@ -32,8 +32,6 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
     # debugging messages to find out why ctype tagging intermittently fails
     intersect_cnt = int(arcpy.GetCount_management(temp_intersect_fc)[0])
     in_project_cnt = int(arcpy.GetCount_management(in_project_fc)[0])
-    arcpy.AddMessage("project line feature count: {}".format(in_project_cnt))
-    arcpy.AddMessage("Project segments after intersecting with comm types: {}".format(intersect_cnt))
     
     len_field = 'SHAPE@LENGTH'
     fields = ['OBJECTID', len_field, params.col_ctype]
@@ -55,7 +53,7 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
         return proj_ctype
     except:
         raise ValueError("ERROR: No Community Type identified for project. \n{} project line features." \
-        " {} features in intersect layer.".format(in_project_cnt, in_project_cnt))
+        " {} features in intersect layer.".format(in_project_cnt, intersect_cnt))
 
 
 
