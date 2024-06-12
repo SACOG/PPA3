@@ -33,9 +33,12 @@ import transit_svc_measure
 from utils import make_map_img as imgmaker
 from utils import utils as utils
 
+# modules not used in main script, but imported to ensure they publish to server.
+# more details see https://community.esri.com/t5/arcgis-pro-questions/scripts-not-used-by-main-script-do-not-upload-when/m-p/1489802
+import get_line_overlap, landuse_buff_calcs
+
 def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metric_outdictkey, proj_commtype):
-    """Updates project-level, community-type, and region-level values for simple tables in JSON file."
-    """
+    """Updates project-level, community-type, and region-level values for simple tables in JSON file."""
 
     ixn_aggdict = aggvals.make_aggval_dict(aggval_csv=params.aggval_csv, metric_cols=[metric_outdictkey], 
                                                 proj_ctype=proj_commtype, yearkey=params.k_year, 
@@ -72,12 +75,6 @@ def convert_mode_keys(in_dict_w_sorted_years):
             out_dict[k_new] = v
 
     return out_dict
-
-
-    
-
-        # 'base_sovpct', 'base_hovpct', 'base_ptpct', 'base_bikepct', 'base_walkpct', 'fut_sovpct', 'fut_hovpct', 'fut_ptpct', 'fut_bikepct', 'fut_walkpct'
-    
 
 
 # def make_mm_report_artexp(fc_project, project_name, project_type):

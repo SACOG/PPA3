@@ -30,6 +30,9 @@ import chart_accessibility
 import chart_mixindex
 from utils import utils as utils
 
+# modules not used in main script, but imported to ensure they publish to server.
+# more details see https://community.esri.com/t5/arcgis-pro-questions/scripts-not-used-by-main-script-do-not-upload-when/m-p/1489802
+import landuse_buff_calcs, accessibility_calcs, mix_index_for_project, get_agg_values
 
 def make_vmt_report_artexp(input_dict):
 
