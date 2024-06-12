@@ -10,7 +10,6 @@ Copyright:   (c) SACOG
 Python Version: 3.x
 """
 import os
-from time import sleep
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
@@ -24,29 +23,13 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
     '''Get project community type, based on which community type has most spatial overlap with project'''
     ts = int(perf())
     temp_intersect_fc = os.path.join(arcpy.env.scratchGDB, f'temp_intersect_fc{ts}')
+    if arcpy.Exists(temp_intersect_fc): arcpy.Delete_management(temp_intersect_fc)
 
-    # this intersection analysis tends to eff up intermittently; sometimes just refreshing the page helps. This
-    # while loop is attempt to not need to refresh the page.
-    attempts = 0
-    max_attempts = 3
-    while True:
-        if arcpy.Exists(temp_intersect_fc): arcpy.Delete_management(temp_intersect_fc)
-
-        arcpy.Intersect_analysis([in_project_fc, commtypes_fc], temp_intersect_fc, "ALL", 0, "LINE")
-        intersect_cnt = int(arcpy.GetCount_management(temp_intersect_fc)[0])
-        if intersect_cnt > 0:
-            break # if intersection successful, then move on to next steps
-        else:
-            attempts += 1
-            if attempts < max_attempts:
-                msg = f"Failed to intersect project line with comm type layer on attempt {attempts} of {max_attempts}..."
-                arcpy.AddMessage(msg)
-                sleep(15)
-            else:
-                raise ValueError("ERROR: No community type identified for project. \n{} project line features." \
-                " {} features in intersect layer.".format(in_project_cnt, intersect_cnt))
-
-        
+    arcpy.Intersect_analysis([in_project_fc, commtypes_fc], temp_intersect_fc, "ALL", 0, "LINE")
+    
+    # debugging messages to find out why ctype tagging intermittently fails
+    intersect_cnt = int(arcpy.GetCount_management(temp_intersect_fc)[0])
+    in_project_cnt = int(arcpy.GetCount_management(in_project_fc)[0])
     
     len_field = 'SHAPE@LENGTH'
     fields = ['OBJECTID', len_field, params.col_ctype]
@@ -67,7 +50,6 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
 
         return proj_ctype
     except:
-        in_project_cnt = int(arcpy.GetCount_management(in_project_fc)[0])
         raise ValueError("ERROR: No Community Type identified for project. \n{} project line features." \
         " {} features in intersect layer.".format(in_project_cnt, intersect_cnt))
 
