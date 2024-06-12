@@ -100,7 +100,6 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
     fl_mastertbl = 'fl_mastertbl'
     arcpy.MakeFeatureLayer_management(fc_mastertbl, fl_mastertbl)
 
-    uis = params.user_inputs
     sql = f"""{params.f_master_projname} = '{proj_name}' AND {params.f_master_projtyp} = '{proj_type}'
     AND {params.f_master_jur} = '{proj_jur}' AND {params.f_master_email} = '{user_email}'"""
     
