@@ -20,7 +20,7 @@ server_data:
   gisdir: 
     dir_name: PPA3_GIS_SVR
     archived_run_db: PPA3_run_data.gdb
-    svc_root_url: [https://services.sacog.org/hosting/rest/directories/arcgisjobs] 
+    svc_root_url: [https://services.sacog.org/gisppa/rest/directories/arcgisjobs] 
   dir_commd: CommunityDesign
   dir_regpgm: RegionalProgram
   dir_csv: CSV
