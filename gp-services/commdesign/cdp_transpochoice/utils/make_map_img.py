@@ -240,7 +240,7 @@ class MakeMapImage(object):
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")
 
-    # result = set_img_path('https://services.sacog.org/hosting/rest/directories/arcgisjobs', 
+    # result = set_img_path('https://services.sacog.org/gisppa/rest/directories/arcgisjobs', 
     #             'C:\\arcgisserver\\directories\\arcgisjobs\\rpartexpfreight_gpserver\\jf2567b51a75144c7914b9ac5ddb2dd47\\scratch')
 
     # print(result)
