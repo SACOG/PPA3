@@ -24,7 +24,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 import parameters as params
 import parcel_data 
 import chart_mode_split 
-import utils.utils as utils
+from utils import utils as utils
 
 def convert_mode_keys(in_dict_w_sorted_years):
     # converts mode split names to match field names in the log table

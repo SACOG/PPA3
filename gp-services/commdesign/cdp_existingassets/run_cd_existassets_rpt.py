@@ -25,7 +25,7 @@ import parameters as params
 import commtype
 import chart_accessibility
 import urbanization_metrics as urbmet
-import utils.utils as utils
+from utils import utils as utils
 
 def cd_existassets_rpt(input_dict):
 

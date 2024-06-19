@@ -22,7 +22,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 import parameters as params
 import parcel_data
 import chart_job_du_tot
-import utils.utils as utils
+from utils import utils as utils
 
 
 def cd_compactdev_rpt(input_dict):

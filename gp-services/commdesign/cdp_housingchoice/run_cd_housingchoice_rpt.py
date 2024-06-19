@@ -24,7 +24,7 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 import landuse_buff_calcs as lubuff
 import parameters as params
 import parcel_data 
-import utils.utils as utils
+from utils import utils as utils
 
 def cd_housingchoice_rpt(input_dict):
 

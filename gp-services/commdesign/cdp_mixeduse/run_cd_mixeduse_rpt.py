@@ -25,7 +25,7 @@ import chart_mixindex
 import parameters as params
 import parcel_data 
 import commtype
-import utils.utils as utils
+from utils import utils as utils
 
 def cd_lumix_rpt(input_dict):
 
