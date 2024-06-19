@@ -2,9 +2,6 @@
 import sys, os, arcpy
 # Esri end of added imports
 
-# Esri start of added variables
-g_ESRI_variable_1 = os.path.join(arcpy.env.packageWorkspace,'..\\cd\\rp_artsgr_sgr\\data_paths.yaml')
-# Esri end of added variables
 
 """
 Name: parameters.py
@@ -23,7 +20,7 @@ from arcpy import env
 
 import yaml
 
-yaml_file = os.path.join(os.path.dirname(__file__), g_ESRI_variable_1)
+yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
 
 with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)

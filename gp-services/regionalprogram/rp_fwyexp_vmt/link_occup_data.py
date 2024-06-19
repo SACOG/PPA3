@@ -18,7 +18,6 @@ g_ESRI_variable_2 = 'modlink_fl'
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
-import pandas as pd
 import arcpy
 
 import parameters as params
@@ -67,9 +66,6 @@ def trantrp_per_link(in_df, project_type):
 
     link_cnt = in_df_ptyp.shape[0]
     tot_trntrip = in_df[params.col_tranvol].sum() # want transit trips on all link types
-    arcpy.AddMessage(project_type)
-    arcpy.AddMessage(link_cnt)
-    arcpy.AddMessage(f"{tot_trntrip}/n")
 
     # if freeway, is (total transit trips on all fwy link types) / (# of GP fwy links)
     return tot_trntrip / link_cnt
@@ -101,7 +97,6 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     df_linkdata = df_linkdata.fillna(0)
     
     avg_proj_trantrips = trantrp_per_link(df_linkdata, project_type) if df_linkdata.shape[0] > 0 else 0
-    
     avg_proj_vehocc = get_wtdavg_vehocc(df_linkdata) if df_linkdata.shape[0] > 0 else 0
 
     out_dict = {"avg_2way_trantrips": avg_proj_trantrips, "avg_2way_vehocc": avg_proj_vehocc}
