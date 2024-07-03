@@ -21,6 +21,18 @@ server_data:
     dir_name: PPA3_GIS_SVR
     archived_run_db: PPA3_run_data.gdb
     svc_root_url: [https://services.sacog.org/gisppa/rest/directories/arcgisjobs] 
+  access_layers:
+    weight: 
+    emp:
+      transit: transit_jobs_2020.tif
+      bike: bike_jobs_2020.tif
+      walk: None
+      drive: None
+    nonwork:
+      transit: None
+      bike: None
+      walk: None
+      drive: None
   dir_commd: CommunityDesign
   dir_regpgm: RegionalProgram
   dir_csv: CSV
