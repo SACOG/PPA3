@@ -14,22 +14,28 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
-import pandas as pd
+from pathlib import Path
 
 import parameters as params
 from accessibility_calcs import get_acc_data
 from get_agg_values import make_aggval_dict
 
-
+import yaml
+yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
+with open(yaml_file, 'r') as y:
+    pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
 
 def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_csv, destination_type, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
 
-    fc_accessibility_data = params.accdata_fc
-
     # project level dict of accessibility script outputs
-    dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
+    # dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
+    import pdb; pdb.set_trace()
+    accdir = pathconfigs['server_data']['acc_dir']
+    popdata = Path(accdir).joinpath(pathconfigs['server_data']['acc_wts']['pop'])
+    dict_data = get_acc_data(fc_project, popdata, project_type)
 
     # lookup dict between names of data points in raw output and names in JSON file
+    # 7/8/2024 - MUST change these to adapt to new dict_data keys! Pending whether we want to still use cutoffs, decay curves, etc.
     acc_metrics = {f'WALKDESTS{destination_type}':'30 Min Walk', f'BIKEDESTS{destination_type}':'30 Min Biking', 
                     f'AUTODESTS{destination_type}':'15 Min Drive', f'TRANDESTS{destination_type}':'45 Min Transit'}
     accmetrics_keys = list(acc_metrics.keys())
