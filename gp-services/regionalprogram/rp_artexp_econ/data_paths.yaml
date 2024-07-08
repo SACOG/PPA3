@@ -26,13 +26,13 @@ server_data:
     emp:
       transit: transit_jobs_2020.tif
       bike: bike_jobs_2020.tif
-      walk: None
-      drive: None
+      walk: null
+      drive: null # will probably need to be raster converted from vector of TAZ-based drive accessibility layer
     nonwork:
-      transit: None
-      bike: None
-      walk: None
-      drive: None
+      transit: null
+      bike: null
+      walk: null
+      drive: null
   dir_commd: CommunityDesign
   dir_regpgm: RegionalProgram
   dir_csv: CSV

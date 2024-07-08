@@ -31,23 +31,25 @@ with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
 
 
-def get_raster_pts_near_line(tif, line_fc, valname, search_dist_m=100):
+def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
 
     # load tif data
     with rasterio.open(tif) as tifdata:
         epsg_id = tifdata.crs.to_epsg()
         crs_linunits = tifdata.crs.linear_units # placeholder in case you ever want to know what units the CRS uses.
         crs_to_use = f"EPSG:{epsg_id}"
+        
+        # create buffered line object around project line
+        line_gdf = ut.esri_to_df(esri_obj_path=line_fc, include_geom=True, field_list=None, index_field=None, 
+                    crs_val=crs_to_use, dissolve=False)
+        line_gdf['geometry'] = line_gdf['geometry'].buffer(search_dist) # distance in meters if EPSG 3857 (web mercator)
+        mask_geom = line_gdf.geometry[0]
+
+        # use buffer to mask TIF values.
         vals_masked, valmasked_transform = mask(tifdata, shapes=[mask_geom], all_touched=True, 
                                                 crop=True, pad=True, pad_width=0.5)
         vals_array = vals_masked[0]
 
-    # create buffered line object around project line
-    line_gdf = ut.esri_to_df(esri_obj_path=line_fc, include_geom=True, field_list=None, index_field=None, 
-                   crs_val=crs_to_use, dissolve=False)
-    line_gdf['geometry'] = line_gdf['geometry'].buffer(100) # distance in meters if EPSG 3857 (web mercator)
-
-    mask_geom = line_gdf.geometry[0]
 
     # make vector point gdf from the pixels that are near the line. Will need to further trim to go from
     # rectangle of points to just points that are right along the line.
@@ -77,27 +79,34 @@ def get_acc_data(fc_project, tif_weights, project_type, get_ej=False):
 
     # load tif of population used for weighting
     searchdist = 0 if project_type == params.ptype_area_agg else params.acc_search_dist
-    wt = 'pop'
-    gdf_wt = get_raster_pts_near_line(tif_weights, fc_project, valname=wt, search_dist_m=searchdist)
+    wt = Path(tif_weights).stem
+    gdf_wt = get_raster_pts_near_line(tif_weights, fc_project, valname=wt, search_dist=searchdist)
 
-    # 7/3/2024 - WILL YOU WANT TO GET "ACCESS FOR EJ POPULATIONS" METRIC? IDEALLY COULD REMOVE IT; DOES NOT REALLY TELL US ANYTHING USEFUL.
     
 
     out_dict = {}
     acclayer_dict = pathconfigs['server_data']['access_layers']
     acclayers_dir = Path(pathconfigs['server_data']['acc_dir'])
     for dest in acclayer_dict.keys():
-        for mode in acclayer_dict[dest]:
+        for mode in acclayer_dict[dest].keys():
             i_dict_key = f"{mode}_{dest}"
-            if gdfjn[wt].sum() == 0: # if no people, get unweighted avg access
-                wtd_avg = gdfjn[dest].mean() 
-            else: # otherwise get pop-weighted average -- NOTE may want to improve this so you can specify different weight for each destination type
-                acc_tif = str(acclayers_dir.joinpath(acclayer_dict[dest][mode]))
-                gdf_acc = get_raster_pts_near_line(acc_tif, fc_project, val_name=i_dict_key, search_dist_m=searchdist)
+            acc_tif = acclayer_dict[dest][mode] # name of accessibility results tif file
+            if acc_tif:
+                acc_tif_path = acclayers_dir.joinpath(acc_tif)
+                gdf_acc = get_raster_pts_near_line(acc_tif_path, fc_project, valname=i_dict_key, search_dist=searchdist)
                 gdfjn = gdf_acc.merge(gdf_wt, on='cellid')
-                wtd_avg = (gdfjn[dest]*gdfjn[wt]).sum() / gdfjn[wt].sum()
+
+                if gdfjn[wt].sum() == 0: # if no people, get unweighted avg access
+                    wtd_avg = gdfjn[i_dict_key].mean()
+                else:
+                    wtd_avg = (gdfjn[i_dict_key]*gdfjn[wt]).sum() / gdfjn[wt].sum()
+            else:
+                wtd_avg = -1 # value if no accessibility data TIF was found
 
             out_dict[i_dict_key] = wtd_avg
+
+
+    # 7/3/2024 - WILL YOU WANT TO GET "ACCESS FOR EJ POPULATIONS" METRIC? IDEALLY COULD REMOVE IT; DOES NOT REALLY TELL US ANYTHING USEFUL.
 
     # if get_ej: # if for enviro justice population, weight by population for EJ polygons only.
     #     for col in params.acc_cols_ej:
@@ -131,7 +140,10 @@ if __name__ == '__main__':
     
     fc_project_line = r"\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway"
     str_project_type = params.ptype_arterial
+
+    pop_tif = r"I:\Projects\Darren\PPA3_GIS\AccessibilityAnalyses\tif\pop2020.tif"
     
-    dict_data = get_acc_data(fc_project_line, fc_accessibility_data, str_project_type)
+    # dict_data = get_acc_data(fc_project_line, fc_accessibility_data, str_project_type)
+    dict_data = get_acc_data(fc_project=fc_project_line, tif_weights=pop_tif, project_type=str_project_type, get_ej=False)
     arcpy.AddMessage(dict_data)
     
