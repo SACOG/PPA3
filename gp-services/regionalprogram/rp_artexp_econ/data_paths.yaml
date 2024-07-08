@@ -27,7 +27,7 @@ server_data:
       transit: transit_jobs_2020.tif
       bike: bike_jobs_2020.tif
       walk: null
-      drive: null # will probably need to be raster converted from vector of TAZ-based drive accessibility layer
+      drive: drive_jobs_2020.tif # will probably need to be raster converted from vector of TAZ-based drive accessibility layer
     nonwork:
       transit: null
       bike: null
