@@ -29,6 +29,7 @@ import yaml
 yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
 with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
+    acc_cfg = pathconfigs['access_data']
 
 
 def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
@@ -82,11 +83,9 @@ def get_acc_data(fc_project, tif_weights, project_type, get_ej=False):
     wt = Path(tif_weights).stem
     gdf_wt = get_raster_pts_near_line(tif_weights, fc_project, valname=wt, search_dist=searchdist)
 
-    
-
     out_dict = {}
-    acclayer_dict = pathconfigs['server_data']['access_layers']
-    acclayers_dir = Path(pathconfigs['server_data']['acc_dir'])
+    acclayer_dict = acc_cfg['acc_lyrs']
+    acclayers_dir = Path(acc_cfg['tifdir'])
     for dest in acclayer_dict.keys():
         for mode in acclayer_dict[dest].keys():
             i_dict_key = f"{mode}_{dest}"
@@ -104,33 +103,6 @@ def get_acc_data(fc_project, tif_weights, project_type, get_ej=False):
                 wtd_avg = -1 # value if no accessibility data TIF was found
 
             out_dict[i_dict_key] = wtd_avg
-
-
-    # 7/3/2024 - WILL YOU WANT TO GET "ACCESS FOR EJ POPULATIONS" METRIC? IDEALLY COULD REMOVE IT; DOES NOT REALLY TELL US ANYTHING USEFUL.
-
-    # if get_ej: # if for enviro justice population, weight by population for EJ polygons only.
-    #     for col in params.acc_cols_ej:
-    #         col_wtd = "{}_wtd".format(col)
-    #         col_ej_pop = "{}_EJ".format(params.col_pop)
-    #         accdata_df[col_wtd] = accdata_df[col] * accdata_df[params.col_pop] * accdata_df[params.col_acc_ej_ind]
-    #         accdata_df[col_ej_pop] = accdata_df[params.col_pop] * accdata_df[params.col_acc_ej_ind]
-            
-    #         tot_ej_pop = accdata_df[col_ej_pop].sum()
-            
-    #         out_wtd_acc = accdata_df[col_wtd].sum() / tot_ej_pop if tot_ej_pop > 0 else 0
-    #         col_out_ej = "{}_EJ".format(col)
-    #         out_dict[col_out_ej] = out_wtd_acc
-    # else:
-    #     total_pop = accdata_df[params.col_pop].sum()
-    #     for col in params.acc_cols:
-    #         if total_pop <= 0: # if no one lives near project, get unweighted avg accessibility of block groups near project
-    #             out_wtd_acc = accdata_df[col].mean()
-    #         else:
-    #             col_wtd = "{}_wtd".format(col)
-    #             accdata_df[col_wtd] = accdata_df[col] * accdata_df[params.col_pop]
-    #             out_wtd_acc = accdata_df[col_wtd].sum() / total_pop
-                
-    #         out_dict[col] = out_wtd_acc
 
     return out_dict
 
