@@ -26,36 +26,20 @@ with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
     acc_cfg = pathconfigs['access_data']
 
-def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_csv, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
+def update_json(json_loaded, fc_project, project_type, project_commtype, destination_type, aggval_csv, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
 
     # project level dict of accessibility script outputs
     # dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
     
-    accdir = acc_cfg['acc_dir']
+    accdir = acc_cfg['tifdir']
     popdata = Path(accdir).joinpath(acc_cfg['wts']['pop'])
-    dict_data = get_acc_data(fc_project, popdata, project_type)
-    import pdb; pdb.set_trace()
+    dict_data = get_acc_data(fc_project, popdata, project_type, destination_type)
 
-    # lookup dict between names of data points in raw output and names in JSON file
     # 7/8/2024 - MUST change these to adapt to new dict_data keys! Pending whether we want to still use cutoffs, decay curves, etc.
-    # acc_metrics = {f'WALKDESTS{destination_type}':'30 Min Walk', f'BIKEDESTS{destination_type}':'30 Min Biking', 
-    #                 f'AUTODESTS{destination_type}':'15 Min Drive', f'TRANDESTS{destination_type}':'45 Min Transit'}
-    keydict = {} # format correctly for chart tick mark names
-    for k in dict_data.keys():
-        modename = k.split('_')[0]
-        keydict[modename] = modename.title()
-
-    # accmetrics_keys = list(acc_metrics.keys())
-
-    # trimmed down output, only containing the accessibility metrics needed for this chart 
-    # instead of all accessibility metrics
-    # dict_data2 = {k:dict_data[k] for k in acc_metrics.keys()}
-
     # make dict of regional and comm type values
     aggval_dict = make_aggval_dict(aggval_csv, metric_cols=dict_data.keys(), proj_ctype=project_commtype, 
                     yearkey=params.k_year, geo_regn=params.geo_region)
 
-    # for i, k in enumerate(list(acc_metrics.keys())):
     for i, modename in enumerate(list(dict_data.keys())):
         
         # update value for "type" (mode of tranpsortation)
@@ -69,15 +53,15 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, aggval_
         
         # update value for mode's access avg for project comm type
         json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
-            [params.k_attrs][params.geo_ctype] = aggval_dict[k][project_commtype] 
+            [params.k_attrs][params.geo_ctype] = aggval_dict[modename][project_commtype] 
         
         # update value for mode's access avg for region
         json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
-            [params.k_attrs][params.geo_region] = aggval_dict[k][params.geo_region] 
+            [params.k_attrs][params.geo_region] = aggval_dict[modename][params.geo_region] 
 
     print("calculated accessibility values sucessfully")
 
-    return dict_data2
+    return dict_data
 
 
 if __name__ == '__main__':

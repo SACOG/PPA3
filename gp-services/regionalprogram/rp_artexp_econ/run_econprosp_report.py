@@ -28,19 +28,23 @@ from utils import utils as utils
 
 
 def convert_acc_fnames(in_dict):
-    d_modenames = {'WALKDESTS': 'acc_walk', 'BIKEDESTS': 'acc_bike', 
-                    'AUTODESTS': 'acc_drive', 'TRANDESTS': 'acc_transit'}
+    # converts to allow writing to log table. 
 
-    splitter_text = 'DESTS'
+    # {mode name: field name in log table that vals will write to}
+    d_modenames = {'walk': 'acc_walk', 'bike': 'acc_bike', 
+                    'drive': 'acc_drive', 'transit': 'acc_transit'}
+    
+    d_destnames = {'emp': 'alljob', 'nonwork': 'svc', 'edu': 'edu'}
+
+    splitter_text = '_'
 
     out_dict = {}
     for k, v in in_dict.items():
         
-        mode_name = f"{k.split(splitter_text)[0]}{splitter_text}"
+        mode_name = k.split(splitter_text)[0]
         dest_name = k.split(splitter_text)[1]
-        mode_name_new = d_modenames[mode_name]
 
-        out_field_name = f"{mode_name_new}_{dest_name}"
+        out_field_name = f"{d_modenames[mode_name]}_{d_destnames[dest_name]}"
 
         out_dict[out_field_name] = v
 
@@ -108,12 +112,12 @@ def make_econ_report_artexp(input_dict):
 
     # access to jobs chart update
     acc_data_jobs = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
+                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, destination_type='emp',
                                     k_chart_title="Access to jobs")
 
     # access to edu facilities chart update
     acc_data_edu = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
+                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, destination_type='edu',
                                     k_chart_title="Education Facility")
 
     # write out to new JSON file
@@ -154,26 +158,26 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     # inputs from tool interface
-    # project_fc = arcpy.GetParameterAsText(0)
-    # project_name = arcpy.GetParameterAsText(1)
-    # jurisdiction = arcpy.GetParameterAsText(2)
-    # project_type = arcpy.GetParameterAsText(3)
-    # perf_outcomes = arcpy.GetParameterAsText(4)
-    # aadt = arcpy.GetParameterAsText(5)
-    # posted_spd = arcpy.GetParameterAsText(6)
-    # pci = arcpy.GetParameterAsText(7)
-    # email = arcpy.GetParameterAsText(8)
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
-    project_name = 'broadway'
-    jurisdiction = 'sac city'
-    project_type = params.ptype_arterial
-    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    aadt = 150000
-    posted_spd = 65
-    pci = 80
-    email = 'fake@test.com'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'broadway'
+    # jurisdiction = 'sac city'
+    # project_type = params.ptype_arterial
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {

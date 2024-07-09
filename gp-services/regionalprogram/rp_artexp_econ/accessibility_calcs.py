@@ -71,7 +71,7 @@ def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
     return gdf
 
 
-def get_acc_data(fc_project, tif_weights, project_type, get_ej=False):
+def get_acc_data(fc_project, tif_weights, project_type, dest, get_ej=False):
     '''Calculate average accessibility to selected destination types for all
     polygons that either intersect the project line or are within a community type polygon.
     Average accessibility is weighted by each polygon's population.'''
@@ -86,23 +86,23 @@ def get_acc_data(fc_project, tif_weights, project_type, get_ej=False):
     out_dict = {}
     acclayer_dict = acc_cfg['acc_lyrs']
     acclayers_dir = Path(acc_cfg['tifdir'])
-    for dest in acclayer_dict.keys():
-        for mode in acclayer_dict[dest].keys():
-            i_dict_key = f"{mode}_{dest}"
-            acc_tif = acclayer_dict[dest][mode] # name of accessibility results tif file
-            if acc_tif:
-                acc_tif_path = acclayers_dir.joinpath(acc_tif)
-                gdf_acc = get_raster_pts_near_line(acc_tif_path, fc_project, valname=i_dict_key, search_dist=searchdist)
-                gdfjn = gdf_acc.merge(gdf_wt, on='cellid')
+    accdata_dest = acclayer_dict[dest]
+    for mode in accdata_dest.keys():
+        i_dict_key = f"{mode}_{dest}"
+        acc_tif = accdata_dest[mode] # name of accessibility results tif file
+        if acc_tif:
+            acc_tif_path = acclayers_dir.joinpath(acc_tif)
+            gdf_acc = get_raster_pts_near_line(acc_tif_path, fc_project, valname=i_dict_key, search_dist=searchdist)
+            gdfjn = gdf_acc.merge(gdf_wt, on='cellid')
 
-                if gdfjn[wt].sum() == 0: # if no people, get unweighted avg access
-                    wtd_avg = gdfjn[i_dict_key].mean()
-                else:
-                    wtd_avg = (gdfjn[i_dict_key]*gdfjn[wt]).sum() / gdfjn[wt].sum()
+            if gdfjn[wt].sum() == 0: # if no people, get unweighted avg access
+                wtd_avg = gdfjn[i_dict_key].mean()
             else:
-                wtd_avg = -1 # value if no accessibility data TIF was found
+                wtd_avg = (gdfjn[i_dict_key]*gdfjn[wt]).sum() / gdfjn[wt].sum()
+        else:
+            wtd_avg = -1 # value if no accessibility data TIF was found
 
-            out_dict[i_dict_key] = wtd_avg
+        out_dict[i_dict_key] = float(wtd_avg) # need to convert to python native type, not numpy dtype
 
     return out_dict
 
@@ -112,10 +112,12 @@ if __name__ == '__main__':
     
     fc_project_line = r"\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway"
     str_project_type = params.ptype_arterial
+    destination = 'emp'
 
     pop_tif = r"I:\Projects\Darren\PPA3_GIS\AccessibilityAnalyses\tif\pop2020.tif"
     
     # dict_data = get_acc_data(fc_project_line, fc_accessibility_data, str_project_type)
-    dict_data = get_acc_data(fc_project=fc_project_line, tif_weights=pop_tif, project_type=str_project_type, get_ej=False)
+    dict_data = get_acc_data(fc_project=fc_project_line, tif_weights=pop_tif, project_type=str_project_type,
+                             dest=destination, get_ej=False)
     arcpy.AddMessage(dict_data)
     
