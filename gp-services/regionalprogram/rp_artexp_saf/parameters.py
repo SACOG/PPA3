@@ -88,7 +88,7 @@ aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
 # project type
 ptype_fwy = 'Freeway Expansion'
 ptype_arterial = 'Arterial or Transit Expansion'
-ptype_sgr = 'Complete Street or State of Good Repair'
+ptype_sgr = 'Arterial State of Good Repair' # 'Complete Street or State of Good Repair' is what it should be, but due to hacky error with VGIS config must be 'Arterial State of Good Repair'
 ptype_commdesign = "Community Design"
 ptype_area_agg = 'AreaAvg' # e.g., regional average, community type avg
 

@@ -43,8 +43,11 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
                 arcpy.AddMessage(msg)
                 sleep(15)
             else:
-                raise ValueError("ERROR: No community type identified for project. \n{} project line features." \
-                " {} features in intersect layer.".format(in_project_cnt, intersect_cnt))
+                errmsg = f"""ERROR: No community type identified for project.
+                        {in_project_cnt} project line features.
+                        {intersect_cnt} features in intersect layer."""
+                        
+                raise ValueError(errmsg)
 
         
     
