@@ -43,15 +43,15 @@ def clear_out_old_projects(fgdb, query_str):
     tbl_list = [fc_projmaster, *arcpy.ListTables()] # list of tables you want to clear out projects from
 
     # build query to specify which rows in each table you want to delete
+    qstr = None
     if len(uids_to_delete) > 1:
         qstr = f"{f_uid} IN {tuple(uids_to_delete)}"
     elif len(uids_to_delete) == 1:
         qstr = f"{f_uid} = {uids_to_delete[0]}"
-    else:
-        qstr = ""
+        
 
     # iterate through tables and delete rows where project UID has match in uids_to_delete list
-    if qstr != "":
+    if qstr:
         for tbl in tbl_list:
             tblfields = [f.name for f in arcpy.ListFields(tbl)]
             if f_uid in tblfields:
