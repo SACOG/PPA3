@@ -26,14 +26,14 @@ with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
     acc_cfg = pathconfigs['access_data']
 
-def update_json(json_loaded, fc_project, project_type, project_commtype, destination_type, aggval_csv, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
+def update_json(json_loaded, fc_project, project_type, project_commtype, destination_type, weight_pop, aggval_csv, k_chart_title): # "Base Year Service Accessibility" as k_chart_title
 
     # project level dict of accessibility script outputs
     # dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
     
     accdir = acc_cfg['tifdir']
-    popdata = Path(accdir).joinpath(acc_cfg['wts']['pop'])
-    dict_data = get_acc_data(fc_project, popdata, project_type, destination_type)
+    weights = Path(accdir).joinpath(acc_cfg['wts'][weight_pop]) # population with which to weight avg accessibility (e.g. total pop, workers, etc.)
+    dict_data = get_acc_data(fc_project, weights, project_type, destination_type)
 
     # 7/8/2024 - MUST change these to adapt to new dict_data keys! Pending whether we want to still use cutoffs, decay curves, etc.
     # make dict of regional and comm type values

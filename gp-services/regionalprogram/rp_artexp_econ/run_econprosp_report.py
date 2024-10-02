@@ -112,12 +112,12 @@ def make_econ_report_artexp(input_dict):
 
     # access to jobs chart update
     acc_data_jobs = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, destination_type='emp',
+                                    project_commtype=project_commtype, weight_pop='workers', aggval_csv=params.aggval_csv, destination_type='emp',
                                     k_chart_title="Access to jobs")
 
     # access to edu facilities chart update
     acc_data_edu = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, destination_type='edu',
+                                    project_commtype=project_commtype, weight_pop='pop',  aggval_csv=params.aggval_csv, destination_type='edu',
                                     k_chart_title="Education Facility")
 
     # write out to new JSON file

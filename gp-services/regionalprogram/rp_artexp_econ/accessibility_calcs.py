@@ -71,7 +71,7 @@ def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
     return gdf
 
 
-def get_acc_data(fc_project, tif_weights, project_type, dest, get_ej=False):
+def get_acc_data(fc_project, tif_weights, project_type, dest):
     '''Calculate average accessibility to selected destination types for all
     polygons that either intersect the project line or are within a community type polygon.
     Average accessibility is weighted by each polygon's population.'''
@@ -114,10 +114,10 @@ if __name__ == '__main__':
     str_project_type = params.ptype_arterial
     destination = 'emp'
 
-    pop_tif = r"I:\Projects\Darren\PPA3_GIS\AccessibilityAnalyses\tif\pop2020.tif"
+    pop_tif = r"I:\Projects\Darren\PPA3_GIS\AccessibilityAnalyses\tif\workers2020.tif"
     
     # dict_data = get_acc_data(fc_project_line, fc_accessibility_data, str_project_type)
     dict_data = get_acc_data(fc_project=fc_project_line, tif_weights=pop_tif, project_type=str_project_type,
-                             dest=destination, get_ej=False)
+                             dest=destination)
     arcpy.AddMessage(dict_data)
     
