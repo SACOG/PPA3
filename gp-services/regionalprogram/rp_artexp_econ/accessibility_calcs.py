@@ -34,15 +34,18 @@ with open(yaml_file, 'r') as y:
 
 def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
 
+
     # load tif data
     with rasterio.open(tif) as tifdata:
-        epsg_id = tifdata.crs.to_epsg()
+        tif_epsg = tifdata.crs.to_epsg()
         crs_linunits = tifdata.crs.linear_units # placeholder in case you ever want to know what units the CRS uses.
-        crs_to_use = f"EPSG:{epsg_id}"
+        crs_to_use = f"EPSG:{tif_epsg}"
         
-        # create buffered line object around project line
+        # create buffered line object around project line (need to load in native CRS then convert to match TIF CRS
+        line_fc_epsg = f"EPSG:{arcpy.Describe(line_fc).spatialReference.factoryCode}"
         line_gdf = ut.esri_to_df(esri_obj_path=line_fc, include_geom=True, field_list=None, index_field=None, 
-                    crs_val=crs_to_use, dissolve=False)
+                    crs_val=line_fc_epsg, dissolve=False).to_crs(crs_to_use)
+        
         line_gdf['geometry'] = line_gdf['geometry'].buffer(search_dist) # distance in meters if EPSG 3857 (web mercator)
         mask_geom = line_gdf.geometry[0]
 
