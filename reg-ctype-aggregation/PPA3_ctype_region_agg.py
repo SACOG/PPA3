@@ -10,6 +10,7 @@
 # Python Version: 3.x
 # --------------------------------
 import datetime as dt
+from pathlib import Path
 
 import arcpy
 import pandas as pd
@@ -25,13 +26,31 @@ import mix_index_for_project as mixidx
 
 import transit_svc_measure as trn_svc
 
+import yaml
+yaml_file = Path(__file__).parent.joinpath('config_regavgs.yaml')
+with open(yaml_file, 'r') as y:
+    pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
+    acc_cfg = pathconfigs['access_data']
+
+if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
 
 def get_poly_avg(input_poly_fc):
     # as of 11/26/2019, each of these outputs are dictionaries
     pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
                         project_type=params.ptype_area_agg, data_year=params.base_year, parcel_cols=None)
     
-    accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
+    # 10/14/2024 - old method for getting agg'd access data. Can delete once confirmed it works.
+    # accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
+
+    # get_acc_data(fc_project, tif_weights, project_type, dest)
+    tifdir = Path(acc_cfg['tifdir'])
+    accdata = {}
+    acc_combos = {'emp': 'workers', 'nonwork':'pop', 'edu': 'pop'}
+    for dest_typ, wtpop in acc_combos.items():
+        accdata_i = acc.get_acc_data(fc_project=input_poly_fc, tif_weights=tifdir.joinpath(acc_cfg['wts'][wtpop]),
+                                    project_type=params.ptype_area_agg, dest=dest_typ)
+        accdata.update(accdata_i)
+
     collision_data = coll.get_collision_data(input_poly_fc, params.ptype_area_agg, params.collisions_fc, 0)
     mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg, buffered_pcls=True)
     intsecn_dens = intsxn.intersection_density(input_poly_fc, params.intersections_base_fc, params.ptype_area_agg)
@@ -43,9 +62,6 @@ def get_poly_avg(input_poly_fc):
     emp_ind_pct = {'EMPIND_jobshare': emp_ind_wtot[params.col_empind] / emp_ind_wtot[params.col_emptot] \
                    if emp_ind_wtot[params.col_emptot] > 0 else 0}
 
-                #    (self,fc_pclpt, fc_project, project_type, val_fields, buffered_pcls=False, 
-                # buffdist=0, case_field=None, case_excs_list=[])
-
     pop_x_ej = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, [params.col_pop_ilut],
                                 buffered_pcls=True, case_field=params.col_ej_ind).point_sum()
     pop_tot = sum(pop_x_ej.values())
@@ -54,8 +70,6 @@ def get_poly_avg(input_poly_fc):
 
     job_pop_dens = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, \
                                             [params.col_du, params.col_emptot], buffered_pcls=True).point_sum_density()
-        
-    # total_dens = {"job_du_perNetAcre": sum(job_pop_dens.values())}
 
     out_dict = {}
     for d in [accdata, collision_data, mix_data, intsecn_dens, bikeway_covg, tran_stop_density, pct_pop_ej,\
@@ -173,9 +187,8 @@ if __name__ == '__main__':
     
     df_future_all = df_future_ctypes.join(df_future_region)
     df_future_all[col_year] = future_year
-    
-    df_out = df_base_all.append(df_future_all, sort=False)
-                            
+
+    df_out = pd.concat([df_base_all, df_future_all])                   
     df_out.to_csv(output_csv)
     print("summary completed as {}".format(output_csv))
     print("NOTICE: YOU MAY WANT TO HARD-CODE FUTURE-YEAR REGIONAL MIX INDEX = 1.0. ")

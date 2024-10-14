@@ -9,10 +9,9 @@
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
-import os
 from pathlib import Path
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+sys.path.append(Path(__file__).parent)
 from time import perf_counter as perf
 
 import pandas as pd
@@ -26,7 +25,7 @@ import parameters as params
 from utils import utils as ut
 
 import yaml
-yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
+yaml_file = Path(__file__).parent.joinpath('data_paths.yaml')
 with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
     acc_cfg = pathconfigs['access_data']
