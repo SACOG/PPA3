@@ -28,19 +28,23 @@ from utils import utils as utils
 
 
 def convert_acc_fnames(in_dict):
-    d_modenames = {'WALKDESTS': 'acc_walk', 'BIKEDESTS': 'acc_bike', 
-                    'AUTODESTS': 'acc_drive', 'TRANDESTS': 'acc_transit'}
+    # converts to allow writing to log table. 
 
-    splitter_text = 'DESTS'
+    # {mode name: field name in log table that vals will write to}
+    d_modenames = {'walk': 'acc_walk', 'bike': 'acc_bike', 
+                    'drive': 'acc_drive', 'transit': 'acc_transit'}
+    
+    d_destnames = {'emp': 'alljob', 'nonwork': 'svc', 'edu': 'edu'}
+
+    splitter_text = '_'
 
     out_dict = {}
     for k, v in in_dict.items():
         
-        mode_name = f"{k.split(splitter_text)[0]}{splitter_text}"
+        mode_name = k.split(splitter_text)[0]
         dest_name = k.split(splitter_text)[1]
-        mode_name_new = d_modenames[mode_name]
 
-        out_field_name = f"{mode_name_new}_{dest_name}"
+        out_field_name = f"{d_modenames[mode_name]}_{d_destnames[dest_name]}"
 
         out_dict[out_field_name] = v
 
@@ -96,13 +100,13 @@ def make_econ_report_artsgr(input_dict):
 
     # access to jobs chart update
     acc_data_jobs = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
-                                    k_chart_title="Access to jobs", destination_type='alljob')
+                                    project_commtype=project_commtype, weight_pop='workers', aggval_csv=params.aggval_csv, destination_type='emp',
+                                    k_chart_title="Access to jobs")
 
     # access to edu facilities chart update
     acc_data_edu = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
-                                    k_chart_title="Education Facility", destination_type='edu')
+                                    project_commtype=project_commtype, weight_pop='pop',  aggval_csv=params.aggval_csv, destination_type='edu',
+                                    k_chart_title="Education Facility")
 
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
