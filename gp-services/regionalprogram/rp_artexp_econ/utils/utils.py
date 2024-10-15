@@ -156,12 +156,11 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
     fc_mastertbl = os.path.join(params.log_fgdb, params.log_master)
     fl_mastertbl = 'fl_mastertbl'
     arcpy.MakeFeatureLayer_management(fc_mastertbl, fl_mastertbl)
-
+    
     sql = f"""{params.f_master_projname} = '{proj_name}' AND {params.f_master_projtyp} = '{proj_type}'
     AND {params.f_master_jur} = '{proj_jur}' AND {params.f_master_email} = '{user_email}'"""
 
     arcpy.AddMessage(f"Finding project UID via {sql} in table {fc_mastertbl}")
-    
     arcpy.management.SelectLayerByAttribute(fl_mastertbl, "NEW_SELECTION", sql)
 
     df = esri_object_to_df(fl_mastertbl, esri_obj_fields=master_fields, index_field=None)
@@ -170,8 +169,8 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
         uid = "UID_NOT_FOUND"
         arcpy.AddWarning(f"No project records found in {fc_mastertbl} where {sql}")
     else:
-        uid = df.sort_values(by=params.f_master_tstamp, ascending=False) \
-            [params.logtbl_join_key][0]
+        df = df.sort_values(by=params.f_master_tstamp, ascending=False).head(1) # get record with latest time stamp
+        uid = df[params.logtbl_join_key].values[0]
 
     return uid
 

@@ -74,9 +74,10 @@ def make_vmt_report_artexp(input_dict):
     du_future = d_lubuff[data_years[1]]["dwellingUnits"]
 
     # calc accessibility numbers and update JSON chart with it
+    # update_json(json_loaded, fc_project, project_type, project_commtype, destination_type, weight_pop, aggval_csv, k_chart_title)
     acc_data = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=proj_type,
-                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv, 
-                                    k_chart_title="Base Year Service Accessibility")
+                                    project_commtype=project_commtype, destination_type='nonwork', weight_pop='pop', 
+                                    aggval_csv=params.aggval_csv, k_chart_title="Base Year Service Accessibility")
 
 
     # calc mix index

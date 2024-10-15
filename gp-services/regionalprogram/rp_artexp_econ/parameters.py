@@ -83,7 +83,7 @@ def model_links_fc(in_year=base_year):
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
 # aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
-aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258_ppa31.csv")
+aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20241014_1426.csv")
 
 
 # project type
