@@ -111,8 +111,8 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
         uid = "UID_NOT_FOUND"
         arcpy.AddWarning(f"No project records found in {fc_mastertbl} where {sql}")
     else:
-        uid = df.sort_values(by=params.f_master_tstamp, ascending=False) \
-            [params.logtbl_join_key][0]
+        df = df.sort_values(by=params.f_master_tstamp, ascending=False).head(1) # get record with latest time stamp
+        uid = df[params.logtbl_join_key].values[0]
 
     return uid
 

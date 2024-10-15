@@ -82,6 +82,7 @@ def model_links_fc(in_year=base_year):
 
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
+# aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20220829_1258.csv")
 aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20241014_1426.csv")
 
 
@@ -129,38 +130,11 @@ ft2mile = 5280
 ann_factor = 320 # multiplier to get approximate annual value based on "typical weekday"
 # ===================================ACCESSIBILITY PARAMETERS=========================================================
 
-# Accessibility columns
-col_geoid = "bgid"
-col_acc_ej_ind = "PPA_EJ2018"
-col_pop = "population"
-
-col_walk_alljob = 'WALKDESTSalljob'
-col_bike_alljob = 'BIKEDESTSalljob'
-col_drive_alljob = 'AUTODESTSalljob'
-col_transit_alljob = 'TRANDESTSalljob'
-col_walk_lowincjob = 'WALKDESTSlowjobs'
-col_bike_lowincjob = 'BIKEDESTSlowjobs'
-col_drive_lowincjob = 'AUTODESTSlowjobs'
-col_transit_lowincjob = 'TRANDESTSlowjob'
-col_walk_edu = 'WALKDESTSedu'
-col_bike_edu = 'BIKEDESTSedu'
-col_drive_edu = 'AUTODESTSedu'
-col_transit_edu = 'TRANDESTSedu'
-col_walk_poi = 'WALKDESTSpoi2'
-col_bike_poi = 'BIKEDESTSpoi2'
-col_drive_poi = 'AUTODESTSpoi2'
-col_transit_poi = 'TRANDESTSpoi2'
-
-acc_cols = [col_walk_alljob, col_bike_alljob, col_drive_alljob, col_transit_alljob, col_walk_edu, col_bike_edu,
-            col_drive_edu, col_transit_edu, col_walk_poi, col_bike_poi, col_drive_poi, col_transit_poi]
-
-acc_cols_ej = [col_walk_alljob, col_bike_alljob, col_drive_alljob, col_transit_alljob, col_walk_lowincjob,
-               col_bike_lowincjob, col_drive_lowincjob, col_transit_lowincjob, col_walk_edu, col_bike_edu,
-               col_drive_edu, col_transit_edu, col_walk_poi, col_bike_poi, col_drive_poi, col_transit_poi]
 
 
 
-bg_search_dist = 300 # feet away from project line that you'll tag block groups in
+
+acc_search_dist = 100 # meters away from project line that you'll include TIFF cell values
 
 # ===================================PROBE-BASED SPEED DATA (E.G. NPMRDS) PARAMETERS================================
 
@@ -358,60 +332,6 @@ class projInputKeys:
         self.fmt = 'f'
 
 user_inputs = projInputKeys()
-
-
-
-"""
-EXAMPLE INPUT JSON OBJECT
-
-{
-    "Project_Line": {
-        "geometryType": "esriGeometryPolyline",
-        "sr": {
-            "wkid": 102642
-        },
-        "features": [
-            {
-                "geometry": {
-                    "spatialReference": {
-                        "wkid": 102642
-                    },
-                    "paths": [
-                        [
-                            [
-                                6748148.653240821,
-                                2003155.4099492875
-                            ],
-                            [
-                                6745985.7408012925,
-                                2000534.0577610424
-                            ],
-                            [
-                                6744517.244861613,
-                                2000591.358323832
-                            ],
-                            [
-                                6744483.218642788,
-                                2002526.948155975
-                            ]
-                        ]
-                    ]
-                }
-            }
-        ]
-    },
-    "Project_Name": "test_project",
-    "Jurisdiction": "example_jurisdiction",
-    "Project_ADT":1000,
-    "AADT": 1000,
-    "Posted_Speed_Limit":35,
-    "PCI":35,
-    "Project_PCI":35,
-    "userEmail":"fake@email.com",
-    "f":"json"
-  }
-
-"""
 
 if __name__ == '__main__':
     import pdb; pdb.set_trace()

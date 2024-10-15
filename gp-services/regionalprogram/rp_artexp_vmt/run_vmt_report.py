@@ -101,10 +101,11 @@ def make_vmt_report_artexp(input_dict):
         'project_uid': project_id, 'jobs_base': job_base, 
         'jobs_future': job_future, 'du_base': du_base, 
         'du_future': du_future, 'lumix_base': mixidx_base, 
-        'lumix_future': mixidx_future, 'acc_svc_walk': acc_data[params.col_walk_poi], 
-        'acc_svc_bike': acc_data[params.col_bike_poi], 'acc_svc_drive': acc_data[params.col_drive_poi], 
-        'acc_svc_pubtrn': acc_data[params.col_transit_poi] 
+        'lumix_future': mixidx_future, 'acc_svc_walk': acc_data['walk_nonwork'], 
+        'acc_svc_bike': acc_data['bike_nonwork'], 'acc_svc_drive': acc_data['drive_nonwork'], 
+        'acc_svc_pubtrn': acc_data['transit_nonwork'] 
     }
+
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb,'rp_artexp_vmt'))
 
@@ -136,12 +137,12 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
-    # project_name = 'causeway'
-    # jurisdiction = 'Caltrans'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\X_St_Oneway'
+    # project_name = 'XSt'
+    # jurisdiction = 'Sac'
     # project_type = 'Arterial Expansion'
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    # aadt = 150000
+    # aadt = 20000
     # posted_spd = 65
     # pci = 80
     # email = 'fake@test.com'
