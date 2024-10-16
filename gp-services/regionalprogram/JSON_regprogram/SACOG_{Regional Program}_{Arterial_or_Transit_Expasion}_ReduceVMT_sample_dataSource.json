@@ -5,14 +5,14 @@
 			"features": [
 				{
 					"attributes": {
-						"year": "2016",
+						"year": "2020",
 						"jobs": 1612,
 						"dwellingUnits": 3147
 					}
 				},
 				{
 					"attributes": {
-						"year": "2040",
+						"year": "2035",
 						"jobs": 2303,
 						"dwellingUnits": 4516
 					}
@@ -25,22 +25,22 @@
 				{
 					"attributes": {
 						"type": "Project",
-						"diversity 2016": 0.51,
-						"diversity 2040": 0.56
+						"diversity 2020": 0.51,
+						"diversity 2035": 0.56
 					}
 				},
 				{
 					"attributes": {
 						"type": "Community Type",
-						"diversity 2016": 0.74,
-						"diversity 2040": 0.74
+						"diversity 2020": 0.74,
+						"diversity 2035": 0.74
 					}
 				},
 				{
 					"attributes": {
 						"type": "Region",
-						"diversity 2016": 1.0,
-						"diversity 2040": 0.93
+						"diversity 2020": 1.0,
+						"diversity 2035": 0.93
 					}
 				}
 			]

@@ -23,36 +23,36 @@
 				{
 					"attributes": {
 						"type": "Single-occupant vehicle",
-						"year 2016": 0.41,
-						"year 2040": 0.39
+						"year 2020": 0.41,
+						"year 2035": 0.39
 					}
 				},
 				{
 					"attributes": {
 						"type": "Carpool",
-						"year 2016": 0.48,
-						"year 2040": 0.48
+						"year 2020": 0.48,
+						"year 2035": 0.48
 					}
 				},
 				{
 					"attributes": {
 						"type": "Tansit",
-						"year 2016": 0.01,
-						"year 2040": 0.02
+						"year 2020": 0.01,
+						"year 2035": 0.02
 					}
 				},
 				{
 					"attributes": {
 						"type": "Biking",
-						"year 2016": 0.02,
-						"year 2040": 0.03
+						"year 2020": 0.02,
+						"year 2035": 0.03
 					}
 				},
 				{
 					"attributes": {
 						"type": "Walking",
-						"year 2016": 0.06,
-						"year 2040": 0.07
+						"year 2020": 0.06,
+						"year 2035": 0.07
 					}
 				}
 			]
