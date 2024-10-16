@@ -85,7 +85,7 @@ SELECT
 		OVER (PARTITION BY tmc_code) 
 		AS tt_p50_ampk
 INTO #tt_pctl_ampk
-FROM npmrds_2018_alltmc_paxtruck_comb
+FROM {tt_tbl} --npmrds_2018_alltmc_paxtruck_comb
 WHERE DATENAME(dw, measurement_tstamp) IN (SELECT day_name FROM @weekdays) 
 	AND DATEPART(hh, measurement_tstamp) >= @AMpeakStart 
 	AND DATEPART(hh, measurement_tstamp) < @AMpeakEnd
@@ -102,7 +102,7 @@ SELECT
 		OVER (PARTITION BY tmc_code) 
 		AS tt_p50_midday
 INTO #tt_pctl_midday
-FROM npmrds_2018_alltmc_paxtruck_comb
+FROM {tt_tbl} --npmrds_2018_alltmc_paxtruck_comb
 WHERE DATENAME(dw, measurement_tstamp) IN (SELECT day_name FROM @weekdays) 
 	AND DATEPART(hh, measurement_tstamp) >= @MiddayStart 
 	AND DATEPART(hh, measurement_tstamp) < @MiddayEnd
@@ -119,7 +119,7 @@ SELECT
 		OVER (PARTITION BY tmc_code) 
 		AS tt_p50_pmpk
 INTO #tt_pctl_pmpk
-FROM npmrds_2018_alltmc_paxtruck_comb
+FROM {tt_tbl} --npmrds_2018_alltmc_paxtruck_comb
 WHERE DATENAME(dw, measurement_tstamp) IN (SELECT day_name FROM @weekdays) 
 	AND DATEPART(hh, measurement_tstamp) >= @PMpeakStart 
 	AND DATEPART(hh, measurement_tstamp) < @PMpeakEnd
@@ -136,7 +136,7 @@ SELECT
 		OVER (PARTITION BY tmc_code) 
 		AS tt_p50_weekend
 INTO #tt_pctl_weekend
-FROM npmrds_2018_alltmc_paxtruck_comb
+FROM {tt_tbl} --npmrds_2018_alltmc_paxtruck_comb
 WHERE DATENAME(dw, measurement_tstamp) IN (SELECT day_name FROM @weekdays) 
 	AND DATEPART(hh, measurement_tstamp) >= @WkdPrdStart 
 	AND DATEPART(hh, measurement_tstamp) < @WkdPrdEnd
@@ -161,7 +161,7 @@ SELECT
 			AND DATEPART(hh, measurement_tstamp) < @WkdPrdEnd
 		THEN 1 ELSE 0 END) AS epochs_weekend
 INTO #epochs_x_relprd
-FROM npmrds_2018_alltmc_paxtruck_comb 
+FROM {tt_tbl} --npmrds_2018_alltmc_paxtruck_comb 
 GROUP BY tmc_code
 
 
@@ -187,8 +187,8 @@ SELECT
 			OVER (PARTITION BY tmc_code) 
 		END AS ff_speed_art60thp --85th percentile speed for freeways; 60th percentile for arterials
 INTO #ff_spd_tbl
-FROM npmrds_2018_all_tmcs_txt tmc 
-	LEFT JOIN npmrds_2018_alltmc_paxtruck_comb tt
+FROM {tmc_tbl} tmc --npmrds_2018_all_tmcs_txt tmc 
+	LEFT JOIN {tt_tbl} tt --npmrds_2018_alltmc_paxtruck_comb tt
 		ON tmc.tmc = tt.tmc_code
 WHERE (DATEPART(hh,measurement_tstamp) >= @FFprdStart
 		OR DATEPART(hh,measurement_tstamp) < @FFprdEnd)
@@ -199,7 +199,7 @@ SELECT
 	tmc_code,
 	COUNT(*) AS epochs_night
 INTO #offpk_85th_epochs
-FROM npmrds_2018_alltmc_paxtruck_comb
+FROM {tt_tbl} --npmrds_2018_alltmc_paxtruck_comb
 WHERE DATEPART(hh,measurement_tstamp) >= 20 --@FFprdStart
 		OR DATEPART(hh,measurement_tstamp) < 6 --@FFprdEnd
 GROUP BY tmc_code
@@ -219,7 +219,7 @@ SELECT
 		ORDER BY (COUNT(*) / SUM(1.0/tt.speed)) / ff.ff_speed_art60thp ASC
 		) AS hour_cong_rank
 INTO #avspd_x_tmc_hour
-FROM npmrds_2018_alltmc_paxtruck_comb tt
+FROM {tt_tbl} tt --npmrds_2018_alltmc_paxtruck_comb
 	JOIN #ff_spd_tbl ff
 		ON tt.tmc_code = ff.tmc
 WHERE DATENAME(dw, measurement_tstamp) IN (SELECT day_name FROM @weekdays) 
@@ -237,7 +237,7 @@ SELECT
 	ff.ff_speed_art60thp,
 	COUNT(*) / SUM(1.0/tt.speed) AS havg_spd_worst4hrs
 INTO #most_congd_hrs
-FROM npmrds_2018_alltmc_paxtruck_comb tt
+FROM {tt_tbl} tt --npmrds_2018_alltmc_paxtruck_comb
 	JOIN #ff_spd_tbl ff
 		ON tt.tmc_code = ff.tmc
 	JOIN #avspd_x_tmc_hour avs
@@ -257,7 +257,7 @@ SELECT DISTINCT tt.tmc_code,
 	avs.hour_of_day AS slowest_hr,
 	avs.havg_spd_weekdy AS slowest_hr_speed
 INTO #slowest_hr
-FROM npmrds_2018_alltmc_paxtruck_comb tt 
+FROM {tt_tbl} tt --npmrds_2018_alltmc_paxtruck_comb
 	JOIN #avspd_x_tmc_hour avs
 		ON tt.tmc_code = avs.tmc_code
 		AND DATEPART(hh, tt.measurement_tstamp) = avs.hour_of_day
@@ -318,7 +318,7 @@ SELECT * FROM (
 		CASE WHEN slowest1.epochs_slowest_hr IS NULL THEN -1 ELSE slowest1.epochs_slowest_hr END AS epochs_slowest_hr,
 		CASE WHEN epon.epochs_night IS NULL THEN -1 ELSE epon.epochs_night END AS epochs_night,
 		ROW_NUMBER() OVER (PARTITION BY tmc.tmc ORDER BY slowest1.slowest_hr_speed) AS tmc_appearance_n
-	FROM npmrds_2018_all_tmcs_txt tmc
+	FROM {tmc_tbl} tmc --npmrds_2018_all_tmcs_txt tmc
 		LEFT JOIN #ff_spd_tbl ffs
 			ON tmc.tmc = ffs.tmc
 		LEFT JOIN #tt_pctl_ampk ttr_am
