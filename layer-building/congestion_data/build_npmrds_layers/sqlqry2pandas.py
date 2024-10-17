@@ -49,15 +49,6 @@ def sqlqry_to_df(query_str, dbname, servername='SQL-SVR', trustedconn='yes'):
         f"Trusted_Connection={trustedconn}"
         
     conn_str = urllib.parse.quote_plus(conn_str)
-    # conn = 'mssql://username:password@server:port/database?encrypt=true&trusted_connection=true' # connectorx example connection
-    username='dconly'
-    server=servername
-    
-    import pdb; pdb.set_trace()
-    
-    conn_x = 'mssql://{username}@{servername}/{dbname}?encrypt=true&trusted_connection=true'
-    dft = cx.read_sql(conn, query)
-    
     engine = sqla.create_engine(f"mssql+pyodbc:///?odbc_connect={conn_str}")
        
     start_time = perf()
