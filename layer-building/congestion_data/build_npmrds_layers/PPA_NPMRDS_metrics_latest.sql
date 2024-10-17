@@ -43,8 +43,6 @@ SQL Flavor: SQL Server
 */
 
 --==========PARAMETER VARIABLES=============================================================
-USE NPMRDS
-GO
 
 --"bad" travel time percentile
 DECLARE @PctlCongested FLOAT SET @PctlCongested = 0.8
