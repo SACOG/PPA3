@@ -62,7 +62,7 @@ def sqlqry_to_df(query_str, dbname, servername='SQL-SVR', trustedconn='yes'):
         SET ANSI_WARNINGS OFF 
         SET NOCOUNT ON
         """
-        raise Exeption(msg)
+        raise Exception(msg)
         
     rowcnt = df.shape[0]
     
