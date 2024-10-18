@@ -275,6 +275,7 @@ SELECT * FROM (
 		tmc.tmc,
 		tmc.road,
 		tmc.route_numb,
+		tmc.direction AS direction_signd,
 		tmc.f_system,
 		tmc.nhs,
 		tmc.miles,

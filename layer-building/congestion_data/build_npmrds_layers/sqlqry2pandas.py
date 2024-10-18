@@ -55,7 +55,15 @@ def sqlqry_to_df(query_str, dbname, servername='SQL-SVR', trustedconn='yes'):
 
     # create SQL table from the dataframe
     print("Executing query. Results loading into dataframe...")
-    df = pd.read_sql_query(sql=query_str, con=engine)
+    try:
+        df = pd.read_sql_query(sql=query_str, con=engine)
+    except ResourceClosedError:
+        msg = """ResourceClosedError. Ensure that the query returns rows and that you have the following at the start of your query:
+        SET ANSI_WARNINGS OFF 
+        SET NOCOUNT ON
+        """
+        raise Exeption(msg)
+        
     rowcnt = df.shape[0]
     
     et_mins = round((perf() - start_time) / 60, 2)

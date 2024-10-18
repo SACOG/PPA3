@@ -43,6 +43,11 @@ SQL Flavor: SQL Server
 */
 
 --==========PARAMETER VARIABLES=============================================================
+--per stack overflow, these SET parameters are required to avoid getting a ResourceClosedError
+--https://stackoverflow.com/questions/62678904/resourceclosederror-attributeerror-when-using-pandas-read-sql-query-attributeerr
+SET ANSI_WARNINGS OFF 
+SET NOCOUNT ON
+
 
 --"bad" travel time percentile
 DECLARE @PctlCongested FLOAT SET @PctlCongested = 0.8
@@ -273,6 +278,7 @@ SELECT * FROM (
 		tmc.tmc,
 		tmc.road,
 		tmc.route_numb,
+		tmc.direction AS direction_signd,
 		tmc.f_system,
 		tmc.nhs,
 		tmc.miles,
