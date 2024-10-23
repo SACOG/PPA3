@@ -22,7 +22,6 @@ import parameters as params
 import commtype
 import parcel_data 
 import landuse_buff_calcs 
-import chart_accessibility_projonly as chart_acc
 import get_agg_values as aggvals
 from utils import utils as utils
 
@@ -92,20 +91,6 @@ def make_equity_rpt_artexp(input_dict):
     # update total EJ population -- NOTE that the JSON tag should be changed from "Population" to "EJ Population"
     loaded_json["Population"] = pop_ej
 
-    # access to jobs chart update
-    d_acc = chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
-                                    k_chart_title="Total Job Accessibility", destination_type='alljob_EJ', 
-                                    get_ej_only=True)
-
-    # access to edu facilities chart update
-    d_eduacc = chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type, 
-                                    k_chart_title="Education Accessibility", destination_type='edu_EJ', 
-                                    get_ej_only=True)
-
-    # access to services chart update
-    d_svcacc = chart_acc.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type, 
-                                    k_chart_title="Services Accessibility", destination_type='poi2_EJ', 
-                                    get_ej_only=True)
 
     # log to data table
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
@@ -113,17 +98,10 @@ def make_equity_rpt_artexp(input_dict):
                                         proj_jur=input_dict[uis.jur], 
                                         user_email=input_dict[uis.email])
 
-    acc_walk_alljob_ej = d_acc[f"{params.col_walk_alljob}_EJ"]
-    acc_bike_alljob_ej = d_acc[f"{params.col_bike_alljob}_EJ"]
-    acc_drive_alljob_ej = d_acc[f"{params.col_drive_alljob}_EJ"]
-    acc_transit_alljob_ej = d_acc[f"{params.col_transit_alljob}_EJ"]
-
     data_to_log = {
         'project_uid': project_uid, 
         'pop_tot': pop_tot, 'pop_ej_area': pop_ej,
-        'pctpot_ej_area': project_pct_ej, 'acc_walk_alljob_ej': acc_walk_alljob_ej,
-        'acc_bike_alljob_ej': acc_bike_alljob_ej, 'acc_drive_alljob_ej': acc_drive_alljob_ej,
-        'acc_transit_alljob_ej': acc_transit_alljob_ej
+        'pctpot_ej_area': project_pct_ej
     }
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_eq'))
