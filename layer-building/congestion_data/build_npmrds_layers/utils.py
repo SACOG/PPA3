@@ -17,7 +17,7 @@ Python Version: 3.x
 
 import pandas as pd
 import arcpy
-from shapely import wkt
+from shapely import wkt, LineString
 
 def esri_to_df(esri_obj_path, include_geom, field_list=None, index_field=None, 
                crs_val=None, dissolve=False):
@@ -75,3 +75,12 @@ def esri_to_df(esri_obj_path, include_geom, field_list=None, index_field=None,
         out_df = pd.DataFrame(data_rows, index=index_field, columns=field_list)
 
     return out_df
+
+def pts_to_linestring(row, f_startpt, f_endpt):
+    # creates line feature given a start and end point
+    startx = row[f_startpt].x
+    starty = row[f_startpt].y
+    endx = row[f_endpt].x
+    endy = row[f_endpt].y
+    
+    return LineString([[startx, starty], [endx, endy]])
