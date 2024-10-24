@@ -71,7 +71,8 @@ def make_title_guidepg_regpgm(input_dict):
     loaded_json["Project Length Centerline Miles"] = tot_len_mi
 
     # get project community type
-    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    # project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(project_fc, r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Subcommtypes_2025bluep_Union')
     # project_commtype = commtype.get_proj_ctype(project_fc, r"C:\Users\dconly\AppData\Local\Temp\scratch.gdb\temp_comm_type")
     
     loaded_json["Project Community Type"] = project_commtype
@@ -129,26 +130,26 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     # inputs from tool interface
-    project_fc = arcpy.GetParameterAsText(0)
-    project_name = arcpy.GetParameterAsText(1)
-    jurisdiction = arcpy.GetParameterAsText(2)
-    project_type = arcpy.GetParameterAsText(3)
-    perf_outcomes = arcpy.GetParameterAsText(4)
-    aadt = arcpy.GetParameterAsText(5)
-    posted_spd = arcpy.GetParameterAsText(6)
-    pci = arcpy.GetParameterAsText(7)
-    email = arcpy.GetParameterAsText(8)
+    # project_fc = arcpy.GetParameterAsText(0)
+    # project_name = arcpy.GetParameterAsText(1)
+    # jurisdiction = arcpy.GetParameterAsText(2)
+    # project_type = arcpy.GetParameterAsText(3)
+    # perf_outcomes = arcpy.GetParameterAsText(4)
+    # aadt = arcpy.GetParameterAsText(5)
+    # posted_spd = arcpy.GetParameterAsText(6)
+    # pci = arcpy.GetParameterAsText(7)
+    # email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
-    # project_name = 'causeway'
-    # jurisdiction = 'Caltrans'
-    # project_type = 'Freeway Expansion'
-    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    # aadt = 150000
-    # posted_spd = 65
-    # pci = 80
-    # email = 'fake@test.com'
+    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_no_ctype'
+    project_name = 'test no ctype intersect'
+    jurisdiction = 'Caltrans'
+    project_type = 'Arterial or Transit Expansion'
+    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    aadt = 150000
+    posted_spd = 65
+    pci = 80
+    email = 'fake@test.com'
 
     if project_type == params.ptype_commdesign:
         aadt = None

@@ -330,7 +330,7 @@ col_intxn_lnks = 'LINKS'
 
 # params for determining if project is in greenfield or infill area
 col_ctype_old = 'comm_type'  # base ctype field, but doesn't distinguish by jurisdiction (e.g. center/corridor in dowtown sac vs in rural main street)
-col_ctype = 'comm_type_ppa'  # ctype field used in jurisdiction-specific ctypes layer (e.g. rural main streets vs. downtown core)
+col_ctype = 'comtyp_ppa_fin' # 'comm_type_ppa'  # ctype field used in jurisdiction-specific ctypes layer (e.g. rural main streets vs. downtown core)
 ctypes_infill = ['Established Communities', 'Arterials & Suburban Corridors', 'Rural & Small Town Main Street',
                  'Small-Town Established Communities', 'Urban core']
 threshold_val = 0.9  # if more than 90% of project length is in greenfield, then project is greenfield vice-versa for infill
