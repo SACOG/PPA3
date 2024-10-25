@@ -70,10 +70,7 @@ def make_title_guidepg_regpgm(input_dict):
     loaded_json["Project Length Centerline Miles"] = tot_len_mi
 
     # get project community type
-    # project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
-    project_commtype = commtype.get_proj_ctype(project_fc, r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\Subcommtypes_2025bluep_Union')
-    # project_commtype = commtype.get_proj_ctype(project_fc, r"C:\Users\dconly\AppData\Local\Temp\scratch.gdb\temp_comm_type")
-    
+    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
     loaded_json["Project Community Type"] = project_commtype
 
     # insert project map
