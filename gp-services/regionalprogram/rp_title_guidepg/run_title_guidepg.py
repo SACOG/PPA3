@@ -141,7 +141,7 @@ if __name__ == '__main__':
     # email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_no_ctype'
+    project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\test_no_ctype'
     project_name = 'test no ctype intersect'
     jurisdiction = 'Caltrans'
     project_type = 'Arterial or Transit Expansion'

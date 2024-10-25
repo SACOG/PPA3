@@ -21,7 +21,7 @@ import arcpy
 import parameters as params
 
 
-def get_ctype_from__ix(ix_fc, quant_field):
+def get_ctype_from_ix(ix_fc, quant_field):
     # grab community type based on which ctype has most overlap with project line (or if not using line, then buffer around project)
     fields = ['OBJECTID', quant_field, params.col_ctype]
     ctype_size_dict = {}
@@ -55,7 +55,7 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
     in_project_cnt = int(arcpy.GetCount_management(in_project_fc)[0])
     
     if intersect_cnt > 0:
-        proj_ctype = get_ctype_from__ix(temp_intersect_fc, quant_field='SHAPE@LENGTH')
+        proj_ctype = get_ctype_from_ix(temp_intersect_fc, quant_field='SHAPE@LENGTH')
     else:
         # ideally we want to get ctype based on what the project *line* most overlaps with. But if that's not possible,
         # we make buffer around line and see which ctype most overlaps with the buffer
@@ -71,7 +71,7 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
             raise ValueError("ERROR: No Community Type identified for project. \n{} project line features." \
                              " {} features in intersect layer.".format(in_project_cnt, intersect_cnt))
         else:
-            proj_ctype = get_ctype_from__ix(temp_intersect_fc, quant_field='SHAPE@AREA')
+            proj_ctype = get_ctype_from_ix(temp_intersect_fc, quant_field='SHAPE@AREA')
         
     return proj_ctype
 
