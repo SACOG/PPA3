@@ -9,10 +9,9 @@ Updated by:
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
-import os
 from pathlib import Path
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+sys.path.append(Path(__file__).parent) # enable importing from parent folder
 
 
 from time import perf_counter as perf
