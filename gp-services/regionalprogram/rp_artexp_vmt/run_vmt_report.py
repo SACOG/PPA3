@@ -102,7 +102,8 @@ def make_vmt_report_artexp(input_dict):
         'jobs_future': job_future, 'du_base': du_base, 
         'du_future': du_future, 'lumix_base': mixidx_base, 
         'lumix_future': mixidx_future, 'acc_svc_walk': acc_data['walk_nonwork'], 
-        'acc_svc_bike': acc_data['bike_nonwork'], 'acc_svc_drive': acc_data['drive_nonwork'], 
+        'acc_svc_bike': acc_data['bike_nonwork'], 
+        # 'acc_svc_drive': acc_data['drive_nonwork'], # as of PPA3.1, no longer reporting drive-to-nonwork destinations
         'acc_svc_pubtrn': acc_data['transit_nonwork'] 
     }
 

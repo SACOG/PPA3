@@ -66,14 +66,6 @@
 				},
 				{
 					"attributes": {
-						"type": "15 Min Drive",
-						"Project": 483,
-						"Community Type": 553,
-						"Region": 520
-					}
-				},
-				{
-					"attributes": {
 						"type": "45 Min Transit",
 						"Project": 93,
 						"Community Type": 79,
