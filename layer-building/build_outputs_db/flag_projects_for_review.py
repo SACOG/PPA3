@@ -1,5 +1,5 @@
 """
-Name: update_filter_field.py
+Name: flag_projects_for_review.py
 Purpose: The project_master log table has a filter field that allows us to know which
     projects we want to include in comparison rollups and which ones we want to exclude.
     E.g., want to exclude test runs.
