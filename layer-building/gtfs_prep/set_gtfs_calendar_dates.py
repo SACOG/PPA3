@@ -104,12 +104,12 @@ def extract_zip(zfile_in, output_folder=None, overwrite_ok=True):
     return output_folder
 
 if __name__ == '__main__':
-    newstart = '20200101'
-    newend = '20200601'
+    newstart = '20240101'
+    newend = '20240801'
 
-    dummy = '20200101' # set to some holiday value
-    source_gtfs_parent_dir = r'I:\Projects\Darren\PEP\ConveyalData\ConveyalNetworkDevelopment\GTFS\2023-07-05 SACSIM base GTFS' # a folder containing only the ZIPs of GTFS feeds
-    dest_gtfs_parent_dir = r'I:\Projects\Darren\PEP\ConveyalData\ConveyalNetworkDevelopment\GTFS\2023-07-05 SACSIM base GTFS\datemod_versions'
+    dummy = '20240801' # set to some holiday value
+    source_gtfs_parent_dir = r'I:\Projects\Darren\PPA3_GIS\ConveyalLayers\GTFS' # a folder containing only the ZIPs of GTFS feeds
+    dest_gtfs_parent_dir = r'I:\Projects\Darren\PPA3_GIS\ConveyalLayers\GTFS\datemod_versions'
 
 
     # check = bool(input("WARNING: this script will overwrite calendar.txt. Enter 'yes' if you still wish to proceed. Otherwise leave blank and hit enter: "))
