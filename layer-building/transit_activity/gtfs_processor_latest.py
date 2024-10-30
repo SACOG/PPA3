@@ -18,24 +18,24 @@ Updated by: <name>
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
-import pdb
+from pathlib import Path
+import zipfile
 import os
 import datetime as dt
 
 import arcpy
 import pandas as pd
-import numpy as np
 
 #===============================input info=============================
 
 class MakeGTFSGISData(object):
     arcpy.env.overwriteOutput = True
     
-    def __init__(self, gtfs_dir, gis_workspace, data_year):
+    def __init__(self, gtfs_zip, gis_workspace, data_year):
         arcpy.env.workspace = gis_workspace
         self.workspace = gis_workspace
         
-        os.chdir(gtfs_dir)
+        self.zipobj = zipfile.ZipFile(gtfs_zip, 'r')
 
         self.data_year = data_year
         
@@ -116,8 +116,10 @@ class MakeGTFSGISData(object):
     
     #=================DEFINE FUNCTIONS=================================
     def txt_to_df(self, in_txt, usecolumns=None, txt_delim=','):
-        '''reads in txt or csv file to pandas df'''
-        out_df = pd.read_csv(in_txt, usecols=usecolumns)
+        '''reads in txt or csv file to pandas df from ZIP of GTFS files'''
+        with self.zipobj.open(in_txt) as file:
+            out_df = pd.read_csv(file, usecols=usecolumns, delimiter=txt_delim)
+
         return out_df
     
     def remove_forbidden_chars(self, in_str):
@@ -546,7 +548,8 @@ class MakeGTFSGISData(object):
         # attach calendar dates to output, if calendar.txt is available
         try:
             cols_cal = [self.f_svc_id, self.start_date, self.end_date]
-            df_cal = pd.read_csv(self.txt_calendar)[cols_cal]
+            # df_cal = pd.read_csv(self.txt_calendar)[cols_cal]
+            df_cal = self.txt_to_df(self, self.txt_calendar, usecolumns=cols_cal)
             df_cal[self.f_svc_id] = df_cal[self.f_svc_id].astype('str')
             
             df_out = df_out.merge(df_cal, on=self.f_svc_id)
