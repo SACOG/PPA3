@@ -36,12 +36,12 @@ access_data:
       transit: transit_jobs_2020.tif
       bike: bike_jobs_2020.tif
       walk: walk_jobs_2020.tif
-      drive: drive_jobs_2020.tif # will probably need to be raster converted from vector of TAZ-based drive accessibility layer
+      drive: drive_jobs_2020.tif 
     edu:
       transit: transit_edu_2020.tif
       bike: bike_edu_2020.tif
       walk: walk_edu_2020.tif
-      drive: null       
+      drive: drive_edu_2020.tif      
     nonwork:
       transit: transit_svcs_2020.tif
       bike: bike_svcs_2020.tif
