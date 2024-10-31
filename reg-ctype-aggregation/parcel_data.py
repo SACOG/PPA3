@@ -28,6 +28,11 @@ def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, 
     fl_project = "fl_project"
     out_fc = f"buff_pcl_pts{data_year}{sufx}"
 
+    if arcpy.Describe(arcpy.env.scratchGDB).dataType == 'Folder':
+        # expectation that scratch GDB is a GDB, not a folder, but sometimes this messes up.
+        arcpy.AddMessage(f'WARNING, {arcpy.env.scratchGDB} is a folder, not a file geodatabase. Pausing for diagnosis...')
+        import pdb; pdb.set_trace()
+
     out_fc_path = os.path.join(arcpy.env.scratchGDB, out_fc)
     if arcpy.Exists(out_fc_path): arcpy.Delete_management(out_fc_path)
     
@@ -59,5 +64,8 @@ if __name__ == '__main__':
     os.chdir(r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb')
     print(arcpy.env.scratchGDB)
 
-    get_buffer_parcels(fc_pclpt=pcl_fc, fc_project=pcl_project, 
+    result = get_buffer_parcels(fc_pclpt=pcl_fc, fc_project=pcl_project, 
     buffdist=buffdist, project_type=projtype, data_year = dyear, parcel_cols=None)
+
+    print(result)
+

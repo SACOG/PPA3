@@ -32,15 +32,20 @@ with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
     acc_cfg = pathconfigs['access_data']
 
-if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
+try:
+    arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+except:
+    pass
 
 def get_poly_avg(input_poly_fc):
+
+    # if scratch GDB weirdly 'becomes' a folder, delete it.
+    if arcpy.Describe(arcpy.env.scratchGDB).dataType != 'Workspace': 
+        arcpy.Delete_management(arcpy.env.scratchGDB)
+
     # as of 11/26/2019, each of these outputs are dictionaries
     pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
                         project_type=params.ptype_area_agg, data_year=params.base_year, parcel_cols=None)
-    
-    # 10/14/2024 - old method for getting agg'd access data. Can delete once confirmed it works.
-    # accdata = acc.get_acc_data(input_poly_fc, params.accdata_fc, params.ptype_area_agg, get_ej=False)
 
     # get_acc_data(fc_project, tif_weights, project_type, dest)
     tifdir = Path(acc_cfg['tifdir'])
