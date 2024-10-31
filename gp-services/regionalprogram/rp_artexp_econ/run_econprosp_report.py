@@ -158,26 +158,26 @@ if __name__ == '__main__':
     # ===========USER INPUTS THAT CHANGE WITH EACH PROJECT RUN============
 
     # inputs from tool interface
-    # project_fc = arcpy.GetParameterAsText(0)
-    # project_name = arcpy.GetParameterAsText(1)
-    # jurisdiction = arcpy.GetParameterAsText(2)
-    # project_type = arcpy.GetParameterAsText(3)
-    # perf_outcomes = arcpy.GetParameterAsText(4)
-    # aadt = arcpy.GetParameterAsText(5)
-    # posted_spd = arcpy.GetParameterAsText(6)
-    # pci = arcpy.GetParameterAsText(7)
-    # email = arcpy.GetParameterAsText(8)
+    project_fc = arcpy.GetParameterAsText(0)
+    project_name = arcpy.GetParameterAsText(1)
+    jurisdiction = arcpy.GetParameterAsText(2)
+    project_type = arcpy.GetParameterAsText(3)
+    perf_outcomes = arcpy.GetParameterAsText(4)
+    aadt = arcpy.GetParameterAsText(5)
+    posted_spd = arcpy.GetParameterAsText(6)
+    pci = arcpy.GetParameterAsText(7)
+    email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
-    project_name = 'broadway'
-    jurisdiction = 'sac city'
-    project_type = params.ptype_arterial
-    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    aadt = 150000
-    posted_spd = 65
-    pci = 80
-    email = 'fake@test.com'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestBroadway16th' # Broadway16th_2226
+    # project_name = 'broadway'
+    # jurisdiction = 'sac city'
+    # project_type = params.ptype_arterial
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {

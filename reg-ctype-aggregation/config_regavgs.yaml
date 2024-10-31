@@ -41,7 +41,7 @@ access_data:
       transit: transit_edu_2020.tif
       bike: bike_edu_2020.tif
       walk: walk_edu_2020.tif
-      drive: drive_edu_2020.tif      
+      drive: null      
     nonwork:
       transit: transit_svcs_2020.tif
       bike: bike_svcs_2020.tif

@@ -6,7 +6,7 @@ sde:
   fc_speed_data: npmrds_metrics_v8 #npmrds speed data
   accdata_fc: Sugar_access_data_latest # sugar accessibility polygon data
   collisions_fc: collisions_tims_2015_2019_fwytag # collision point data
-  trn_svc_fc: transit_stopcount_2019 # transit stop event data; point file
+  trn_svc_fc: transit_activity_weekdays2024 # transit_stopcount_2019 # transit stop event data; point file
   freight_route_fc: STAATruckRoutes # STAA truck route lines
   intersections_base_fc: intersections_2021
   comm_types_fc: comm_type_jurspec_dissolve
@@ -41,9 +41,9 @@ access_data:
       transit: transit_edu_2020.tif
       bike: bike_edu_2020.tif
       walk: walk_edu_2020.tif
-      drive: drive_edu_2020.tif      
+      drive: null      
     nonwork:
       transit: transit_svcs_2020.tif
       bike: bike_svcs_2020.tif
       walk: walk_svcs_2020.tif
-      # drive: null   
+      drive: null   
