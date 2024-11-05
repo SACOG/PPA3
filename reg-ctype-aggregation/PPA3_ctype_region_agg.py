@@ -164,7 +164,7 @@ if __name__ == '__main__':
     
     # fc of community type polygons
     ctype_fc = params.comm_types_fc
-    output_csv = r'C:\Users\dconly\GitRepos\PPA3\reg-ctype-aggregation\CSV_output\Agg_ppa_vals{}.csv'.format(time_sufx)
+    output_csv = Path(__file__).parent.joinpath(f'Agg_ppa_vals{time_sufx}.csv')
     
     test_run = False
     
