@@ -28,10 +28,11 @@ def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, 
     fl_project = "fl_project"
     out_fc = f"buff_pcl_pts{data_year}{sufx}"
 
-    if arcpy.Describe(arcpy.env.scratchGDB).dataType == 'Folder':
+    scratchgdb = arcpy.env.scratchGDB
+    if arcpy.Describe(scratchgdb).dataType == 'Folder':
         # expectation that scratch GDB is a GDB, not a folder, but sometimes this messes up.
-        arcpy.AddMessage(f'WARNING, {arcpy.env.scratchGDB} is a folder, not a file geodatabase. Pausing for diagnosis...')
-        import pdb; pdb.set_trace()
+        arcpy.AddMessage(f'WARNING, {scratchgdb} is a folder, not a file geodatabase. Deleting and recreating as FGDB...')
+        arcpy.Delete_management(scratchgdb)
 
     out_fc_path = os.path.join(arcpy.env.scratchGDB, out_fc)
     if arcpy.Exists(out_fc_path): arcpy.Delete_management(out_fc_path)
