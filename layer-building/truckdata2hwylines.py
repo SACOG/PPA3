@@ -60,6 +60,10 @@ def conflate_truck_cnts(hwy_lines, truckvol_pts, input_count_field, other_truck_
         if f.name not in include_fields:
             arcpy.DeleteField_management(result_fl, f.name)
 
+    # 12/13/2024 - NEED TO RE-JOIN TO ORIGINAL FEATURE CLASS, BECAUSE RESULT OF SPATIAL
+    # JOIN ONLY INCLUDES FWYS, NOT ARTERIALS
+    
+
     print(f"Resulting feature class: {Path(workspc).joinpath(result_fc)}")
 
 
@@ -67,7 +71,7 @@ def conflate_truck_cnts(hwy_lines, truckvol_pts, input_count_field, other_truck_
 
 
 if __name__ == '__main__':
-    hwys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\NPMRDS_2023_NHS_SACOG'
+    hwys = r'I:\SDE_Connections\SDE-PPA\owner@PPA.sde\OWNER.NPMRDS_2023ppadata_final'
     truck_count_points = r'I:\Projects\Darren\PPA3_GIS\SHP\Truck__Volumes_AADT2022\HWY_Truck_Volumes_AADT.shp'
     truck_data_fields = 'TRK_PERCEN'
 

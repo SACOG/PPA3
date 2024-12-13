@@ -86,7 +86,7 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         # https://support.esri.com/en/technical-article/000012699
         
         # temporary files
-        scratch_gdb = arcpy.env.scratchGDB # arcpy.env.scratchGDB
+        scratch_gdb = arcpy.env.scratchGDB
         
         temp_intersctpts = os.path.join(scratch_gdb, "temp_intersectpoints")  # r"{}\temp_intersectpoints".format(scratch_gdb)
         temp_intrsctpt_singlpt = os.path.join(scratch_gdb, "temp_intrsctpt_singlpt") # converted from multipoint to single point (1 pt per feature)
@@ -293,18 +293,18 @@ if __name__ == '__main__':
     from time import perf_counter as perf
     start_time = perf()
 
-    # arcpy.env.workspace = params.fgdb # r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb'
+    arcpy.env.workspace = params.fgdb # r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb'
 
-    # project_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_16thSt_oneway' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
-    # proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
+    project_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_16thSt_oneway' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
+    proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
 
 
-    # test_dict = get_npmrds_data(project_line, proj_type)
+    test_dict = get_npmrds_data(project_line, proj_type)
 
-    # print(test_dict)
+    print(test_dict)
 
-    # elapsed_time = round((perf() - start_time)/60, 1)
-    # print("Success! Time elapsed: {} minutes".format(elapsed_time))    
+    elapsed_time = round((perf() - start_time)/60, 1)
+    print("Success! Time elapsed: {} minutes".format(elapsed_time))    
 
 
     

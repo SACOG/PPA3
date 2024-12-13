@@ -35,8 +35,7 @@ projexn_wkid_sacog = 2226 # NAD 1983 StatePlane California II FIPS 0402 (US Feet
 
 # -------input feature classes, all in fgdb
 region_fc = pathconfigs['sde']['region_fc']
-fc_speed_data = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\NPMRDS_2023data_20241017_1129' #npmrds speed data
-# fc_speed_data = pathconfigs['sde']['fc_speed_data'] #npmrds speed data
+fc_speed_data = pathconfigs['sde']['fc_speed_data'] #npmrds speed data
 accdata_fc = pathconfigs['sde']['accdata_fc'] # sugar accessibility polygon data
 collisions_fc = pathconfigs['sde']['collisions_fc'] # collision point data
 trn_svc_fc = pathconfigs['sde']['trn_svc_fc'] # transit stop event data; point file
