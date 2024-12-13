@@ -12,9 +12,23 @@ Python Version: 3.x
 
 from pathlib import Path
 
-import arcpy
+import arcpy, arcgisscripting
 
+try:
+    arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+    print("Deleted arcpy scratch GDB to ensure reliability.")
+except:
+    pass
 
+def field_cleanup(in_tbl, fields_to_keep):
+    print(f"field cleanup for {in_tbl}...")
+    for f in arcpy.ListFields(in_tbl):
+        if f.name not in fields_to_keep:
+            try:
+                arcpy.DeleteField_management(in_tbl, f.name)
+            except arcgisscripting.ExecuteError:
+                print(f"\tWarning: did not delete required field {f.name}")
+                pass
 
 def conflate_truck_cnts(hwy_lines, truckvol_pts, input_count_field, other_truck_fields=None):
 
@@ -23,6 +37,10 @@ def conflate_truck_cnts(hwy_lines, truckvol_pts, input_count_field, other_truck_
     workspc = str(Path(hwy_lines).parent)
     arcpy.env.workspace = workspc
     arcpy.env.overwriteOutput = True
+
+    f_jnfield = 'tmc'
+    f_truckpct_in_scripts = 'Trk_Veh_Pc' # field actually used by scripts
+
 
     fl_hwy = 'fl_hwy'
     arcpy.MakeFeatureLayer_management(hwy_lines, fl_hwy)
@@ -35,43 +53,44 @@ def conflate_truck_cnts(hwy_lines, truckvol_pts, input_count_field, other_truck_
 
     # spatial join truck point data to lines
     print("spatial joining truck point data to hwy lines")
-    result_fc = f"{str(Path(hwy_lines).name)}_wtruckvol"
+    temp_result_fc_name = f"{str(Path(hwy_lines).name)}_TEMPwtruckvol"
+    temp_result_fc_path = str(Path(arcpy.env.scratchGDB).joinpath(temp_result_fc_name))
+
     arcpy.SpatialJoin_analysis(target_features=fl_hwy, join_features=fl_trkpnts,
-                               out_feature_class=result_fc, match_option='CLOSEST',
+                               out_feature_class=temp_result_fc_path, match_option='CLOSEST',
                                search_radius='100 Feet')
 
-    result_fl = 'result_fl'
-    arcpy.MakeFeatureLayer_management(result_fc, result_fl)
+    temp_result_fl = 'temp_result_fl'
+    arcpy.MakeFeatureLayer_management(temp_result_fc_path, temp_result_fl)
 
     # rename field to one used by scripts
-    f_truckpct_in_scripts = 'Trk_Veh_Pc' # field actually used by scripts
-    arcpy.management.AlterField(result_fl, field=input_count_field,
+    arcpy.management.AlterField(temp_result_fl, field=input_count_field,
                                 new_field_name=f_truckpct_in_scripts,
                                 new_field_alias=f_truckpct_in_scripts)
 
+    include_fields = [f_jnfield, f_truckpct_in_scripts]
+    field_cleanup(temp_result_fl, fields_to_keep=include_fields)
 
-    # delete unwanted fields
-    hwyfields = [f.name for f in arcpy.ListFields(hwy_lines)]
-    include_fields = [*hwyfields, f_truckpct_in_scripts]
-    if other_truck_fields:
-        include_fields = [*include_fields, *other_truck_fields]
-
-    for f in arcpy.ListFields(result_fl):
-        if f.name not in include_fields:
-            arcpy.DeleteField_management(result_fl, f.name)
-
-    # 12/13/2024 - NEED TO RE-JOIN TO ORIGINAL FEATURE CLASS, BECAUSE RESULT OF SPATIAL
-    # JOIN ONLY INCLUDES FWYS, NOT ARTERIALS
+    # join links with truck pct data to final NPMRDS data
+    arcpy.SelectLayerByAttribute_management(fl_hwy, 'CLEAR_SELECTION')
+    arcpy.management.AddJoin(fl_hwy, in_field=f_jnfield, join_table=temp_result_fl, 
+                             join_field=f_jnfield, join_type='KEEP_ALL')
     
+    # export to final FC
+    final_fc_name  = f"{str(Path(hwy_lines).name)}_wtruckvol"
+    arcpy.conversion.FeatureClassToFeatureClass(fl_hwy, workspc, final_fc_name)
 
-    print(f"Resulting feature class: {Path(workspc).joinpath(result_fc)}")
+    # clean out last unwanted fields
+    original_fields = [f.name for f in arcpy.ListFields(hwy_lines)]
+    final_keep_fields = [*include_fields, *original_fields]
+    field_cleanup(final_fc_name, fields_to_keep=final_keep_fields)
 
-
+    print(f"Resulting feature class: {Path(workspc).joinpath(final_fc_name)}")
 
 
 
 if __name__ == '__main__':
-    hwys = r'I:\SDE_Connections\SDE-PPA\owner@PPA.sde\OWNER.NPMRDS_2023ppadata_final'
+    hwys = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\NPMRDS_2023ppadata_final'
     truck_count_points = r'I:\Projects\Darren\PPA3_GIS\SHP\Truck__Volumes_AADT2022\HWY_Truck_Volumes_AADT.shp'
     truck_data_fields = 'TRK_PERCEN'
 
