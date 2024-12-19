@@ -280,6 +280,7 @@ SELECT * FROM (
 		tmc.route_numb,
 		tmc.direction AS direction_signd,
 		tmc.f_system,
+        tmc.type,
 		tmc.nhs,
 		tmc.miles,
         tmc.start_longitude,
