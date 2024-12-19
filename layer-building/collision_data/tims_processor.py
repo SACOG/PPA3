@@ -21,7 +21,7 @@ import geopandas as gpd
 from esri_file_to_dataframe import esri_to_df
 
 @dataclass
-class Dataset:
+class CrashDataset:
     in_csv: str
 
     # fields from TIMS data. May need periodic updating as field names can change.
@@ -112,6 +112,7 @@ class Dataset:
     def add_fwy_tag(self, road_lines, road_type_field, road_fwy_types):
         # adds 1/0 tag indicating if crash happend on freeway or non-freeway road.
         # freeway = grade-separated, limited access, high-speed facility
+        # or can also be ramp (f_system in (1, 2) OR type = 'P4.0')
         gdf_roads = esri_to_df(road_lines, include_geom=True, crs_val=self.crs_sacog)
 
         import pdb; pdb.set_trace()
