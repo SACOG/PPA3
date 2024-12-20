@@ -19,7 +19,7 @@ grocery_store,service,1,
 health_and_medical,service,1,
 high_school,edu,1,
 hospice,service,0,
-hospital,service,1,
+hospital,service,0.2,"major hospitals are represented by many points, and many smaller specialty clinics are wrongly coded as hospitals, so giving lower weight"
 internal_medicine,service,1,
 library,service,1,
 medical_center,service,1,
