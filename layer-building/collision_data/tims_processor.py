@@ -14,9 +14,12 @@ Copyright:   (c) SACOG
 Python Version: 3.x
 """
 from dataclasses import dataclass
+from zipfile import ZipFile
+from pathlib import Path
 
 import pandas as pd
 import geopandas as gpd
+from arcpy import Describe
 
 from esri_file_to_dataframe import esri_to_df
 
@@ -32,6 +35,8 @@ class CrashDataset:
     f_x_chp: str='LONGITUDE'
     f_y_chp: str='LATITUDE'
     f_county: str='COUNTY'
+    f_hwy_ind: str="STATE_HWY_IND"
+    f_hwyind_y: str='Y'
 
     # fields added to resulting data set
     f_fwytag: str="FwyTag"
@@ -43,7 +48,7 @@ class CrashDataset:
 
 
     def __post_init__(self):
-        self.gdf_crashes = self.load_data(self.in_csv)
+        self.gdf_crashes = self.load_data()
 
 
 
@@ -68,6 +73,7 @@ class CrashDataset:
         summary = df.value_counts().reset_index()
         summary = summary.merge(label_lkp, left_on=self.f_gcqual, right_index=True, left_index=False)
         summary[self.f_gcqual] = summary[0]
+        del summary[0]
         
         return summary
 
@@ -109,20 +115,66 @@ class CrashDataset:
         return gdf
 
         
-    def add_fwy_tag(self, road_lines, road_type_field, road_fwy_types):
+    def add_fwy_tag(self, road_lines, fwy_query, f_linkid):
         # adds 1/0 tag indicating if crash happend on freeway or non-freeway road.
         # freeway = grade-separated, limited access, high-speed facility
         # or can also be ramp (f_system in (1, 2) OR type = 'P4.0')
-        gdf_roads = esri_to_df(road_lines, include_geom=True, crs_val=self.crs_sacog)
 
-        import pdb; pdb.set_trace()
+        # load road file into gdf with sacog CRS
+        crs_roads_native = Describe(road_lines).spatialReference.name
+        gdf_roads = esri_to_df(road_lines, include_geom=True, crs_val=crs_roads_native)
+        if gdf_roads.geometry[0].geom_type == 'MultiLineString':
+            len1 = gdf_roads.shape[0]
+            gdf_roads = gdf_roads.to_crs(self.crs_sacog).explode(index_parts=True)
+            if gdf_roads.shape[0] != len1:
+                print(f"""WARNING: after exploding to get rid of multilinestring objects, 
+                      road record count changed from {len1} to {gdf_roads.shape[0]}""")
+                
+        # filter links to only have links that qualify as freeway links
+        gdf_fwys = gdf_roads.query(fwy_query, inplace=False)[['geometry', f_linkid]]
 
+        # add 1/0 indicator flagging all collisions within X ft of a freeway link
+        self.gdf_crashes[self.f_fwytag] = 0 # by default, assume not a freeway crash
+        cols_to_keep = [c for c in self.gdf_crashes.columns]
 
+        self.gdf_crashes = gpd.sjoin_nearest(self.gdf_crashes, gdf_fwys, how='left', max_distance=100) # spatial join fwy link info to crashes
+        self.gdf_crashes.loc[~self.gdf_crashes[f_linkid].isnull(), self.f_fwytag] = 1 # if match found within distance, then update fwytag to say 'yes'
+
+        # if spatially tagged to fwy, but not actually on fwy (e.g. on frontage road next to fwy), then revert fwy tag back to zero ("no")
+        self.gdf_crashes.loc[(self.gdf_crashes[self.f_fwytag] == 1) \
+                             & (self.gdf_crashes[self.f_hwy_ind] != self.f_hwyind_y), 
+                             self.f_fwytag] = 0
+
+        # delete unneeded fields
+        for c in self.gdf_crashes.columns:
+            if c not in cols_to_keep: del self.gdf_crashes[c]
 
 
 
 if __name__ == '__main__':
-    collision_csv = r"I:\Projects\Darren\PPA3_GIS\CSV\collisions\raw_collisions_region2014_20221128\collisions_ELD_2014.csv"
+    collision_data_zip = r"I:\Projects\Darren\PPA3_GIS\CSV\collisions\raw_collisions_region2014_20221128.zip"
 
-    cobj = Dataset(collision_csv)
-    cobj.load_data()
+    roads_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\NPMRDS_2023ppadata_final'
+    road_linkid = 'tmc'
+    fwy_qry = f"f_system in (1, 2) or type == 'P4.0'"
+
+    #======================RUN SCRIPT========================
+
+    gdf_out = gpd.GeoDataFrame()
+    data_summary = pd.DataFrame()
+    with ZipFile(collision_data_zip, 'r') as z:
+        for fileobj in z.infolist():
+            fname = fileobj.filename
+            print(f"Adding collisions from {fname}...")
+            if Path(fname).suffix == '.csv':
+                with z.open(fname) as f:
+                    # import pdb; pdb.set_trace()
+                    cobj = CrashDataset(f)
+                    cobj.add_fwy_tag(roads_fc, fwy_query=fwy_qry, f_linkid=road_linkid)
+                    gdf_out = pd.concat([gdf_out, cobj.gdf_crashes])
+                    data_summary = pd.concat([data_summary, cobj.data_summary])
+
+    print("NEXT STEPS: NEED TO EXPORT TO GIS FC AND HAVE USEFUL DATA SUMMARY, EXPORTABLE AS CSV",
+          "AND ALSO CONSIDER HAVING EACH CSV APPEND TO  FEATURE CLASS RATHER THAN 1 GIANT DATAFRAME, TO SAVE MEMORY")
+
+    import pdb; pdb.set_trace()
