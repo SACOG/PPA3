@@ -195,8 +195,8 @@ if __name__ == '__main__':
                 with z.open(fname) as f:
                     cobj = CrashDataset(f)
                     cobj.add_fwy_tag(roads_fc, fwy_query=fwy_qry, f_linkid=road_linkid)
-                    if cobj.minyr > 0 & cobj.minyr < startyr: startyr = cobj.minyr
-                    if cobj.maxyr > 0 & cobj.maxyr > endyr: endyr = cobj.minyr
+                    if cobj.minyr > 0 & cobj.minyr <= startyr: startyr = cobj.minyr
+                    if cobj.maxyr > 0 & cobj.maxyr >= endyr: endyr = cobj.minyr
 
                     data_summary = pd.concat([data_summary, cobj.data_summary])
 
@@ -205,13 +205,21 @@ if __name__ == '__main__':
                     sedf.spatial.to_featureclass(temp_fc, sanitize_columns=False)
                     partial_files.append(temp_fc)
 
+
     out_fc = str(Path(output_fgdb).joinpath(f"SACOGCollisions{startyr}to{endyr}"))
     arcpy.management.Merge(partial_files, out_fc)
 
     for tmpfile in partial_files: arcpy.Delete_management(tmpfile)
 
-    print(data_summary)
-    print("NEXT STEPS: NEED TO EXPORT TO GIS FC AND HAVE USEFUL DATA SUMMARY, EXPORTABLE AS CSV",
-          "AND ALSO CONSIDER HAVING EACH CSV APPEND TO FEATURE CLASS RATHER THAN 1 GIANT DATAFRAME, TO SAVE MEMORY")
+    # data quality summary
+    print("DATA QUALITY SUMMARY:")
+    gb = data_summary.groupby('gc_qual')['count'].sum().reset_index()
+    nrows = data_summary['count'].sum()
+    gcd_rows = gb.loc[gb['gc_qual'] == 'Complete lat-long data']['count'].values[0]
+    non_gcd = nrows - gcd_rows
+    pct_gcd = f"{gcd_rows / nrows:.2%}"
+    print(f"{gcd_rows} out of {nrows} ({pct_gcd}) collisions geocoded. {non_gcd} collisions excluded due to insufficient geodata.")
+
+    # print(data_summary) # KEEP this line in case you want more detailed data quality report
 
     
