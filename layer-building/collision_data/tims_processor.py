@@ -19,7 +19,10 @@ from pathlib import Path
 
 import pandas as pd
 import geopandas as gpd
-from arcpy import Describe
+
+import arcpy
+from arcgis.features import GeoAccessor, GeoSeriesAccessor
+if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
 
 from esri_file_to_dataframe import esri_to_df
 
@@ -42,13 +45,25 @@ class CrashDataset:
     f_fwytag: str="FwyTag"
     f_gcqual: str='gc_qual'
 
+
+
     # CRS values to use
     crs_tims: str='EPSG:4326'
     crs_sacog: str='EPSG:2226'
 
 
     def __post_init__(self):
+        # unneeded fields to drop:
+        self.fields_to_drop = ['OFFICER_ID', 'REPORTING_DISTRICT', 'CHP_SHIFT', 'POPULATION',
+                            'CNTY_CITY_LOC', 'SPECIAL_COND', 'BEAT_TYPE', 'CHP_BEAT_TYPE',
+                            'CITY_DIVISION_LAPD', 'CHP_BEAT_CLASS', 'BEAT_NUMBER', 'CALTRANS_COUNTY',
+                            'CALTRANS_DISTRICT', 'POSTMILE_PREFIX', 'POSTMILE', 'TOW_AWAY', 
+                            'PCF_VIOL_SUBSECTION', 'MVIW', 'MOTORCYCLE_ACCIDENT',
+                            'TRUCK_ACCIDENT', 'NOT_PRIVATE_PROPERTY']
+
         self.gdf_crashes = self.load_data()
+        self.minyr = self.gdf_crashes[self.f_colln_year].min()
+        self.maxyr = self.gdf_crashes[self.f_colln_year].max()
 
 
 
@@ -80,8 +95,12 @@ class CrashDataset:
 
 
     def load_data(self):
-        # loads CSV of collision data to geopandas geodataframe
+        # loads CSV of collision data to pandas dataframe, removing unused fields
         df_raw = pd.read_csv(self.in_csv)
+        rawcols = df_raw.columns
+        use_cols = [f for f in rawcols if f not in self.fields_to_drop]
+        df_raw = df_raw[use_cols]
+
 
         # set null lat-long vals to zero
         df_raw[[self.f_x_tims, self.f_x_chp]] = df_raw[[self.f_x_tims, self.f_x_chp]].fillna(0)
@@ -121,7 +140,7 @@ class CrashDataset:
         # or can also be ramp (f_system in (1, 2) OR type = 'P4.0')
 
         # load road file into gdf with sacog CRS
-        crs_roads_native = Describe(road_lines).spatialReference.name
+        crs_roads_native = arcpy.Describe(road_lines).spatialReference.name
         gdf_roads = esri_to_df(road_lines, include_geom=True, crs_val=crs_roads_native)
         if gdf_roads.geometry[0].geom_type == 'MultiLineString':
             len1 = gdf_roads.shape[0]
@@ -153,28 +172,46 @@ class CrashDataset:
 
 if __name__ == '__main__':
     collision_data_zip = r"I:\Projects\Darren\PPA3_GIS\CSV\collisions\raw_collisions_region2014_20221128.zip"
+    output_fgdb = r"I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb"
 
+    # seldom-changed variables
     roads_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\NPMRDS_2023ppadata_final'
     road_linkid = 'tmc'
     fwy_qry = f"f_system in (1, 2) or type == 'P4.0'"
 
     #======================RUN SCRIPT========================
+    arcpy.env.overwriteOutput = True
 
-    gdf_out = gpd.GeoDataFrame()
+    startyr = 0
+    endyr = 0
+    partial_files = []
     data_summary = pd.DataFrame()
+
     with ZipFile(collision_data_zip, 'r') as z:
-        for fileobj in z.infolist():
+        for i, fileobj in enumerate(z.infolist()):
             fname = fileobj.filename
             print(f"Adding collisions from {fname}...")
             if Path(fname).suffix == '.csv':
                 with z.open(fname) as f:
-                    # import pdb; pdb.set_trace()
                     cobj = CrashDataset(f)
                     cobj.add_fwy_tag(roads_fc, fwy_query=fwy_qry, f_linkid=road_linkid)
-                    gdf_out = pd.concat([gdf_out, cobj.gdf_crashes])
+                    if cobj.minyr > 0 & cobj.minyr < startyr: startyr = cobj.minyr
+                    if cobj.maxyr > 0 & cobj.maxyr > endyr: endyr = cobj.minyr
+
                     data_summary = pd.concat([data_summary, cobj.data_summary])
 
-    print("NEXT STEPS: NEED TO EXPORT TO GIS FC AND HAVE USEFUL DATA SUMMARY, EXPORTABLE AS CSV",
-          "AND ALSO CONSIDER HAVING EACH CSV APPEND TO  FEATURE CLASS RATHER THAN 1 GIANT DATAFRAME, TO SAVE MEMORY")
+                    sedf = pd.DataFrame.spatial.from_geodataframe(cobj.gdf_crashes)
+                    temp_fc = str(Path(arcpy.env.scratchGDB).joinpath(f"TEMP{i}"))
+                    sedf.spatial.to_featureclass(temp_fc, sanitize_columns=False)
+                    partial_files.append(temp_fc)
 
-    import pdb; pdb.set_trace()
+    out_fc = str(Path(output_fgdb).joinpath(f"SACOGCollisions{startyr}to{endyr}"))
+    arcpy.management.Merge(partial_files, out_fc)
+
+    for tmpfile in partial_files: arcpy.Delete_management(tmpfile)
+
+    print(data_summary)
+    print("NEXT STEPS: NEED TO EXPORT TO GIS FC AND HAVE USEFUL DATA SUMMARY, EXPORTABLE AS CSV",
+          "AND ALSO CONSIDER HAVING EACH CSV APPEND TO FEATURE CLASS RATHER THAN 1 GIANT DATAFRAME, TO SAVE MEMORY")
+
+    
