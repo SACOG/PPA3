@@ -130,10 +130,6 @@ ft2mile = 5280
 ann_factor = 320 # multiplier to get approximate annual value based on "typical weekday"
 # ===================================ACCESSIBILITY PARAMETERS=========================================================
 
-
-
-
-
 acc_search_dist = 100 # meters away from project line that you'll include TIFF cell values
 
 # ===================================PROBE-BASED SPEED DATA (E.G. NPMRDS) PARAMETERS================================
