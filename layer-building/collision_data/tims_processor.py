@@ -171,7 +171,7 @@ class CrashDataset:
 
 
 if __name__ == '__main__':
-    collision_data_zip = r"I:\Projects\Darren\PPA3_GIS\CSV\collisions\raw_collisions_region2014_20221128.zip"
+    collision_data_zip = r"I:\Projects\Darren\PPA3_GIS\CSV\collisions\raw_collisions2019_2023.zip"
     output_fgdb = r"I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb"
 
     # seldom-changed variables
@@ -190,14 +190,16 @@ if __name__ == '__main__':
     with ZipFile(collision_data_zip, 'r') as z:
         for i, fileobj in enumerate(z.infolist()):
             fname = fileobj.filename
-            print(f"Adding collisions from {fname}...")
             if Path(fname).suffix == '.csv':
+                print(f"Adding collisions from {fname}...")
                 with z.open(fname) as f:
                     cobj = CrashDataset(f)
                     cobj.add_fwy_tag(roads_fc, fwy_query=fwy_qry, f_linkid=road_linkid)
                     if cobj.minyr > 0 & cobj.minyr <= startyr: startyr = cobj.minyr
                     if cobj.maxyr > 0 & cobj.maxyr >= endyr: endyr = cobj.minyr
 
+                    if "Crashes_sacramento_2022_2023" in fname:
+                        import pdb; pdb.set_trace()
                     data_summary = pd.concat([data_summary, cobj.data_summary])
 
                     sedf = pd.DataFrame.spatial.from_geodataframe(cobj.gdf_crashes)
@@ -219,6 +221,7 @@ if __name__ == '__main__':
     non_gcd = nrows - gcd_rows
     pct_gcd = f"{gcd_rows / nrows:.2%}"
     print(f"{gcd_rows} out of {nrows} ({pct_gcd}) collisions geocoded. {non_gcd} collisions excluded due to insufficient geodata.")
+    print(gb)
 
     # print(data_summary) # KEEP this line in case you want more detailed data quality report
 
