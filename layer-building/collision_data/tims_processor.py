@@ -55,11 +55,11 @@ class CrashDataset:
     def __post_init__(self):
         # unneeded fields to drop:
         self.fields_to_drop = ['OFFICER_ID', 'REPORTING_DISTRICT', 'CHP_SHIFT', 'POPULATION',
-                            'CNTY_CITY_LOC', 'SPECIAL_COND', 'BEAT_TYPE', 'CHP_BEAT_TYPE',
+                            'CNTY_CITY_LOC', 'SPECIAL_COND', 'BEAT_TYPE', 'CHP_BEAT_TYPE', 'JURIS',
                             'CITY_DIVISION_LAPD', 'CHP_BEAT_CLASS', 'BEAT_NUMBER', 'CALTRANS_COUNTY',
                             'CALTRANS_DISTRICT', 'POSTMILE_PREFIX', 'POSTMILE', 'TOW_AWAY', 
-                            'PCF_VIOL_SUBSECTION', 'MVIW', 'MOTORCYCLE_ACCIDENT',
-                            'TRUCK_ACCIDENT', 'NOT_PRIVATE_PROPERTY']
+                            'PCF_VIOL_SUBSECTION', 'MVIW', 'MOTORCYCLE_ACCIDENT', 'COUNT_MC_INJURED'
+                            'COUNT_MC_KILLED', 'TRUCK_ACCIDENT', 'NOT_PRIVATE_PROPERTY']
 
         self.gdf_crashes = self.load_data()
         self.minyr = self.gdf_crashes[self.f_colln_year].min()
@@ -155,7 +155,6 @@ class CrashDataset:
         # add 1/0 indicator flagging all collisions within X ft of a freeway link
         self.gdf_crashes[self.f_fwytag] = 0 # by default, assume not a freeway crash
         cols_to_keep = [c for c in self.gdf_crashes.columns]
-
         self.gdf_crashes = gpd.sjoin_nearest(self.gdf_crashes, gdf_fwys, how='left', max_distance=100) # spatial join fwy link info to crashes
         self.gdf_crashes.loc[~self.gdf_crashes[f_linkid].isnull(), self.f_fwytag] = 1 # if match found within distance, then update fwytag to say 'yes'
 
@@ -168,6 +167,8 @@ class CrashDataset:
         for c in self.gdf_crashes.columns:
             if c not in cols_to_keep: del self.gdf_crashes[c]
 
+        # drop duplicate records
+        self.gdf_crashes.drop_duplicates(inplace=True)
 
 
 if __name__ == '__main__':
@@ -196,13 +197,12 @@ if __name__ == '__main__':
                     cobj = CrashDataset(f)
                     cobj.add_fwy_tag(roads_fc, fwy_query=fwy_qry, f_linkid=road_linkid)
                     if cobj.minyr > 0 & cobj.minyr <= startyr: startyr = cobj.minyr
-                    if cobj.maxyr > 0 & cobj.maxyr >= endyr: endyr = cobj.minyr
+                    if cobj.maxyr > 0 & cobj.maxyr >= endyr: endyr = cobj.maxyr
 
-                    if "Crashes_sacramento_2022_2023" in fname:
-                        import pdb; pdb.set_trace()
                     data_summary = pd.concat([data_summary, cobj.data_summary])
 
                     sedf = pd.DataFrame.spatial.from_geodataframe(cobj.gdf_crashes)
+                    
                     temp_fc = str(Path(arcpy.env.scratchGDB).joinpath(f"TEMP{i}"))
                     sedf.spatial.to_featureclass(temp_fc, sanitize_columns=False)
                     partial_files.append(temp_fc)
@@ -222,6 +222,7 @@ if __name__ == '__main__':
     pct_gcd = f"{gcd_rows / nrows:.2%}"
     print(f"{gcd_rows} out of {nrows} ({pct_gcd}) collisions geocoded. {non_gcd} collisions excluded due to insufficient geodata.")
     print(gb)
+    print(f'\nOutput dataset: {out_fc}')
 
     # print(data_summary) # KEEP this line in case you want more detailed data quality report
 
