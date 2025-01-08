@@ -29,6 +29,7 @@ from esri_file_to_dataframe import esri_to_df
 @dataclass
 class CrashDataset:
     in_csv: str
+    remove_gc_errors: bool=False
 
     # fields from TIMS data. May need periodic updating as field names can change.
     f_case_id: str='CASE_ID'
@@ -43,9 +44,9 @@ class CrashDataset:
 
     # fields added to resulting data set
     f_fwytag: str="FwyTag"
-    f_gcqual: str='gc_qual'
+    f_gcqual: str='gc_issue'
 
-
+    # fc_regn_boundary: str=r'I:\Projects\Darren\PPA3_GIS\winuser@GISData.sde\GISOWNER.AdministrativeBoundaries\GISOWNER.Counties'
 
     # CRS values to use
     crs_tims: str='EPSG:4326'
@@ -78,9 +79,10 @@ class CrashDataset:
         """
         
 
-        label_dict = {0: 'No lat-long data',
-                      1: 'Only CHP lat-long data (unreliable)',
-                      2: 'Complete lat-long data'}
+        label_dict = {0: 'Correct lat-long data',
+                      1: 'No lat-long data',
+                      2: 'Only CHP lat-long data (unreliable)',
+                      3: 'Incorrect TIMS lat-long data'}
         
         label_lkp = pd.Series(label_dict).to_frame()
 
@@ -92,6 +94,31 @@ class CrashDataset:
         
         return summary
 
+    def tag_wrong_gcs(self, gdf):
+        """
+        TIMS wrongly geocodes a small percent (~0.1%) of its collisions in significantly wrong location.
+        This function flags collisions that are wrong enough that they fall significantly outside of SACOG region.
+        NOTE that this flag does not capture collisions whose X/Y values are wrong but still within the SACOG region.
+        """
+        tolerance_ft = 2500 # count as not in region if more than this many feet outside of the region
+        f_dist = 'dist_to_regn'
+
+        fc_regn_boundary: str=r'I:\Projects\Darren\PPA3_GIS\winuser@GISData.sde\GISOWNER.AdministrativeBoundaries\GISOWNER.Counties'
+        crs_in = arcpy.Describe(fc_regn_boundary).spatialReference.factoryCode
+        gdf_regn = esri_to_df(esri_obj_path=fc_regn_boundary, include_geom=True, 
+                              crs_val=crs_in, dissolve=True)
+        
+        if gdf_regn.crs != gdf.crs: gdf_regn.to_crs(gdf.crs, inplace=True)
+        geom_regn = gdf_regn['geometry'].unary_union
+        ix = gdf['geometry'].distance(geom_regn)
+        ix.name = f_dist
+        gdf = gdf.join(ix, how='left')
+
+        # where there is valid TIMS coordinate but point is far outside of region, flag as TIMS GC error
+        gdf.loc[(gdf[self.f_x_tims] != 0) & (gdf[f_dist] > tolerance_ft), self.f_gcqual] = 3 
+
+        return gdf
+
 
 
     def load_data(self):
@@ -101,28 +128,9 @@ class CrashDataset:
         use_cols = [f for f in rawcols if f not in self.fields_to_drop]
         df_raw = df_raw[use_cols]
 
-
         # set null lat-long vals to zero
-        df_raw[[self.f_x_tims, self.f_x_chp]] = df_raw[[self.f_x_tims, self.f_x_chp]].fillna(0)
-
-        # add field for gc quality tag
-        df_raw[self.f_gcqual] = 0
-
-        # records with no lat-long data from either source
-        df_raw.loc[(df_raw[self.f_x_tims] == 0) & (df_raw[self.f_x_chp] == 0), self.f_gcqual] = 0
-
-        # records with no lat-long data from TIMS, but yes from CHP raw (often not reliable)
-        df_raw.loc[(df_raw[self.f_x_tims] == 0) & (df_raw[self.f_x_chp] != 0), self.f_gcqual] = 1
-
-        # records with TIMS lat-long data
-        df_raw.loc[df_raw[self.f_x_tims] != 0, self.f_gcqual] = 2
-
-        # get data quality summary
-        self.data_summary = self.data_quality_summary(df_raw)
-
-        # remove records with bad GC data (keep only TIMS gc data)
-        df_raw = df_raw.loc[df_raw[self.f_gcqual] == 2]
-
+        df_raw[[self.f_x_tims, self.f_x_chp, self.f_y_tims, self.f_y_chp]] = \
+            df_raw[[self.f_x_tims, self.f_x_chp, self.f_y_tims, self.f_y_chp]].fillna(0)
 
         # load data to geodataframe
         gdf = gpd.GeoDataFrame(df_raw, 
@@ -130,6 +138,28 @@ class CrashDataset:
                                                               y=df_raw[self.f_y_tims], 
                                                               crs=self.crs_tims),
                                ).to_crs(self.crs_sacog)
+
+        # add field for gc quality tag
+        gdf[self.f_gcqual] = 0
+
+        # records with no lat-long data from either source
+        gdf.loc[(gdf[self.f_x_tims] == 0) & (gdf[self.f_x_chp] == 0), self.f_gcqual] = 1
+
+        # records with no lat-long data from TIMS, but yes from CHP raw (often not reliable)
+        gdf.loc[(gdf[self.f_x_tims] == 0) & (gdf[self.f_x_chp] != 0), self.f_gcqual] = 2
+
+        # records with TIMS lat-long data
+        gdf.loc[gdf[self.f_x_tims] != 0, self.f_gcqual] = 0
+
+        # records with TIMS lat-long data that fall >2500ft outside of SACOG region (set gcqual = 3)
+        gdf = self.tag_wrong_gcs(gdf)
+
+        # get initial data quality summary
+        self.data_summary = self.data_quality_summary(gdf)
+
+        # remove records with bad GC data (keep only TIMS gc data for collisions that happened in region)
+        if self.remove_gc_errors:
+            gdf = gdf.loc[gdf[self.f_gcqual] == 0]
 
         return gdf
 
@@ -194,7 +224,7 @@ if __name__ == '__main__':
             if Path(fname).suffix == '.csv':
                 print(f"Adding collisions from {fname}...")
                 with z.open(fname) as f:
-                    cobj = CrashDataset(f)
+                    cobj = CrashDataset(f, remove_gc_errors=True)
                     cobj.add_fwy_tag(roads_fc, fwy_query=fwy_qry, f_linkid=road_linkid)
                     if cobj.minyr > 0 & cobj.minyr <= startyr: startyr = cobj.minyr
                     if cobj.maxyr > 0 & cobj.maxyr >= endyr: endyr = cobj.maxyr
@@ -215,12 +245,12 @@ if __name__ == '__main__':
 
     # data quality summary
     print("DATA QUALITY SUMMARY:")
-    gb = data_summary.groupby('gc_qual')['count'].sum().reset_index()
+    gb = data_summary.groupby('gc_issue')['count'].sum().reset_index()
     nrows = data_summary['count'].sum()
-    gcd_rows = gb.loc[gb['gc_qual'] == 'Complete lat-long data']['count'].values[0]
+    gcd_rows = gb.loc[gb['gc_issue'] == 'Correct lat-long data']['count'].values[0]
     non_gcd = nrows - gcd_rows
     pct_gcd = f"{gcd_rows / nrows:.2%}"
-    print(f"{gcd_rows} out of {nrows} ({pct_gcd}) collisions geocoded. {non_gcd} collisions excluded due to insufficient geodata.")
+    print(f"{gcd_rows} out of {nrows} ({pct_gcd}) of collisions have reliable TIMS coordinates. More information:")
     print(gb)
     print(f'\nOutput dataset: {out_fc}')
 
