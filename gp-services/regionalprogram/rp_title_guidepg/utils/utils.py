@@ -82,11 +82,21 @@ def log_row_to_table(data_row_dict, dest_table):
     """Writes row of values to table. Fields are data_row_dict keys, and the values
     written are the values from data_row_dict's values."""
 
+    from time import sleep
+
     data_fields = list(data_row_dict.keys())
     data_values = list(data_row_dict.values())
 
-    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-        cur.insertRow(data_values)
+    attempts = 0
+    while attempts < 3:
+        try:
+            with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+                cur.insertRow(data_values)
+            break
+        except RuntimeError:
+            attempts += 1
+            sleep(10)
+            # if multiple runs happening at once, there can be schema locks. As workaround, wait for 10sec and try again for up to 3 tries
 
     arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 

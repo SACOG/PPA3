@@ -5,7 +5,7 @@ sde:
   region_fc: sacog_region
   fc_speed_data: NPMRDS_2023ppadata_final #npmrds speed data
   accdata_fc: Sugar_access_data_latest # sugar accessibility polygon data
-  collisions_fc: collisions_tims_2015_2019_fwytag # collision point data
+  collisions_fc: Collisions2019to2023 # collision point data
   trn_svc_fc: transit_activity_weekdays2024 # transit stop event data; point file
   freight_route_fc: STAATruckRoutes # STAA truck route lines
   intersections_base_fc: intersections_2021
