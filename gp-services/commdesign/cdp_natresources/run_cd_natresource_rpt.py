@@ -36,7 +36,7 @@ def cd_natresource_rpt(input_dict):
 
     # sometimes the scratch gdb folder becomes just a folder, so need to re-create to ensure no errors
     if arcpy.Exists(arcpy.env.scratchGDB): arcpy.Delete_management(arcpy.env.scratchGDB)
-    data_years = [2016, 2040]
+    data_years = [params.base_year, params.future_year]
     lu_buffdist_ft = params.buff_nat_resources
 
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Community Design Program}_{CommDesign}_NaturePreservation_sample_dataSource.json")

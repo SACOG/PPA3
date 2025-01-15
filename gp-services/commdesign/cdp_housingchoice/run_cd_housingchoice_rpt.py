@@ -39,7 +39,7 @@ def cd_housingchoice_rpt(input_dict):
 
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Community Design Program}_{CommDesign}_HousingChoice_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
-    data_years = [2016, 2040]
+    data_years = [params.base_year, params.future_year]
     year_relref_names = ['base', 'fut']
     year_relref_dict = dict(zip(data_years, year_relref_names))
 

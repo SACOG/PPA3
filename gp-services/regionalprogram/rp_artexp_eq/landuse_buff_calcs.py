@@ -126,7 +126,7 @@ if __name__ == '__main__':
     # input line project for basing spatial selection
     project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
     ptype = params.ptype_arterial
-    data_years = [2016, 2040]
+    data_years = [params.base_year, params.future_year]
     buffdist_ft = 2640
     # value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
     #                 'BIK_TOT_RES', 'WLK_TOT_RES']

@@ -131,7 +131,7 @@ if __name__ == '__main__':
     # input line project for basing spatial selection
     project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
     buff_dist_ft = params.mix_index_buffdist  # distance in feet--MIGHT NEED TO BE ADJUSTED FOR WGS 84--SEE OLD TOOL FOR HOW THIS WAS RESOLVED
-    data_years = [2016, 2040]
+    data_years = [params.base_year, params.future_year]
 
     out_dict = {}
     for data_year in data_years:

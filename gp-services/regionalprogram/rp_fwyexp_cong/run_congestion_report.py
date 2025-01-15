@@ -75,7 +75,7 @@ def make_congestion_rpt_fwyexp(input_dict):
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_ReduceCongestion_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
-    data_years = [2016, 2040]
+    data_years = [params.base_year, params.future_year]
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
