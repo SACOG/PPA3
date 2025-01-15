@@ -11,7 +11,7 @@
 # --------------------------------
 from pathlib import Path
 import sys
-sys.path.append(Path(__file__).parent)
+sys.path.append(str(Path(__file__).parent))
 from time import perf_counter as perf
 
 import pandas as pd

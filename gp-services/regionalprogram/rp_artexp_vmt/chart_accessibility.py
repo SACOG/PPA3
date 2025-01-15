@@ -44,8 +44,11 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, destina
         
         # update value for "type" (mode of tranpsortation)
         chart_tickname = modename.split('_')[0].title()
-        json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
-            [params.k_attrs][params.k_type] = chart_tickname # acc_metrics[k]
+        try:
+            json_loaded[params.k_charts][k_chart_title][params.k_features][i] \
+                [params.k_attrs][params.k_type] = chart_tickname # acc_metrics[k]
+        except:
+            import pdb; pdb.set_trace()
         
         # update value for mode's access from project
         json_loaded[params.k_charts][k_chart_title][params.k_features][i] \

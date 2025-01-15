@@ -11,7 +11,7 @@
 # --------------------------------
 from pathlib import Path
 import sys
-sys.path.append(Path(__file__).parent)
+sys.path.append(str(Path(__file__).parent))
 from time import perf_counter as perf
 
 import pandas as pd
@@ -101,10 +101,10 @@ def get_acc_data(fc_project, tif_weights, project_type, dest):
                 wtd_avg = gdfjn[i_dict_key].mean()
             else:
                 wtd_avg = (gdfjn[i_dict_key]*gdfjn[wt]).sum() / gdfjn[wt].sum()
-        else:
-            wtd_avg = -1 # value if no accessibility data TIF was found
 
-        out_dict[i_dict_key] = float(wtd_avg) # need to convert to python native type, not numpy dtype
+            out_dict[i_dict_key] = float(wtd_avg) # need to convert to python native type, not numpy dtype
+        else:
+            continue # if no tif of acc data for mode-dest combo, then skip computation of accessibility
 
     return out_dict
 

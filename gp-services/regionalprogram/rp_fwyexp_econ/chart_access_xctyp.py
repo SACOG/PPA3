@@ -11,7 +11,7 @@ Python Version: 3.x
 """
 from pathlib import Path
 import sys
-sys.path.append(Path(__file__).parent) # enable importing from parent folder
+sys.path.append(str(Path(__file__).parent)) # enable importing from parent folder
 
 import parameters as params
 import accessibility_calcs as acc_calcs
