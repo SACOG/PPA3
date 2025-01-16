@@ -37,6 +37,7 @@ def update_json(json_loaded, fc_project, project_type, project_commtype, destina
 
     # 7/8/2024 - MUST change these to adapt to new dict_data keys! Pending whether we want to still use cutoffs, decay curves, etc.
     # make dict of regional and comm type values
+    import pdb; pdb.set_trace()
     aggval_dict = make_aggval_dict(aggval_csv, metric_cols=dict_data.keys(), proj_ctype=project_commtype, 
                     yearkey=params.k_year, geo_regn=params.geo_region)
 
