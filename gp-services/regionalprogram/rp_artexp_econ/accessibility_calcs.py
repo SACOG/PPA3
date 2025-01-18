@@ -110,16 +110,17 @@ def get_acc_data(fc_project, tif_weights, project_type, dest):
 
 
 if __name__ == '__main__':
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    pass
+    # arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
     
-    fc_project_line = r"\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway"
-    str_project_type = params.ptype_arterial
-    destination = 'emp'
+    # fc_project_line = r"\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway"
+    # str_project_type = params.ptype_arterial
+    # destination = 'emp'
 
-    pop_tif = r"I:\Projects\Darren\PPA3_GIS\AccessibilityAnalyses\tif\workers2020.tif"
+    # pop_tif = r"I:\Projects\Darren\PPA3_GIS\AccessibilityAnalyses\tif\workers2020.tif"
     
-    # dict_data = get_acc_data(fc_project_line, fc_accessibility_data, str_project_type)
-    dict_data = get_acc_data(fc_project=fc_project_line, tif_weights=pop_tif, project_type=str_project_type,
-                             dest=destination)
-    arcpy.AddMessage(dict_data)
+    # # dict_data = get_acc_data(fc_project_line, fc_accessibility_data, str_project_type)
+    # dict_data = get_acc_data(fc_project=fc_project_line, tif_weights=pop_tif, project_type=str_project_type,
+    #                          dest=destination)
+    # arcpy.AddMessage(dict_data)
     

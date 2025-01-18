@@ -109,14 +109,15 @@ class GetLandUseArea():
 
 
 if __name__ == '__main__':
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    pass
+    # arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
-    parcel_featclass = params.parcel_poly_fc_yr(in_year=2016)  # 'parcel_data_polys_2016'
-    project_featclass = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
-    lutype_in = 'Agriculture'
+    # parcel_featclass = params.parcel_poly_fc_yr(in_year=2016)  # 'parcel_data_polys_2016'
+    # project_featclass = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
+    # lutype_in = 'Agriculture'
 
-    out_pcl_data = GetLandUseArea(project_featclass, params.ptype_sgr, parcel_featclass).get_lu_acres(lutype_in)
-    print(out_pcl_data)
+    # out_pcl_data = GetLandUseArea(project_featclass, params.ptype_sgr, parcel_featclass).get_lu_acres(lutype_in)
+    # print(out_pcl_data)
 
 
 

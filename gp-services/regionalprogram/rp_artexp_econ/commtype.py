@@ -77,14 +77,15 @@ def get_proj_ctype(in_project_fc, commtypes_fc):
 
 
 if __name__ == '__main__':
+    pass
     # test_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_HoweAve' # sr3857
     # test_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge' # sr 2226, cross multiple ctypes
-    test_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson' # sr3857, contained in single ctype
+    # test_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\TestJefferson' # sr3857, contained in single ctype
 
-    test_commtypes_fc = r"\\arcserver-svr\D\PPA_v2_SVR\PPA2_GIS_SVR\owner_PPA.sde\comm_type_jurspec_dissolve"
-    # import pdb; pdb.set_trace()
+    # test_commtypes_fc = r"\\arcserver-svr\D\PPA_v2_SVR\PPA2_GIS_SVR\owner_PPA.sde\comm_type_jurspec_dissolve"
+    # # import pdb; pdb.set_trace()
 
-    output = get_proj_ctype(test_fc, test_commtypes_fc)
-    print(output)
+    # output = get_proj_ctype(test_fc, test_commtypes_fc)
+    # print(output)
 
 

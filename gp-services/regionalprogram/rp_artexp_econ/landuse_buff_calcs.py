@@ -120,24 +120,25 @@ class LandUseBuffCalcs():
 
 
 if __name__ == '__main__':
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    pass
+    # arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
 
-    # input fc of parcel data--must be points!
-    # input line project for basing spatial selection
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
-    ptype = params.ptype_arterial
-    data_years = [params.base_year, params.future_year]
-    buffdist_ft = 2640
-    # value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
-    #                 'BIK_TOT_RES', 'WLK_TOT_RES']
-    value_fields = ['EMPIND']
+    # # input fc of parcel data--must be points!
+    # # input line project for basing spatial selection
+    # project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
+    # ptype = params.ptype_arterial
+    # data_years = [params.base_year, params.future_year]
+    # buffdist_ft = 2640
+    # # value_fields = ['POP_TOT', 'EMPTOT', 'EMPIND', 'PT_TOT_RES', 'SOV_TOT_RES', 'HOV_TOT_RES', 'TRN_TOT_RES',
+    # #                 'BIK_TOT_RES', 'WLK_TOT_RES']
+    # value_fields = ['EMPIND']
 
-    out_data = {}
-    for data_year in data_years:
-        in_pcl_pt_fc = params.parcel_pt_fc_yr(data_year)
-        year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, value_fields, buffdist_ft).point_sum()
-        out_data[data_year] = year_dict
+    # out_data = {}
+    # for data_year in data_years:
+    #     in_pcl_pt_fc = params.parcel_pt_fc_yr(data_year)
+    #     year_dict = LandUseBuffCalcs(in_pcl_pt_fc, project_fc, ptype, value_fields, buffdist_ft).point_sum()
+    #     out_data[data_year] = year_dict
 
-    print(out_data)
+    # print(out_data)
     
 
