@@ -1,0 +1,25 @@
+field,description,source table,source table field,notes
+PARCELID,all,ILUT,PARCELID,
+GISAc,GIS-based parcel area,ILUT,GISAc,
+JURIS,jurisdiction,ILUT,JURIS,
+County,county,ILUT,County,
+ComType_BO,build-out community type,,,
+EJ_AREA,EJ status,EJ_2025_final,,"Spatial join; filter to include non-minority-only areas plus EPCs; will need to be renamed from ""EJ_2018"""
+DU_TOT,total dwellings,,,
+LUTYPE,land use type,,,
+TYPCODE_DESC,land use description,,,"for comm design, not used in reg pgm"
+POP_TOT,total population,ILUT,POP_TOT,
+HH_hh,household count,ILUT,HH_hh,
+ENR_K12,k-12 enrollment at school site,ILUT,ENR_K12,
+EMPTOT,total jobs,ILUT,EMPTOT,
+EMPFOOD,food jobs,ILUT,EMPFOOD,
+EMPRET,retail jovs,ILUT,EMPRET,
+EMPSVC,service jobs,ILUT,EMPSVC,
+EMPIND,industry jobs,ILUT,EMPIND,
+PT_TOT_RES,all person-trips,ILUT,PT_TOT_RES,
+SOV_TOT_RES,drive-alone trips,ILUT,SOV_TOT_RES,
+HOV_TOT_RES,carpool trips,ILUT,HOV_TOT_RES,
+TRN_TOT_RES,transit trips,ILUT,TRN_TOT_RES,
+BIK_TOT_RES,bike trips,ILUT,BIK_TOT_RES,
+WLK_TOT_RES,walk trips,ILUT,WLK_TOT_RES,
+VMT_TOT_RES,VMT,ILUT,VMT_TOT_RES,needed for creeating hex map
