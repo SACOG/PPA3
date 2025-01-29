@@ -65,7 +65,7 @@ f_master_email = 'user_email'
 
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
-base_year = 2016
+base_year = 2020
 future_year = 2040
 
 def parcel_pt_fc_yr(in_year=base_year):
