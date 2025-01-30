@@ -8,7 +8,7 @@ sde:
   collisions_fc: Collisions2019to2023 # collision point data
   trn_svc_fc: transit_activity_weekdays2024 # transit stop event data; point file
   freight_route_fc: STAATruckRoutes # STAA truck route lines
-  intersections_base_fc: intersections_2021
+  intersections_base_fc: intersections_2024
   comm_types_fc: comm_type_jurspec_dissolve
   reg_centerline_fc: RegionalCenterline_2024
   reg_artcollcline_fc: OSM_ArterialCollector_2022 # ArterialCollector_2019 # road centerlines but for collectors and above (no local streets/alleys)
