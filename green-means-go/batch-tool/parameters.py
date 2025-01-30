@@ -215,7 +215,7 @@ params_df = pd.DataFrame(mix_calc_vals, columns = mix_calc_cols) \
 
 # other ILUT columns used
 col_pop_ilut = 'POP_TOT'
-col_ej_ind = "EJ_2018"
+col_ej_ind = "EJ_AREA"
 col_empind = 'EMPIND'
 col_du = 'DU_TOT'
 

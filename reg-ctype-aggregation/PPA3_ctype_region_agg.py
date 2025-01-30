@@ -69,6 +69,7 @@ def get_poly_avg(input_poly_fc):
 
     pop_x_ej = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, [params.col_pop_ilut],
                                 buffered_pcls=True, case_field=params.col_ej_ind).point_sum()
+
     pop_tot = sum(pop_x_ej.values())
     key_yes_ej = max(list(pop_x_ej.keys()))
     pct_pop_ej = {'Pct_PopEJArea': pop_x_ej[key_yes_ej] / pop_tot if pop_tot > 0 else 0}

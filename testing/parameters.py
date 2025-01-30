@@ -228,7 +228,7 @@ bg_search_dist = 300 # feet away from project line that you'll tag block groups 
 
 # # other ILUT columns used
 # col_pop_ilut = 'POP_TOT'
-# col_ej_ind = "EJ_2018"
+# col_ej_ind = "EJ_AREA"
 # col_empind = 'EMPIND'
 # col_du = 'DU_TOT'
 
