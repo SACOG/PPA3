@@ -81,6 +81,8 @@ def intersection_density(fc_project, fc_intersxns, project_type):
         intsxn_34 = 0
         col_link_cnt = "LINKS"
 
+        if col_link_cnt not in [f.name for f in arcpy.ListFields(fl_intersxns)]:
+            raise Exception(f"ERROR: field {col_link_cnt} not found in intersection file {fc_intersxns}.")
         with arcpy.da.SearchCursor(fl_intersxns, [col_link_cnt]) as cur:
             for row in cur:
                 if row[0] > 2:
