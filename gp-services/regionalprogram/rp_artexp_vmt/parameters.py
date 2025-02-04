@@ -66,7 +66,7 @@ f_master_email = 'user_email'
 
 # layers with multiple potential year values (e.g. base, various future years, etc)
 base_year = 2020
-future_year = 2040
+future_year = 2035
 
 def parcel_pt_fc_yr(in_year=base_year):
     return "parcel_data_pts_{}".format(in_year)
@@ -82,8 +82,7 @@ def model_links_fc(in_year=base_year):
 
 # input CSV of community type and regional values for indicated metrics; used to compare how project scores compared to 
 # "typical" values for the region and for the community type in which the project lies.
-# aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20241014_1426.csv")
-aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20241014_1426.csv")
+aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals20250121_1006.csv")
 
 
 # project type
