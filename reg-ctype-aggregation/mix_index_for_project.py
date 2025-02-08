@@ -16,10 +16,9 @@ g_ESRI_variable_2 = 'fl_project'
 # Copyright:   (c) SACOG
 # Python Version: 3.x
 # --------------------------------
-import os
+from pathlib import Path
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
-
+sys.path.append(Path(__file__).parent.parent) # enable importing from parent folder
 
 from time import perf_counter as perf
 import pandas as pd
@@ -61,7 +60,7 @@ def get_wtd_idx(x, facs, params_df):
     return output
         
 
-def calc_mix_index(in_df, params_df, hh_col, lu_factor_cols, mix_idx_col):
+def calc_mix_index(in_df, params_df, hh_col, mix_idx_col):
     lu_facs = params_df.index
     
     for fac in lu_facs:
@@ -92,8 +91,11 @@ def calc_mix_index(in_df, params_df, hh_col, lu_factor_cols, mix_idx_col):
 def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
     arcpy.AddMessage("Calculating mix index...")
 
+    params_csv = Path(params.config_csvs_dir).joinpath('mix_idx_params.csv')
+    mix_idx_params = pd.read_csv(params_csv, index_col='lu_fac')
+
     sufx = int(perf()) + 1
-    fl_parcel = os.path.join(arcpy.env.scratchGDB,'fl_parcel{}'.format(sufx))
+    fl_parcel = str(Path(arcpy.env.scratchGDB).joinpath(f'fl_parcel{sufx}'))
     fl_project = g_ESRI_variable_2
 
     if arcpy.Exists(fl_parcel): arcpy.Delete_management(fl_parcel)
@@ -105,17 +107,17 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
     in_cols = [params.col_parcelid, params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
                params.col_empret, params.col_empsvc, params.col_area_ac, params.col_lutype]
 
-    lu_fac_cols = [params.col_k12_enr, params.col_emptot, params.col_empfood, params.col_empret, params.col_empsvc, params.col_parkac]
-    # make parcel feature layer
-
+    lu_fac_cols = [params.col_k12_enr, params.col_emptot, params.col_empfood, 
+                   params.col_empret, params.col_empsvc, params.col_parkac]
     
+    # make parcel feature layer
     if not buffered_pcls:
         buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
         arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
 
     summ_df = make_summary_df(fl_parcel, in_cols, lu_fac_cols, params.col_hh, params.park_calc_dict)
 
-    out_df = calc_mix_index(summ_df, params.params_df, params.col_hh, lu_fac_cols, params.mix_idx_col)
+    out_df = calc_mix_index(summ_df, mix_idx_params, params.col_hh, params.mix_idx_col)
 
     out_val = out_df[params.mix_idx_col][0]
     return {params.mix_idx_col: out_val}

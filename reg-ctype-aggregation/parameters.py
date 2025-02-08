@@ -191,19 +191,6 @@ lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
 
 mix_idx_col = 'mix_index'
 
-# by default, bal_ratio_per_hh = ratio of that land use factor per HH at the regional level, and represents "ideal" ratio
-mix_calc_cols = ['lu_fac', 'bal_ratio_per_hh', 'weight']
-mix_calc_vals = [[col_k12_enr, 0.392079056, 0.2],
-             [col_empret, 0.148253453, 0.4],
-             [col_emptot, 1.085980023, 0.05],
-             [col_empsvc, 0.133409274, 0.1],
-             [col_empfood, 0.097047321, 0.2],
-             [col_parkac, 0.269931832, 0.05]
-             ]
-
-params_df = pd.DataFrame(mix_calc_vals, columns = mix_calc_cols) \
-    .set_index(mix_calc_cols[0])
-
 # ---------parameters for summary land use data ---------------------
 
 # other ILUT columns used
