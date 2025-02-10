@@ -124,7 +124,7 @@ def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, test_r
     for polytype in poly_types_list:
         
         temp_poly_fc = 'TEMP_ctype_fc'
-        temp_poly_fc_fp = 'memory/{}'.format(temp_poly_fc)
+        temp_poly_fc_fp = str(Path(arcpy.env.scratchGDB).joinpath(temp_poly_fc))
 
 
         # need to know if search value is a string so that SQL syntax comes out correct
@@ -135,13 +135,12 @@ def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, test_r
 
         if arcpy.Exists(temp_poly_fc_fp):
             arcpy.Delete_management(temp_poly_fc_fp)
-        arcpy.FeatureClassToFeatureClass_conversion(fc_poly_in, 'memory', temp_poly_fc, sql)
+        arcpy.FeatureClassToFeatureClass_conversion(fc_poly_in, arcpy.env.scratchGDB, temp_poly_fc, sql)
 
-        # on that temp fc, run the PPA tools, but SET BUFFER DISTANCES TO ZERO SOMEHOW
-        # this will return a dict with all numbers for that ctype
+        # on that temp fc, run the PPA tools, this will return a dict with all numbers for that ctype
         
         if year_analysis == year_base:
-            print("\ngetting base year values for {} areas...".format(polytype))
+            print(f"\ngetting base year values for {polytype} areas...")
             poly_dict = get_poly_avg(temp_poly_fc_fp)
         else:
             print("\ngetting {} values for {} areas...".format(year_analysis, polytype))

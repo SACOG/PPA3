@@ -88,9 +88,9 @@ def get_model_link_data(run_folder, scen_year, daynet_net, result_gdb):
 
 
 if __name__ == '__main__':
-    daynet = r"\\win11-model-1\d$\SACSIM23\2035\DPS\run_2035_176_SOV70_Tele23_newNets\run_folder\2035daynet_ppa.net"
-    sc_year = 2035
-    result_fgdb = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
+    daynet = input('Enter path to PPA daynet file (run daynet_ppa.s to create if needed): ').strip("\"") # r"\\win11-model-1\d$\SACSIM23\2035\DPS\run_2035_176_SOV70_Tele23_newNets\run_folder\2035daynet_ppa.net"
+    sc_year = int(input('Enter scenario year: '))
+    result_fgdb = input('Enter path to output file geodatabase: ').strip("\"")
     run_dir = str(Path(daynet).parent)
 
     result = get_model_link_data(run_dir, sc_year, daynet, result_fgdb)
