@@ -11,7 +11,7 @@ SELECT
 FROM ilut_combined2020_63_DPS
 GROUP BY ComType5
 
---mix ratios for whole region
+--mix ratios for whole region, EXCLUDE dorms
 SELECT
 	SUM(ENR_K12) / SUM(HH_hh) AS ENR_K12,
 	SUM(EMPRET) / SUM(HH_hh) AS EMPRET,
@@ -20,6 +20,17 @@ SELECT
 	SUM(EMPFOOD) / SUM(HH_hh) AS EMPFOOD,
 	SUM(CASE WHEN LU = 'Park and/or Open Space' 
 		THEN CAST(GISAc AS FLOAT) ELSE 0 END) / SUM(HH_hh) AS PARK_AC
+FROM ilut_combined2020_63_DPS
+
+--mix ratios for whole region, INCLUDE dorms
+SELECT
+	SUM(ENR_K12) / SUM(HH_TOT_P) AS ENR_K12,
+	SUM(EMPRET) / SUM(HH_TOT_P) AS EMPRET,
+	SUM(EMPTOT) / SUM(HH_TOT_P) AS EMPTOT,
+	SUM(EMPSVC) / SUM(HH_TOT_P) AS EMPSVC,
+	SUM(EMPFOOD) / SUM(HH_TOT_P) AS EMPFOOD,
+	SUM(CASE WHEN LU = 'Park and/or Open Space' 
+		THEN CAST(GISAc AS FLOAT) ELSE 0 END) / SUM(HH_TOT_P) AS PARK_AC
 FROM ilut_combined2020_63_DPS
 
 
