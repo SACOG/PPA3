@@ -181,33 +181,13 @@ mix_index_buffdist = 5280 #feet, default = 5280
 du_mix_buffdist = 5280 #feet, default = 5280
 ilut_sum_buffdist = 2640 # feet, default = 2640 (0.5mi)
 
-# park acreage info,
-col_area_ac = 'GISAc'
-col_lutype = 'LUTYPE'
-col_housing_type = 'TYPCODE_DESC'
-lutype_parks = 'Park and/or Open Space'
-col_parkac = 'PARK_AC'  # will be calc'd as GISAc if LUTYPE = park/open space LUTYPE
-park_calc_dict = {'area_field': col_area_ac,
-                  'lutype_field': col_lutype,
-                  'park_lutype': lutype_parks,
-                  'park_acres_field': col_parkac}
 
+col_lutype = 'LUTYPE'
+lutype_parks = 'Park and/or Open Space'
 lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
 
 mix_idx_col = 'mix_index'
 
-# by default, bal_ratio_per_hh = ratio of that land use factor per HH at the regional level, and represents "ideal" ratio
-mix_calc_cols = ['lu_fac', 'bal_ratio_per_hh', 'weight']
-mix_calc_vals = [[col_k12_enr, 0.392079056, 0.2],
-             [col_empret, 0.148253453, 0.4],
-             [col_emptot, 1.085980023, 0.05],
-             [col_empsvc, 0.133409274, 0.1],
-             [col_empfood, 0.097047321, 0.2],
-             [col_parkac, 0.269931832, 0.05]
-             ]
-
-params_df = pd.DataFrame(mix_calc_vals, columns = mix_calc_cols) \
-    .set_index(mix_calc_cols[0])
 
 # ---------parameters for summary land use data ---------------------
 
@@ -286,6 +266,7 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
 cs_buffdist = 2640 # feet
+col_area_ac = 'GISAc'
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
 cs_threshold_speed = 40 # MPH

@@ -22,11 +22,6 @@ f_svc = 'EMPSVC'
 f_food = 'EMPFOOD'
 f_gisac = 'GISAc'
 
-# lkp_park = 'PARK_AC'
-
-# f_lutype = 'LU'
-# lu_park = 'Park and/or Open Space'
-
 fields = [f_hhcnt, f_mix_idx, f_k12, f_ret, f_emptot, f_svc, f_food]
 
 non_factors = [f_hhcnt, f_mix_idx]

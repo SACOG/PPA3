@@ -181,17 +181,8 @@ mix_index_buffdist = 5280 #feet, default = 5280
 du_mix_buffdist = 5280 #feet, default = 5280
 ilut_sum_buffdist = 2640 # feet, default = 2640 (0.5mi)
 
-# park acreage info,
-col_area_ac = 'GISAc'
 col_lutype = 'LUTYPE'
-col_housing_type = 'TYPCODE_DESC'
 lutype_parks = 'Park and/or Open Space'
-col_parkac = 'PARK_AC'  # will be calc'd as GISAc if LUTYPE = park/open space LUTYPE
-park_calc_dict = {'area_field': col_area_ac,
-                  'lutype_field': col_lutype,
-                  'park_lutype': lutype_parks,
-                  'park_acres_field': col_parkac}
-
 lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
 
 mix_idx_col = 'mix_index'
@@ -272,6 +263,7 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
 cs_buffdist = 2640 # feet
+col_area_ac = 'GISAc'
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
 cs_threshold_speed = 40 # MPH
@@ -293,7 +285,7 @@ threshold_val = 0.9  # if more than 90% of project length is in greenfield, then
 
 # for measuring loss in acres of natural resources within project area (nat resources = forest, parks, ag land)
 buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres of natural resources lost within project area.
-lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
+lutypes_nat_resources = ['Forest', lutype_ag, lutype_parks]
 
 
 # =============================JSON CONFIG PARAMETERS FROM USER INTERFACE===============

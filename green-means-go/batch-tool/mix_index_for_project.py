@@ -32,18 +32,10 @@ from utils import utils
 # =============FUNCTIONS=============================================
 
 
-def make_summary_df(in_fl, input_cols,  landuse_cols, col_hh, park_calc_dict):
+def make_summary_df(in_fl, input_cols,  landuse_cols, col_hh):
 
     # load into dataframe
     parcel_df = utils.esri_object_to_df(in_fl, input_cols)
-
-    col_parkac = park_calc_dict['park_acres_field']
-    col_lutype = park_calc_dict['lutype_field']
-    lutype_parks = park_calc_dict['park_lutype']
-    col_area_ac = park_calc_dict['area_field']
-
-    # add col for park acres, set to total parcel acres where land use type is parks/open space land use type
-    parcel_df.loc[(parcel_df[col_lutype] == lutype_parks), col_parkac] = parcel_df[col_area_ac]
 
     cols = landuse_cols + [col_hh]
     out_df = pd.DataFrame(parcel_df[cols].sum(axis = 0)).T
@@ -106,7 +98,7 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
     in_cols = [params.col_parcelid, params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
                params.col_empret, params.col_empsvc, params.col_area_ac, params.col_lutype]
 
-    lu_fac_cols = [params.col_k12_enr, params.col_emptot, params.col_empfood, params.col_empret, params.col_empsvc, params.col_parkac]
+    lu_fac_cols = [params.col_k12_enr, params.col_emptot, params.col_empfood, params.col_empret, params.col_empsvc]
     # make parcel feature layer
 
     
@@ -114,7 +106,7 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
         buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
         arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
 
-    summ_df = make_summary_df(fl_parcel, in_cols, lu_fac_cols, params.col_hh, params.park_calc_dict)
+    summ_df = make_summary_df(fl_parcel, in_cols, lu_fac_cols, params.col_hh)
 
     out_df = calc_mix_index(summ_df, params.params_df, params.col_hh, lu_fac_cols, params.mix_idx_col)
 
