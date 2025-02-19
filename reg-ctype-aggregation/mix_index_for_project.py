@@ -1,5 +1,5 @@
 # Esri start of added variables
-g_ESRI_variable_1 = 'fl_parcel'
+# g_ESRI_variable_1 = 'fl_parcel'
 g_ESRI_variable_2 = 'fl_project'
 # Esri end of added variables
 
@@ -30,13 +30,12 @@ from utils import utils
 # =============FUNCTIONS=============================================
 
 
-def make_summary_df(in_fl, input_cols,  landuse_cols, col_hh):
+def make_summary_df(in_fl, input_cols):
 
     # load into dataframe
     parcel_df = utils.esri_object_to_df(in_fl, input_cols)
 
-    cols = landuse_cols + [col_hh]
-    out_df = pd.DataFrame(parcel_df[cols].sum(axis = 0)).T
+    out_df = pd.DataFrame(parcel_df[input_cols].sum(axis = 0)).T
 
     return out_df
 
@@ -54,7 +53,15 @@ def get_wtd_idx(x, facs, params_df):
 
 def calc_mix_index(in_df, params_df, hh_col, mix_idx_col):
     lu_facs = params_df.index
+
+    # set up for penalty factor for very low density areas.
+    area_ac = in_df[params.col_area_ac].values[0]
+    dens = (in_df[hh_col].sum() + in_df[params.col_emptot].sum()) / area_ac
+
+    dens_cutoff = 0.5 # if fewer than this many jobs + hh per acre, start penalizing mix score for being in too low-density area
+    penaltyfac = min(1, dens / dens_cutoff) # 1 = no penalty
     
+    # do mix index calc
     for fac in lu_facs:
         
         # add column for the "ideal", or "balanced" ratio of that land use to HHs
@@ -65,17 +72,13 @@ def calc_mix_index(in_df, params_df, hh_col, mix_idx_col):
         in_df.fillna(-1)
         
         ratio_col = "{}_ratio".format(fac)
-        
-        # if balance value > actual value, return actual value / balance value
-        in_df.loc[(in_df[hh_col] != 0) & (in_df[bal_col] > in_df[fac]), ratio_col] = in_df[fac] / in_df[bal_col]
-    
-        # if balance value < actual value, return balance value / actual value
-        in_df.loc[(in_df[hh_col] != 0) & (in_df[bal_col] < in_df[fac]), ratio_col] = in_df[bal_col] / in_df[fac]
+        in_df[ratio_col] = in_df.apply(lambda x: min(x[bal_col], x[fac]) / max(x[bal_col], x[fac]), axis=1)
         
         # if no HH, set ratio col = -1
         in_df.fillna(-1)
         
-    in_df[mix_idx_col] = in_df.apply(lambda x: get_wtd_idx(x, lu_facs, params_df), axis = 1)
+    in_df[mix_idx_col] = in_df.apply(lambda x: get_wtd_idx(x, lu_facs, params_df), axis=1)
+    in_df[mix_idx_col] = in_df[mix_idx_col] * penaltyfac # apply penalty factor for very low density areas (that may have "good" mix)
     
     return in_df
 
@@ -98,16 +101,13 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
 
     in_cols = [params.col_parcelid, params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
                params.col_empret, params.col_empsvc, params.col_area_ac, params.col_lutype]
-
-    lu_fac_cols = [params.col_k12_enr, params.col_emptot, params.col_empfood, 
-                   params.col_empret, params.col_empsvc]
     
     # make parcel feature layer
     if not buffered_pcls:
         buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
         arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
 
-    summ_df = make_summary_df(fl_parcel, in_cols, lu_fac_cols, params.col_hh)
+    summ_df = make_summary_df(fl_parcel, in_cols)
 
     out_df = calc_mix_index(summ_df, mix_idx_params, params.col_hh, params.mix_idx_col)
 
@@ -118,9 +118,9 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
 
 if __name__ == '__main__':
     
-    arcpy.env.workspace = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb'
+    arcpy.env.workspace = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
     # input line project for basing spatial selection
-    project_fc = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\Polylines'
+    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Broadway16th_2226'
     buff_dist_ft = params.mix_index_buffdist  # distance in feet--MIGHT NEED TO BE ADJUSTED FOR WGS 84--SEE OLD TOOL FOR HOW THIS WAS RESOLVED
     data_years = [params.base_year, params.future_year]
 
