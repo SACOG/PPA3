@@ -10,6 +10,7 @@
 # Python Version: 3.x
 # --------------------------------
 import datetime as dt
+from time import perf_counter
 from pathlib import Path
 
 import arcpy
@@ -47,8 +48,7 @@ def get_poly_avg(input_poly_fc, whole_region=False):
     pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
                         project_type=params.ptype_area_agg, data_year=params.base_year, 
                         parcel_cols=None, whole_region=whole_region)
-
-    # get_acc_data(fc_project, tif_weights, project_type, dest)
+    
     tifdir = Path(acc_cfg['tifdir'])
     accdata = {}
     acc_combos = {'emp': 'workers', 'nonwork':'pop', 'edu': 'pop'}
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     test_run = False
     
     # ------------------RUN SCRIPT-----------------------------------------
-    
+    starttm = perf_counter()
     
     # table with fields: poly ID, data values for base year for each ID, but not entire region
     print("getting community type aggregate values")
@@ -202,7 +202,8 @@ if __name__ == '__main__':
 
     df_out = pd.concat([df_base_all, df_future_all])                   
     df_out.to_csv(output_csv)
-    print("summary completed as {}".format(output_csv))
+    elapsed = round((perf_counter() - starttm) / 60, 1)
+    print(f"summary completed in {elapsed}mins as {output_csv}")
     print("NOTICE: YOU MAY WANT TO HARD-CODE FUTURE-YEAR REGIONAL MIX INDEX = 1.0. ")
     
     # for now, don't do FY mix index for region because base-year region LU mix is the basis for the
