@@ -21,7 +21,7 @@ import arcpy
 
 import parameters as params
 
-def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, parcel_cols=None):
+def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, parcel_cols=None, whole_region=False):
     arcpy.AddMessage(f"Generating temp parcel file of parcels in project vicinity or zone for year {data_year}...")
     sufx = int(perf()) + 1
     fl_parcel = os.path.join('memory',f'fl_parcel{sufx}')
@@ -45,8 +45,12 @@ def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, 
 
     buff_dist = 0 if project_type == params.ptype_area_agg else buffdist
 
-    arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
-    arcpy.conversion.FeatureClassToFeatureClass(fl_parcel, arcpy.env.scratchGDB, out_fc)
+    if not whole_region:
+        # skip this step if using all parcels in region
+        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
+        arcpy.conversion.FeatureClassToFeatureClass(fl_parcel, arcpy.env.scratchGDB, out_fc)
+    else:
+        out_fc_path = fc_pclpt
 
     return out_fc_path
 

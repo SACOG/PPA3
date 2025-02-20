@@ -37,7 +37,7 @@ try:
 except:
     pass
 
-def get_poly_avg(input_poly_fc):
+def get_poly_avg(input_poly_fc, whole_region=False):
 
     # if scratch GDB weirdly 'becomes' a folder, delete it.
     if arcpy.Describe(arcpy.env.scratchGDB).dataType != 'Workspace': 
@@ -45,7 +45,8 @@ def get_poly_avg(input_poly_fc):
 
     # as of 11/26/2019, each of these outputs are dictionaries
     pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
-                        project_type=params.ptype_area_agg, data_year=params.base_year, parcel_cols=None)
+                        project_type=params.ptype_area_agg, data_year=params.base_year, 
+                        parcel_cols=None, whole_region=whole_region)
 
     # get_acc_data(fc_project, tif_weights, project_type, dest)
     tifdir = Path(acc_cfg['tifdir'])
@@ -57,7 +58,10 @@ def get_poly_avg(input_poly_fc):
         accdata.update(accdata_i)
 
     collision_data = coll.get_collision_data(input_poly_fc, params.ptype_area_agg, params.collisions_fc, 0)
-    mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg, buffered_pcls=True)
+
+    mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg, buffered_pcls=True, 
+                                  whole_region=True) # always use entirety of pcl_pt_data (whole_region=True) because is always pre-filtered.
+    
     intsecn_dens = intsxn.intersection_density(input_poly_fc, params.intersections_base_fc, params.ptype_area_agg)
     bikeway_covg = bufnet.get_bikeway_mileage_share(input_poly_fc, params.ptype_area_agg)
     tran_stop_density = trn_svc.transit_svc_density(input_poly_fc, params.trn_svc_fc, params.ptype_area_agg)
@@ -84,11 +88,11 @@ def get_poly_avg(input_poly_fc):
 
     return out_dict
 
-def poly_avg_futyears(input_poly_fc, data_year): #IDEALLY could make this part of get_poly_avg as single function with variable number of input args
-    mix_data = mixidx.get_mix_idx(params.parcel_pt_fc_yr(data_year), input_poly_fc, params.ptype_area_agg)    
+def poly_avg_futyears(input_poly_fc, data_year, whole_region): #IDEALLY could make this part of get_poly_avg as single function with variable number of input args
+    mix_data = mixidx.get_mix_idx(params.parcel_pt_fc_yr(data_year), input_poly_fc, params.ptype_area_agg, whole_region=whole_region)    
     return mix_data
 
-def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, test_run=False):
+def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, whole_region=False, test_run=False):
     """
     Parameters
     ----------
@@ -141,10 +145,10 @@ def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, test_r
         
         if year_analysis == year_base:
             print(f"\ngetting base year values for {polytype} areas...")
-            poly_dict = get_poly_avg(temp_poly_fc_fp)
+            poly_dict = get_poly_avg(temp_poly_fc_fp, whole_region=whole_region)
         else:
             print("\ngetting {} values for {} areas...".format(year_analysis, polytype))
-            poly_dict = poly_avg_futyears(temp_poly_fc_fp, year_analysis)
+            poly_dict = poly_avg_futyears(temp_poly_fc_fp, year_analysis, whole_region=whole_region)
         
         output_dict[polytype] = poly_dict
         # for all keys in the output dict, add a tag to the key value to indicate community type
@@ -181,8 +185,11 @@ if __name__ == '__main__':
     col_year = 'year'
     col_poly_id = 1 # for region feature class, assume only one feature, and this is its OBJECTID column value
     
-    df_base_region = get_ppa_agg_data(params.region_fc, "OBJECTID", base_year, base_year, test_run)
-    df_future_region = get_ppa_agg_data(params.region_fc, "OBJECTID", base_year, future_year, test_run)
+    df_base_region = get_ppa_agg_data(params.region_fc, "OBJECTID", base_year, base_year, 
+                                      whole_region=True, test_run=test_run)
+                                      
+    df_future_region = get_ppa_agg_data(params.region_fc, "OBJECTID", base_year, future_year,
+                                      whole_region=True, test_run=test_run)
 
     df_base_region = df_base_region.rename(columns={col_poly_id: col_region})
     df_future_region = df_future_region.rename(columns={col_poly_id: col_region})

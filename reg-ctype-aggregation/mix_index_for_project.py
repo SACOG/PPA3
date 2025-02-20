@@ -39,6 +39,20 @@ def make_summary_df(in_fl, input_cols):
 
     return out_df
 
+def make_summary_2(in_fl, curfields):
+        # curfields = [params.col_parcelid, params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
+        #        params.col_empret, params.col_empsvc, params.col_area_ac, params.col_lutype]
+
+    result_dict = {fname: 0 for fname in curfields}
+    with arcpy.da.SearchCursor(in_fl, curfields) as scur:
+        for row in scur:
+            for f in curfields:
+                val = row[curfields.index(f)]
+                result_dict[f] += val
+    
+    return result_dict
+
+
 
 def get_wtd_idx(x, facs, params_df):
     output = 0
@@ -83,7 +97,7 @@ def calc_mix_index(in_df, params_df, hh_col, mix_idx_col):
     return in_df
 
 
-def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
+def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False, whole_region=False):
     arcpy.AddMessage("Calculating mix index...")
 
     params_csv = Path(params.config_csvs_dir).joinpath('mix_idx_params.csv')
@@ -99,16 +113,19 @@ def get_mix_idx(fc_parcel, fc_project, project_type, buffered_pcls=False):
     if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)
 
-    in_cols = [params.col_parcelid, params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
-               params.col_empret, params.col_empsvc, params.col_area_ac, params.col_lutype]
+    # in_cols = [params.col_parcelid, params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
+    #            params.col_empret, params.col_empsvc, params.col_area_ac, params.col_lutype]
+    in_cols = [params.col_hh, params.col_k12_enr, params.col_emptot, params.col_empfood,
+               params.col_empret, params.col_empsvc, params.col_area_ac]
     
+    # results = make_summary_2(fl_parcel, in_cols)
     # make parcel feature layer
-    if not buffered_pcls:
-        buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
-        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
+    if not whole_region:
+        if not buffered_pcls:
+            buffer_dist = 0 if project_type == params.ptype_area_agg else params.mix_index_buffdist
+            arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffer_dist, "NEW_SELECTION")
 
-    summ_df = make_summary_df(fl_parcel, in_cols)
-
+    summ_df = make_summary_df(fl_parcel, in_cols) # could this be replaced by search cursor? Would doing so make it faster? See make_summary_2 func above
     out_df = calc_mix_index(summ_df, mix_idx_params, params.col_hh, params.mix_idx_col)
 
     out_val = out_df[params.mix_idx_col][0]
@@ -120,14 +137,23 @@ if __name__ == '__main__':
     
     arcpy.env.workspace = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb'
     # input line project for basing spatial selection
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Broadway16th_2226'
-    buff_dist_ft = params.mix_index_buffdist  # distance in feet--MIGHT NEED TO BE ADJUSTED FOR WGS 84--SEE OLD TOOL FOR HOW THIS WAS RESOLVED
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Broadway16th_2226'
+    # buff_dist_ft = params.mix_index_buffdist  # distance in feet--MIGHT NEED TO BE ADJUSTED FOR WGS 84--SEE OLD TOOL FOR HOW THIS WAS RESOLVED
+    # data_years = [params.base_year, params.future_year]
+    # ptyp = params.ptype_arterial
+    
+    # test for running on polygon
+    project_fc = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\owner_PPA.sde\sacog_region'
+    buff_dist_ft = 0  # distance in feet--MIGHT NEED TO BE ADJUSTED FOR WGS 84--SEE OLD TOOL FOR HOW THIS WAS RESOLVED
     data_years = [params.base_year, params.future_year]
+    ptyp = params.ptype_area_agg
+
+    use_whole_region = True
 
     out_dict = {}
     for data_year in data_years:
         in_pcl_pt_fc = params.parcel_pt_fc_yr(in_year=data_year) # input fc of parcel data--must be points!
-        year_dict = get_mix_idx(in_pcl_pt_fc, project_fc, params.ptype_arterial)
+        year_dict = get_mix_idx(in_pcl_pt_fc, project_fc, ptyp, whole_region=use_whole_region)
         out_dict[data_year] = year_dict
 
     print(out_dict)

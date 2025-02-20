@@ -1,17 +1,6 @@
+
 """
-Name: hex_mix_index.py
-Purpose: Compute mix index for each hexagon, based on values inside hexagon (not buffer around hexagon)
-
-    INSTRUCTIONS
-    1. Run parcel-to-hex agg script tool (arc toolbox) to compute total jobs and total households in each hex
-    2. Run this script on the output feature class to compute new mix index field.
-
-
-Author: Darren Conly
-Last Updated: Feb 2025 
-Updated by: 
-Copyright:   (c) SACOG
-Python Version: 3.x
+Computes updated hex-level mix index vals per ppa criteria
 """
 
 from pathlib import Path
@@ -19,117 +8,88 @@ from pathlib import Path
 import arcpy
 import pandas as pd
 
-import parameters as params
+def get_hex_acres(in_fc):
+    # compute, just once, the area of a hex. Since all hexes are same size,
+    # no need to recompute area for every mix index row calc.
+    with arcpy.da.SearchCursor(in_fc, 'SHAPE@AREA') as scur:
+        for row in scur:
+            area = row[0]
+            break
 
-# 2/12/2025 IDEA: IMPORT PARCEL2HEX SCRIPT AS A FUNCTION HERE AND YOU CAN MAKE THIS AN "ALL IN ONE" TOOL
+    srcode = arcpy.Describe(in_fc).spatialReference.factoryCode
+    if srcode != 2226:
+        arcpy.AddWarning("WARNING: spatial ref is not 2226. Conversion to acres will not be correct.")
 
+    return area / 43_560 # convert sq feet to acres
 
-def get_wtd_idx(x, facs, params_df):
-    output = 0
-    
-    for fac in facs:
-        fac_ratio = '{}_ratio'.format(fac)
-        fac_out = x[fac_ratio] * params_df.loc[fac]['weight']
-        output += fac_out
-    
-    return output
+def compute_hex_mixdix(in_hex_fc):
+    # load config table specifying land use mix factors, ideal ratio, and weights
+    mix_idx_config = r"\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\CSV\mix_idx_params.csv"
+    df_params = pd.read_csv(mix_idx_config)
+    df_params = df_params.set_index('lu_fac')
+    ideal_ratios = df_params['bal_ratio_per_hh'].to_dict()
+    weights = df_params['weight'].to_dict()
+    facfields = list(df_params.index)
 
-def calc_mix_index(in_df, params_df, hh_col, mix_idx_col):
-    lu_facs = params_df.index
+    f_mix_idx = 'MIXINDEX'
+    f_hhcnt = 'HH_TOT_P'
+    f_emp = 'EMPTOT'
 
-    # set up for penalty factor for very low density areas.
-    area_ac = in_df[params.col_area_ac].values[0]
-    dens = (in_df[hh_col].sum() + in_df[params.col_emptot].sum()) / area_ac
+    hex_ac = get_hex_acres(in_hex_fc)
 
-    dens_cutoff = 0.5 # if fewer than this many jobs + hh per acre, start penalizing mix score for being in too low-density area
-    penaltyfac = min(1, dens / dens_cutoff) # 1 = no penalty
-    
-    # do mix index calc
-    for fac in lu_facs:
-        
-        # add column for the "ideal", or "balanced" ratio of that land use to HHs
-        bal_col = "{}_bal".format(fac) 
-        in_df.loc[in_df[hh_col] != 0, bal_col] = in_df[hh_col] * params_df.loc[fac]['bal_ratio_per_hh']
-        
-        # if no HH, set bal_col = -1
-        in_df.fillna(-1)
-        
-        ratio_col = "{}_ratio".format(fac)
-        in_df[ratio_col] = in_df.apply(lambda x: min(x[bal_col], x[fac]) / max(x[bal_col], x[fac]), axis=1)
-        
-        # if no HH, set ratio col = -1
-        in_df.fillna(-1)
-        
-    in_df[mix_idx_col] = in_df.apply(lambda x: get_wtd_idx(x, lu_facs, params_df), axis=1)
-    in_df[mix_idx_col] = in_df[mix_idx_col] * penaltyfac # apply penalty factor for very low density areas (that may have "good" mix)
-    
-    return in_df
+    hexfields1 = [f.name for f in arcpy.ListFields(in_hex_fc)]
+    if f_mix_idx not in hexfields1:
+        arcpy.management.AddField(in_hex_fc, f_mix_idx, 'FLOAT')
 
-def add_mix_index(hex_fc):
-    arcpy.env.overwriteOutput = True
-    params_csv = Path(params.config_csvs_dir).joinpath('mix_idx_params.csv')
-    mdparams = pd.read_csv(params_csv)
+    missingfields = [f for f in facfields if f not in hexfields1]
+    if len(missingfields) > 0:
+       arcpy.AddWarning(f"ERROR: these needed input fields are missing from hex feature class: {missingfields}")
+       import pdb;pdb.set_trace()
 
-    f_mixidx = 'MIXINDEX'
+    def get_row_mixidx(row, f_hh, facfields, dens_cutoff=0.5):
+        # dens_cutoff: if hex contains fewer than this many jobs + hh per acre, then
+        # penalize the mix index to avoid high score for areas with good mix but very little (e.g. 1 house + 0.5 retail jobs)
+        hhcnt = row[f_hh]
+        mix_idx = 0
 
-    # add mix-density field if needed
-    fc_names_1 = [f.name for f in arcpy.ListFields(hex_fc)]
-    if f_mixidx not in fc_names_1:
-        arcpy.management.AddField(hex_fc, f_mixidx, 'SHORT')
+        if hhcnt >= 1: # to make faster, only apply this func to rows where there's at least one hh
+            
+            # penalize mix-index score if density is too low (i.e., "good" mix of nearly nothing)
+            emp = row[f_emp]
+            dens = (hhcnt + emp) / hex_ac
+            penaltyfac = min(1, dens / dens_cutoff) # 1 = no penalty
 
-    # compute hex size for density calc
-    hex_size_ac = get_hex_acres(hex_fc)
+            for factor in facfields:
+                val = row[factor]
+                ideal_ratio = ideal_ratios[factor]
+                ideal_val = ideal_ratio * row[f_hh]
+                
+                factor_score = 0
+                if max(ideal_val, val) > 0:
+                    factor_score = min(ideal_val, val) / max(ideal_val, val)
+                    
+                factor_weight = weights[factor]
+                mix_idx += factor_score * factor_weight
 
-    # compute mix density for each hex
-    arcpy.AddMessage("computing mix density...")
-    curfields = [f_hh, f_emp, f_mixidx]
-    with arcpy.da.UpdateCursor(hex_fc, curfields) as ucur:
+            mix_idx *= penaltyfac # apply penalty factor
+
+        return mix_idx
+
+    ucur_fields = [*facfields, f_hhcnt, f_mix_idx]
+    with arcpy.da.UpdateCursor(in_hex_fc, ucur_fields) as ucur:
+        print("updating mix index values...")
         for i, row in enumerate(ucur):
-            hhcnt = row[curfields.index(f_hh)]
-            empcnt = row[curfields.index(f_emp)]
-            totnum = hhcnt + empcnt
-            totdens = totnum / hex_size_ac
-            hhpct = 0
-            emppct = 0
-            if totnum > 0:
-                emppct = empcnt / totnum
-                hhpct = hhcnt / totnum
+            rowdict = dict(zip(ucur_fields, row))
+            mixval = get_row_mixidx(rowdict, f_hhcnt, facfields)
+            rowdict[f_mix_idx] = mixval
+            newrow = list(rowdict.values())
+            ucur.updateRow(newrow)
 
-            # mix threshold (not mixed if a "high" percent of either hh or jobs)
-            hi_pct = 0.8
-
-            # density threshold (total density per acre)
-            low_dens_th = 8
-            hi_dens_th = 16
-
-            mixdensity = 0
-            try:
-                if hhpct >= hi_pct:
-                    if totdens <= low_dens_th: mixdensity = 1 # low density residential
-                    if totdens > low_dens_th and totdens <= hi_dens_th: mixdensity = 2 # moderate density residential
-                    if totdens > hi_dens_th: mixdensity = 3 # high-density residential
-                if emppct >= hi_pct:
-                    if totdens <= low_dens_th: mixdensity = 4 # low density non-residential
-                    if totdens > low_dens_th and totdens <= hi_dens_th: mixdensity = 5 # moderate density non-residential
-                    if totdens > hi_dens_th: mixdensity = 6 # high-density non-residential
-                if hhpct < hi_pct and emppct < hi_pct:
-                    if totdens <= low_dens_th: mixdensity = 7 # low density mixed
-                    if totdens > low_dens_th and totdens <= hi_dens_th: mixdensity = 8 # moderate density mixed
-                    if totdens > hi_dens_th: mixdensity = 9 # high-density mixed
-            except:
-                import pdb; pdb.set_trace()
-
-            row[curfields.index(f_mixidx)] = mixdensity
-            ucur.updateRow(row)
-
-            if i % 5000 == 0: arcpy.AddMessage(f"{i} hexes processed...")
-
-
+            if i % 5000 == 0: print(f"{i} rows processed...")
+            
+    print("""finished.""")
 
 if __name__ == '__main__':
-    hex_fc_in = input('Enter path to hex FC with needed HH and EMP data: ') # r'Q:\SACSIM23\Network\MTPProjectQA_GIS\MTPProjectQA_GIS.gdb\hex_ILUT2050_105_DPS202502130951'
-    hhfield = 'HH_TOT_P'
-    empfield = 'EMPTOT'
+    input_hexes = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\hex_ILUT2020_63_DPS202502191533_keep'
 
-    add_mix_index(hex_fc_in, f_hh=hhfield, f_emp=empfield)
-    print("Finished!")
+    compute_hex_mixdix(input_hexes)
