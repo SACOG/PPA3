@@ -90,6 +90,6 @@ def compute_hex_mixdix(in_hex_fc):
     print("""finished.""")
 
 if __name__ == '__main__':
-    input_hexes = r'I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\hex_ILUT2020_63_DPS202502191533_keep'
+    input_hexes = input("Enter path to hex layer with needed fields for mix index computation: ")
 
     compute_hex_mixdix(input_hexes)
