@@ -50,7 +50,7 @@ def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, 
 if __name__ == '__main__':
     pass
 
-    # dyear = 2016
+    # dyear = 2020
     # pcl_fc = params.parcel_pt_fc_yr(dyear)
     # pcl_project = r'I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge'
     # buffdist = 1320

@@ -47,7 +47,7 @@ def make_sgr_report_artsgr(input_dict):
     loaded_json["ADT"] = proj_aadt
 
     # get complete streets index value
-    pcl_pts = params.parcel_pt_fc_yr(2016)
+    pcl_pts = params.parcel_pt_fc_yr(params.base_year)
     transit_data = params.trn_svc_fc
 
     if proj_postedspd == 0:

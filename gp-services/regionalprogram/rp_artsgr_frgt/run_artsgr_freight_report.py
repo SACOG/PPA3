@@ -52,7 +52,7 @@ def make_frgt_report_artsgr(input_dict):
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_Freight_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
-    data_years = [2016]
+    data_years = [params.base_year]
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
