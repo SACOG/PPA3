@@ -187,6 +187,7 @@ du_mix_buffdist = 5280 #feet, default = 5280
 ilut_sum_buffdist = 2640 # feet, default = 2640 (0.5mi)
 
 
+col_area_ac = 'GISAc'					 
 col_lutype = 'LUTYPE'
 lutype_parks = 'Park and/or Open Space'
 lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
