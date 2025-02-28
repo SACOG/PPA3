@@ -152,10 +152,7 @@ def make_congestion_rpt_artexp(input_dict):
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
     output_congn_data.update(worst_data)
 
-    project_uid = utils.utils.get_project_uid(proj_name=input_dict[uis.name], 
-                                        proj_type=input_dict[uis.ptype], 
-                                        proj_jur=input_dict[uis.jur], 
-                                        user_email=input_dict[uis.email])
+    project_uid = utils.utils.get_project_uid(input_dict)
 
     data_to_log = {
         'project_uid': project_uid, 'aadt': input_dict[uis.aadt],

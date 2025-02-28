@@ -95,10 +95,10 @@ def make_vmt_report_artexp(input_dict):
     mixidx_future = d_mixidx[data_years[1]][params.mix_idx_col]
 
     # log to archive GDB tables
-    project_id = utils.get_project_uid(input_dict[uis.name], proj_type, input_dict[uis.jur], input_dict[uis.email])
+    project_uid = utils.get_project_uid(input_dict)
 
     data_to_log = {
-        'project_uid': project_id, 'jobs_base': job_base, 
+        'project_uid': project_uid, 'jobs_base': job_base, 
         'jobs_future': job_future, 'du_base': du_base, 
         'du_future': du_future, 'lumix_base': mixidx_base, 
         'lumix_future': mixidx_future, 'acc_svc_walk': acc_data['walk_nonwork'], 

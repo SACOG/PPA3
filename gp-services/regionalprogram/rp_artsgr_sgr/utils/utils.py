@@ -89,9 +89,29 @@ def log_row_to_table(data_row_dict, dest_table):
 
     arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 
-def get_project_uid(proj_name, proj_type, proj_jur, user_email):
+def get_project_uid(project_info):
     """Find the project UID in the master table where project name, type, 
     and user email match and it's the most recently-run one"""
+
+    def get_plen_mi(project_fc):
+        # calculate total project length
+        tot_len_ft = 0
+        sr_sacog = arcpy.SpatialReference(params.projexn_wkid_sacog)
+        with arcpy.da.SearchCursor(project_fc, 'SHAPE@LENGTH', spatial_reference=sr_sacog) as cur:
+            for row in cur:
+                seglen = row[0]
+                tot_len_ft += seglen
+
+        tot_len_mi = tot_len_ft / params.ft2mile
+
+        return tot_len_mi
+
+    uis = params.user_inputs
+    proj_name = project_info[uis.name]
+    proj_type = project_info[uis.ptype]
+    user_email = project_info[uis.email]
+    proj_jur = project_info[uis.jur]
+    proj_len_mi = get_plen_mi(project_info[uis.geom])
 
     master_fields = [params.logtbl_join_key, params.f_master_tstamp]
 
@@ -99,8 +119,11 @@ def get_project_uid(proj_name, proj_type, proj_jur, user_email):
     fl_mastertbl = 'fl_mastertbl'
     arcpy.MakeFeatureLayer_management(fc_mastertbl, fl_mastertbl)
 
+    # find which record in master table corresponds based on name, jurisdiction, project type,
+    # user email, and length of project matching (length match to within 0.001 miles (5.28ft))
     sql = f"""{params.f_master_projname} = '{proj_name}' AND {params.f_master_projtyp} = '{proj_type}'
-    AND {params.f_master_jur} = '{proj_jur}' AND {params.f_master_email} = '{user_email}'"""
+    AND {params.f_master_jur} = '{proj_jur}' AND {params.f_master_email} = '{user_email}'
+    AND ABS(len_mi - {proj_len_mi}) < 0.001"""
 
     arcpy.AddMessage(f"Finding project UID via {sql} in table {fc_mastertbl}")
     

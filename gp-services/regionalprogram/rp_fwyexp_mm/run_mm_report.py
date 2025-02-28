@@ -62,10 +62,7 @@ def make_mm_report_fwyexp(input_dict):
     # resulting output dict = {2016:{trantrips:val, vehocc:val}, 2040:{trantrips:val, vehocc:val}}
 
     # log to data table
-    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
-                                        proj_type=input_dict[uis.ptype], 
-                                        proj_jur=input_dict[uis.jur], 
-                                        user_email=input_dict[uis.email])
+    project_uid = utils.get_project_uid(input_dict)
 
     base_trntrip = output_data[data_years[0]]['avg_2way_trantrips']
     future_trntrip = output_data[data_years[1]]['avg_2way_trantrips']

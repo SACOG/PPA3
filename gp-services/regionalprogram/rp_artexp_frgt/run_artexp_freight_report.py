@@ -127,10 +127,7 @@ def make_frgt_report_artexp(input_dict):
         json.dump(loaded_json, f_out, indent=4)
 
     # log to data table
-    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
-                                        proj_type=input_dict[uis.ptype], 
-                                        proj_jur=input_dict[uis.jur], 
-                                        user_email=input_dict[uis.email])
+    project_uid = utils.get_project_uid(input_dict)
 
 
     data_to_log = {

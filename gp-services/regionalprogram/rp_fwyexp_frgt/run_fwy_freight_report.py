@@ -46,10 +46,7 @@ def make_freight_rept_fwyexp(input_dict):
     loaded_json["Share of Traffic on Segment That is Trucks"] = truck_pct
 
     # log to data table
-    project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
-                                        proj_type=input_dict[uis.ptype], 
-                                        proj_jur=input_dict[uis.jur], 
-                                        user_email=input_dict[uis.email])
+    project_uid = utils.get_project_uid(input_dict)
 
     data_to_log = {
         'project_uid': project_uid, 'pct_truckvol': truck_pct

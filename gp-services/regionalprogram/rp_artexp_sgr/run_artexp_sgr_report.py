@@ -49,10 +49,9 @@ def make_sgr_report_artexp(input_dict):
         json.dump(loaded_json, f_out, indent=4)
 
     # log to master table
-    p_uid = utils.get_project_uid(proj_name=input_dict[uis.name], proj_type=input_dict[uis.ptype],
-                            proj_jur=input_dict[uis.jur], user_email=input_dict[uis.email])
+    project_uid = utils.get_project_uid(input_dict)
 
-    data_row = {params.logtbl_join_key: p_uid, 'pci': input_dict[uis.pci], 'aadt': input_dict[uis.aadt]}
+    data_row = {params.logtbl_join_key: project_uid, 'pci': input_dict[uis.pci], 'aadt': input_dict[uis.aadt]}
 
     utils.log_row_to_table(data_row_dict=data_row, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_sgr'))
 
