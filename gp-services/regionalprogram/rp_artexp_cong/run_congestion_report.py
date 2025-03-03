@@ -24,7 +24,7 @@ import parcel_data
 import chart_job_du_tot
 import chart_congestion
 import npmrds_data_conflation as npmrds
-import utils # need to import entire folder so that it publishes to server.
+from utils import utils as utils
 
 import landuse_buff_calcs # 6/7/24 - not used in this main script, but need to import so it will publish to server.
 
@@ -152,7 +152,7 @@ def make_congestion_rpt_artexp(input_dict):
     output_congn_data = direction_field_translator(in_congdata_dict=congn_data)
     output_congn_data.update(worst_data)
 
-    project_uid = utils.utils.get_project_uid(input_dict)
+    project_uid = utils.get_project_uid(input_dict)
 
     data_to_log = {
         'project_uid': project_uid, 'aadt': input_dict[uis.aadt],
