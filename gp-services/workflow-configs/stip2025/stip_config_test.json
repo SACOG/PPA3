@@ -156,7 +156,7 @@
 			"displayName": "Rehabilitation and Operational Improvements",
 			"titleReport": {
 				"dataSourceName": "DataSource_Regional_Program_title",
-				"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPTitleAndGuide2/GPServer/RPTitleAndGuide2",
+				"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPTitleAndGuide/GPServer/RPTitleAndGuide",
 				"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=84af996deca94ef5a0b6a202680d95a5",
 				"maxProcessingTimeInMins": 1
 			},
@@ -164,7 +164,7 @@
 				{
 					"name": "Promote Complete Streets and State of Good Repair",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialSGR_SGR",
-					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtSGRSGR2/GPServer/RPArtSGRSGR2",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtSGRSGR/GPServer/RPArtSGRSGR",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4f37550938c8475fb8193a0f40fd6638",
 					"maxProcessingTimeInMins": 2
 				}
