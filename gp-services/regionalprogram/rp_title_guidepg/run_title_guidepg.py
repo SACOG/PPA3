@@ -140,7 +140,7 @@ if __name__ == '__main__':
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\X_St_Oneway'
     # project_name = 'test no ctype intersect'
     # jurisdiction = 'Caltrans'
-    # project_type = 'Arterial or Transit Expansion'
+    # project_type = 'Rehabilitation and Operational Improvements' # 'Arterial or Transit Expansion'
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 150000
     # posted_spd = 65

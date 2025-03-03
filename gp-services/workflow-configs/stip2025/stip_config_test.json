@@ -1,0 +1,174 @@
+={
+	"endingUI": "stack-52f055e8",
+	"textBoxIllegalChars": [
+		"@",
+		"#",
+		"$",
+		"%",
+		"^",
+		"&",
+		"*",
+                "/",
+                "\\"
+	],
+	"viewerUrl": "https://sacog-poc-dev.apps.geocortex.com/webviewer/?app=3134fb5897034d63b1a096de6b393014",
+	"serverWorkflowURL": "https://portal.sacog.org/portal/sharing/rest/content/items/e77e61c37839444687c6c45cd1278826/data?f=json",
+	"targetSpatialReference": {
+		"wkid": 102642,
+		"transformation": 0,
+		"reverse": 0
+	},
+	"geometryValidation": {
+		"maximumNumOfLines": "10",
+		"targetLayer": {
+			"layerId": "Counties",
+			"sublayerId": ""
+		},
+		"message": "Project line should be drawn in SACOG area."
+	},
+	"reportName": "STIP",
+	"performanceOutcomesCount": 10,
+	"projects": [
+		{
+			"name": "Freeway Expansion",
+			"displayName": "Freeway Expansion",
+			"titleReport": {
+				"dataSourceName": "DataSource_Regional_Program_title",
+				"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=84af996deca94ef5a0b6a202680d95a5",
+				"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPTitleAndGuide/GPServer/RPTitleAndGuide",
+				"maxProcessingTimeInMins": 1
+			},
+			"report": [
+				{
+					"name": "Reduce VMT",
+					"dataSourceName": "SACOG_RegionalProgram_Freeway_ReduceVMT",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=7d64112f85314059acb9d026939af9bb",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpVMT/GPServer/RPFwyExpVMT",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Reduce Congestion",
+					"dataSourceName": "SACOG_RegionalProgram_Freeway_ReduceCongestion",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=362a719bad234d9e8dde0b43bf474475",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpCongestion/GPServer/RPFwyExpCongestion",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Encourage Multimodal Travel",
+					"dataSourceName": "SACOG_RegionalProgram_Freeway_Multimodal",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=62f77a3dfba54efa95a4873118eff062",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpMultiModal/GPServer/RPFwyExpMultiModal",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Promote Economic Prosperity",
+					"dataSourceName": "SACOG_RegionalProgram_Freeway_EconProsperity",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=e22c1ecd5f194dbaa13ea29f7c1ae104",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpEconProsp/GPServer/RPFwyExpEconProsp",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Improve Freight Mobility",
+					"dataSourceName": "SACOG_RegionalProgram_Freeway_Freight",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=3acd9e2b4a434737a4a9dbce673455c0",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpFreight/GPServer/RPFwyExpFreight",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Make a Safer Transportation System",
+					"dataSourceName": "SACOG_RegionalProgram_Freeway_Safety",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=05d81a7af815420e96d1bb3e830467d8",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpSafety/GPServer/RPFwyExpSafety",
+					"maxProcessingTimeInMins": 2
+				}
+			]
+		},
+		{
+			"name": "Arterial or Transit Expansion",
+			"displayName": "Arterial or Transit Expansion",
+			"titleReport": {
+				"dataSourceName": "DataSource_Regional_Program_title",
+				"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=84af996deca94ef5a0b6a202680d95a5",
+				"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPTitleAndGuide/GPServer/RPTitleAndGuide",
+				"maxProcessingTimeInMins": 1
+			},
+			"report": [
+				{
+					"name": "Reduce VMT",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceVMT",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpVMT/GPServer/RPArtExpVMT",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=c510ef8017cd4e748f8cd95c9a2825fd",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Reduce Congestion",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceCongestion",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpCongestion/GPServer/RPArtExpCongestion",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=797a9f45cd394711b478d65be64f45b7",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Encourage Multimodal Travel",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Multimodal",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpMultiModal/GPServer/RPArtExpMultiModal",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4d6c8f9a01ea4b0c83e874e79079d57d",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Promote Economic Prosperity",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_EconProsperity",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpEconProsp/GPServer/RPArtExpEconProsp",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=56f572c943104feab1f13887dddb4f04",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Improve Freight Mobility",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Freight",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpFreight/GPServer/RPArtExpFreight",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=07afadd153b74eb3b0ce289d92d8e335",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Make a Safer Transportation System",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Safety",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpSafety/GPServer/RPArtExpSafety",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=69a2cabc546542c1be67a6ae5eb107d3",
+					"maxProcessingTimeInMins": 2
+				},
+				{
+					"name": "Promote Complete Streets and State of Good Repair",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_SGR",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpSGR/GPServer/RPArtExpSGR",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4271c196ff244ba2ac1973b8a2a4e2b0",
+					"maxProcessingTimeInMins": 1
+				},
+				{
+					"name": "Promote Socioeconomic Equity",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Equity",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpEquity/GPServer/RPArtExpEquity",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=c1d951767c834937b5bc6f7113203762",
+					"maxProcessingTimeInMins": 2
+				}
+			]
+		},
+		{
+			"name": "Rehabilitation and Operational Improvements",
+			"displayName": "Rehabilitation and Operational Improvements",
+			"titleReport": {
+				"dataSourceName": "DataSource_Regional_Program_title",
+				"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPTitleAndGuide2/GPServer/RPTitleAndGuide2",
+				"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=84af996deca94ef5a0b6a202680d95a5",
+				"maxProcessingTimeInMins": 1
+			},
+			"report": [
+				{
+					"name": "Promote Complete Streets and State of Good Repair",
+					"dataSourceName": "SACOG_RegionalProgram_ArterialSGR_SGR",
+					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtSGRSGR2/GPServer/RPArtSGRSGR2",
+					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4f37550938c8475fb8193a0f40fd6638",
+					"maxProcessingTimeInMins": 2
+				}
+			]
+		}
+	]
+}
