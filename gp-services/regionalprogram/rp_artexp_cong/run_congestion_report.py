@@ -161,7 +161,7 @@ def make_congestion_rpt_artexp(input_dict):
         }
         
     data_to_log.update(output_congn_data)
-    utils.utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
+    utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'rp_artexp_cong'))
 
     return out_file
 

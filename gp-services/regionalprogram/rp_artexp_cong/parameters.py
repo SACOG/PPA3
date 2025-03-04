@@ -263,7 +263,8 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 #                  * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
-cs_buffdist = "2640 Feet" # feet
+cs_buffdist = 2640 # feet
+col_area_ac = 'GISAc'
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
 cs_threshold_speed = 40 # MPH
