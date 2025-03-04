@@ -41,17 +41,17 @@ def move_files(lkp_tbl, src_col, dest_col):
 
 if __name__ == '__main__':
     scriptname = 'utils.py'
-    src_rootdir = r'C:\Users\dconly\GitRepos\PPA3\gp-services\regionalprogram'
+    src_rootdir = r'\\win10-model-2\Users\dconly\GitRepos\PPA3\gp-services\regionalprogram'
     stag = 'rp'
 
-    dst_rootdir = r'\\arcserverppa-svr\C\arcgisserver\directories\arcgissystem\arcgisinput'
+    dst_rootdir = r'C:\arcgisserver\directories\arcgissystem\arcgisinput'
     dtag = 'RP'
 
-    in_csv = r"C:\Users\dconly\GitRepos\PPA3\testing\utils_copy_lookup.csv"
+    in_csv = r"\\win10-model-2\Users\dconly\GitRepos\PPA3\testing\utils_copy_lookup.csv"
     scol = 'SOURCE'
     dcol = 'DEST'
 
     move_files(in_csv, scol, dcol)
 
-    # print_file_paths(src_root=src_rootdir, srctag=stag, 
-    #                  dst_root=dst_rootdir, dsttag=dtag, file_name=scriptname)
+##    print_file_paths(src_root=src_rootdir, srctag=stag, 
+##                      dst_root=dst_rootdir, dsttag=dtag, file_name=scriptname)
