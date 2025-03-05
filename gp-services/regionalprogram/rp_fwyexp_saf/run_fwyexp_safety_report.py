@@ -60,7 +60,11 @@ def make_safety_report_fwyexp(input_dict):
     # get project community type
     project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
 
-    project_metric_tag = params.tags_ptypes[project_type]
+    # project type tag to append to metric field name
+    if project_type not in params.tags_ptypes.keys():
+        project_metric_tag = params.tags_ptypes[params.ptype_fwy]
+    else:
+        project_metric_tag = params.tags_ptypes[project_type]
 
     # get dict of collision data
     collision_data_project = collisions.get_collision_data(fc_project, project_type, params.collisions_fc, proj_aadt)
