@@ -11,7 +11,7 @@
 # --------------------------------
 import os
 import sys
-import json
+from time import sleep
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
