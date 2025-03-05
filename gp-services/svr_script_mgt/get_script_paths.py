@@ -1,6 +1,20 @@
 """
-Name: copy_to_server.py
-Purpose: 
+Name: get_script_paths.py
+Purpose: grab paths to a given script on both server and in github repo
+    This is first step if you want to, for example, replace the utils script for every
+    GP task.
+
+    BULK SCRIPT REPLACE STEPS
+    1 - run this script to get source paths and destination paths
+    2 - create a CSV table with these fields:
+        -dos command statement xcopy
+        -source paths
+        -destination paths
+        -xcopy option /y
+    3 - create string xcopy statements for each row (e.g. "xcopy <src> <dest> /y")
+    4 - save list of commands as .bat file
+    5 - *On the server machine*, open cmd and run the .bat file to execute desired copy statements
+
 
 
 Author: Darren Conly
