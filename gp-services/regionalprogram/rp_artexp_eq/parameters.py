@@ -86,7 +86,7 @@ aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals_latest.csv")
 
 
 # project type
-ptype_fwy = 'Freeway Expansion'
+ptype_fwy = 'Freeway Investment'
 ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
