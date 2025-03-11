@@ -38,7 +38,7 @@ def clear_out_old_projects(fgdb, query_str):
             uid = row[0]
             uids_to_delete.append(uid)
 
-    print(f"deleting results for {len(uids_to_delete)} projects.")
+    print(f"deleting results for {len(uids_to_delete)} projects (keeping projects marked for review)...")
 
     tbl_list = [fc_projmaster, *arcpy.ListTables()] # list of tables you want to clear out projects from
 
@@ -64,7 +64,11 @@ def clear_out_old_projects(fgdb, query_str):
 
 
 if __name__ == '__main__':
-    query_to_delete = "proj_name = 'test' OR juris = 'test' OR user_email IN ('yongzhi.yu@vertigis.com', 'jhong@sacog.org')"
+    # query_to_delete = "proj_name = 'test' OR juris = 'test' OR user_email IN ('yongzhi.yu@vertigis.com', 'jhong@sacog.org')"
+    query_to_delete = """proj_type IN ('TEST', 'test', 'Rehabilitation and Operational Improvements', 
+                                        'Freeway Expansion', 'Community Design', 'Arterial State of Good Repair',
+                                        'Arterial or Transit Expansion')"""
+    
     result_gdb = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb'
 
     clear_out_old_projects(fgdb=result_gdb, query_str=query_to_delete)
