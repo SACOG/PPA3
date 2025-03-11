@@ -79,6 +79,7 @@ def rename_dict_keys(dict_in, new_key_dict):
 
 
 def log_row_to_table(data_row_dict, dest_table):
+
     """Writes row of values to table. Fields are data_row_dict keys, and the values
     written are the values from data_row_dict's values."""
 
@@ -87,16 +88,55 @@ def log_row_to_table(data_row_dict, dest_table):
     data_fields = list(data_row_dict.keys())
     data_values = list(data_row_dict.values())
 
-    attempts = 0
-    while attempts < 3:
-        try:
-            with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-                cur.insertRow(data_values)
-            break
-        except RuntimeError:
+    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+        attempts = 0
+        max_attempts = 3
+        wait_sec = 15
+        success = False
+        while attempts < max_attempts:
             attempts += 1
-            sleep(10)
-            # if multiple runs happening at once, there can be schema locks. As workaround, wait for 10sec and try again for up to 3 tries
+            try:
+                cur.insertRow(data_values)
+                success = True
+                break
+            except RuntimeError:
+                arcpy.AddMessage(f"""Schema lock on {dest_table} on attempt {attempts} of {max_attempts}. 
+                                Trying again in {wait_sec}sec...""")
+                sleep(wait_sec)
+                # if multiple runs happening at once, there can be schema locks. As workaround, wait and try again for up to 3 tries
+
+        if success:
+            arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+        else:
+            errmsg = f"""ERROR: Unable to log project to {dest_table} after {attempts} attempts."""
+            raise Exception(errmsg)
+        
+def log_row_to_table_old(data_row_dict, dest_table):
+    """Writes row of values to table. Fields are data_row_dict keys, and the values
+    written are the values from data_row_dict's values."""
+
+    data_fields = list(data_row_dict.keys())
+    data_values = list(data_row_dict.values())
+
+    with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+        tries = 0
+        while tries <= 3:
+            # give 3 tries at inserting the row. During first 3 tries, if fail, wait then try again.
+            tries += 1
+            try:
+                cur.insertRow(data_values)
+                break # if successful, then break loop and finish function
+            except RuntimeError:
+                sleep(15)
+        
+        # if failing after 3 tries, try 4th time and if that fails, let the error happen.
+        if tries > 3: 
+            try:
+                cur.insertRow(data_values)
+            except:
+                errmsg = f"""ERROR: Unable to log project to {dest_table} after {attempts} attempts."""
+                raise Exception(errmsg)
+                
 
     arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 

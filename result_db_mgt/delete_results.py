@@ -23,10 +23,11 @@ Iterate through all result tables. for each table:
 
 import arcpy
 
-def clear_out_old_projects(fgdb, query_str):
+def clear_out_old_projects(fgdb, query_str, rmv_orphan_uid=True):
     arcpy.env.workspace = fgdb
     fc_projmaster = 'project_master'
     f_uid = 'project_uid'
+    v_orphan_record = 'UID_NOT_FOUND'
 
     # add safeguard to ensure project actually reviewed for funding program do not get deleted
     query_str = f"{query_str} AND for_review <> 1"
@@ -38,6 +39,8 @@ def clear_out_old_projects(fgdb, query_str):
             uid = row[0]
             uids_to_delete.append(uid)
 
+    if rmv_orphan_uid: uids_to_delete.append(v_orphan_record)
+
     print(f"deleting results for {len(uids_to_delete)} projects (keeping projects marked for review)...")
 
     tbl_list = [fc_projmaster, *arcpy.ListTables()] # list of tables you want to clear out projects from
@@ -47,10 +50,11 @@ def clear_out_old_projects(fgdb, query_str):
     if len(uids_to_delete) > 1:
         qstr = f"{f_uid} IN {tuple(uids_to_delete)}"
     elif len(uids_to_delete) == 1:
-        qstr = f"{f_uid} = {uids_to_delete[0]}"
+        qstr = f"{f_uid} = '{uids_to_delete[0]}'"
         
 
     # iterate through tables and delete rows where project UID has match in uids_to_delete list
+    # import pdb; pdb.set_trace()
     if qstr:
         for tbl in tbl_list:
             tblfields = [f.name for f in arcpy.ListFields(tbl)]
@@ -65,9 +69,10 @@ def clear_out_old_projects(fgdb, query_str):
 
 if __name__ == '__main__':
     # query_to_delete = "proj_name = 'test' OR juris = 'test' OR user_email IN ('yongzhi.yu@vertigis.com', 'jhong@sacog.org')"
-    query_to_delete = """proj_type IN ('TEST', 'test', 'Rehabilitation and Operational Improvements', 
-                                        'Freeway Expansion', 'Community Design', 'Arterial State of Good Repair',
-                                        'Arterial or Transit Expansion')"""
+    # query_to_delete = """proj_type IN ('TEST', 'test', 'Rehabilitation and Operational Improvements', 
+    #                                     'Freeway Expansion', 'Community Design', 'Arterial State of Good Repair',
+    #                                     'Arterial or Transit Expansion')"""
+    query_to_delete = "project_uid = 'UID_NOT_FOUND'"
     
     result_gdb = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb'
 
