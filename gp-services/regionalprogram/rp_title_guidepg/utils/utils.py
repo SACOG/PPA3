@@ -78,7 +78,8 @@ def rename_dict_keys(dict_in, new_key_dict):
     return dict_out
 
 
-def log_row_to_table(data_row_dict, dest_table):
+def log_row_to_table_wip(data_row_dict, dest_table):
+    # supposedly better version of log_row func, but for some reason keeps failing.
 
     """Writes row of values to table. Fields are data_row_dict keys, and the values
     written are the values from data_row_dict's values."""
@@ -111,7 +112,7 @@ def log_row_to_table(data_row_dict, dest_table):
             errmsg = f"""ERROR: Unable to log project to {dest_table} after {attempts} attempts."""
             raise Exception(errmsg)
         
-def log_row_to_table_old(data_row_dict, dest_table):
+def log_row_to_table(data_row_dict, dest_table):
     """Writes row of values to table. Fields are data_row_dict keys, and the values
     written are the values from data_row_dict's values."""
 
@@ -134,7 +135,7 @@ def log_row_to_table_old(data_row_dict, dest_table):
             try:
                 cur.insertRow(data_values)
             except:
-                errmsg = f"""ERROR: Unable to log project to {dest_table} after {attempts} attempts."""
+                errmsg = f"""ERROR: Unable to log project to {dest_table} after {tries} attempts."""
                 raise Exception(errmsg)
                 
 
