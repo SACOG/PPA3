@@ -40,21 +40,21 @@
 			},
 			"report": [
 				{
-					"name": "Multimodal/Transporation Choice (Reduce VMT)",
+					"name": "Multimodal/Transportation Choice (Reduce VMT)",
 					"dataSourceName": "SACOG_RegionalProgram_Freeway_ReduceVMT",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=7d64112f85314059acb9d026939af9bb",
 					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpVMT/GPServer/RPFwyExpVMT",
 					"maxProcessingTimeInMins": 2
 				},
 				{
-					"name": "Multimodal/Transporation Choice (Reduce Congestion)",
+					"name": "Multimodal/Transportation Choice (Reduce Congestion)",
 					"dataSourceName": "SACOG_RegionalProgram_Freeway_ReduceCongestion",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=362a719bad234d9e8dde0b43bf474475",
 					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpCongestion/GPServer/RPFwyExpCongestion",
 					"maxProcessingTimeInMins": 2
 				},
 				{
-					"name": "Multimodal/Transporation Choice (Encourage Multimodal Travel)",
+					"name": "Multimodal/Transportation Choice (Encourage Multimodal Travel)",
 					"dataSourceName": "SACOG_RegionalProgram_Freeway_Multimodal",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=62f77a3dfba54efa95a4873118eff062",
 					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPFwyExpMultiModal/GPServer/RPFwyExpMultiModal",
@@ -94,21 +94,21 @@
 			},
 			"report": [
 				{
-					"name": "Multimodal/Transporation Choice (Reduce VMT)",
+					"name": "Multimodal/Transportation Choice (Reduce VMT)",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceVMT",
 					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpVMT/GPServer/RPArtExpVMT",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=c510ef8017cd4e748f8cd95c9a2825fd",
 					"maxProcessingTimeInMins": 2
 				},
 				{
-					"name": "Multimodal/Transporation Choice (Reduce Congestion)",
+					"name": "Multimodal/Transportation Choice (Reduce Congestion)",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_ReduceCongestion",
 					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpCongestion/GPServer/RPArtExpCongestion",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=797a9f45cd394711b478d65be64f45b7",
 					"maxProcessingTimeInMins": 2
 				},
 				{
-					"name": "Multimodal/Transporation Choice (Encourage Multimodal Travel)",
+					"name": "Multimodal/Transportation Choice (Encourage Multimodal Travel)",
 					"dataSourceName": "SACOG_RegionalProgram_ArterialOrTransitExpasion_Multimodal",
 					"dataUrl": "https://services.sacog.org/gisppa/rest/services/RPArtExpMultiModal/GPServer/RPArtExpMultiModal",
 					"reportUrl": "https://portal.sacog.org/portal/home/item.html?id=4d6c8f9a01ea4b0c83e874e79079d57d",

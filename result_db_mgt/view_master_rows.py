@@ -10,4 +10,5 @@ df = pd.DataFrame.spatial.from_featureclass(in_fc)
 cols = ['OBJECTID', 'project_uid', 'proj_name', 'time_created',
        'user_email', 'perf_outcomes']
 
+import pdb; pdb.set_trace()
 print(df[cols].tail())

@@ -19,11 +19,17 @@ Python Version: 3.x
 from pathlib import Path
 
 import arcpy
-import PyPDF2 
+import pypdf 
 
-def is_ppa_pdf(in_path_obj):
+def is_ppa_pdf(in_path_obj, ppa_tags=None):
     is_pdf = in_path_obj.suffix.lower() == '.pdf'
-    ppa_in_name = 'PPA ' in in_path_obj.name
+    
+    ppa_in_name = True # if no tag specified, assume any pdf is a ppa report
+    if ppa_tags: # but user can add tag filter to ensure only a subset of the pdfs are treated as reports
+        ppa_in_name = False
+        for pt in ppa_tags:
+            if pt in in_path_obj.name:
+                ppa_in_name = True
 
     output = is_pdf and ppa_in_name
 
@@ -41,7 +47,7 @@ def get_pdf_field_val(pdf_path, page_idx, field_delim, field_name):
     project master table
     """
     
-    reader = PyPDF2.PdfReader(pdf_path)
+    reader = pypdf.PdfReader(pdf_path)
     page = reader.pages[page_idx]
     pgtext = page.extract_text()
     pg_textlist = pgtext.split(field_delim)
@@ -74,7 +80,7 @@ def update_review_flag(master_fc, pdf_dir, setval=1):
     # retrieve list of UIDs from PDFs
     uid_list = {}
     pdfs_list = []
-    for f in pdf_dir.rglob("*.pdf"):
+    for f in Path(pdf_dir).rglob("*.pdf"):
         if is_ppa_pdf(f):
             pdfs_list.append(f)
 
@@ -121,9 +127,10 @@ OVERALL PROCESS:
 
 
 if __name__ == '__main__':
-    pdf_folder = Path(r'D:\PPA Folders to Scan\MaintMod20230203\Applications')
+    pdf_folder = r'C:\Users\dconly\Desktop\Temporary\temp_ppa'
 
-    master_fc_table = r'\\arcserver-svr\D\PPA3_SVR\PPA3_GIS_SVR\PPA3_run_data.gdb\project_master'
+    master_fc_table = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb\project_master'
     set_value = 1
+
 
     update_review_flag(master_fc=master_fc_table, pdf_dir=pdf_folder, setval=set_value)
