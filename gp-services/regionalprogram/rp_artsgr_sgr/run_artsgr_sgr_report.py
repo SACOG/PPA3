@@ -33,7 +33,7 @@ def make_sgr_report_artsgr(input_dict):
     proj_fc = input_dict[uis.geom]
     proj_typ = input_dict[uis.ptype]
     project_pci = input_dict[uis.pci]
-    proj_postedspd = int(input_dict[uis.posted_spd])
+    proj_postedspd = float(input_dict[uis.posted_spd])
     proj_aadt = input_dict[uis.aadt]
 
     
