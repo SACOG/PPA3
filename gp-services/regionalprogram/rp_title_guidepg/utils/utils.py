@@ -11,7 +11,7 @@
 # --------------------------------
 import os
 import sys
-import json
+from time import sleep
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
@@ -79,6 +79,8 @@ def rename_dict_keys(dict_in, new_key_dict):
 
 
 def log_row_to_table(data_row_dict, dest_table):
+    # supposedly better version of log_row func, but for some reason keeps failing.
+
     """Writes row of values to table. Fields are data_row_dict keys, and the values
     written are the values from data_row_dict's values."""
 
@@ -88,17 +90,30 @@ def log_row_to_table(data_row_dict, dest_table):
     data_values = list(data_row_dict.values())
 
     attempts = 0
-    while attempts < 3:
-        try:
+    max_attempts = 5
+    wait_sec = 15
+    success = False
+    while attempts < max_attempts:
+        attempts += 1
+        unlocked = arcpy.TestSchemaLock(dest_table)
+        if unlocked:
             with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
+                import pdb; pdb.set_trace()
                 cur.insertRow(data_values)
+            success = True
             break
-        except RuntimeError:
-            attempts += 1
-            sleep(10)
-            # if multiple runs happening at once, there can be schema locks. As workaround, wait for 10sec and try again for up to 3 tries
+        else:
+            arcpy.AddMessage(f"""Schema lock on {dest_table} on attempt {attempts} of {max_attempts}. 
+                            Trying again in {wait_sec}sec...""")
+            sleep(wait_sec)
+            # if multiple runs happening at once, there can be schema locks. As workaround, wait and try again for up to 3 tries
 
-    arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+    if success:
+        arcpy.AddMessage(f"Logged subreport values to {dest_table}")
+    else:
+        errmsg = f"""ERROR: Unable to log project to {dest_table} after {attempts} attempts."""
+        raise Exception(errmsg)
+
 
 def get_project_uid(project_info):
     """Find the project UID in the master table where project name, type, 

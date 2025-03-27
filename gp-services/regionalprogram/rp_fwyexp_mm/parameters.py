@@ -86,7 +86,7 @@ aggval_csv = os.path.join(config_csvs_dir, "Agg_ppa_vals_latest.csv")
 
 
 # project type
-ptype_fwy = 'Freeway Expansion'
+ptype_fwy = 'Freeway Investment'
 ptype_arterial = 'Arterial or Transit Expansion'
 ptype_sgr = 'Complete Street or State of Good Repair'
 ptype_commdesign = "Community Design"
@@ -265,7 +265,8 @@ col_transit_events = "tripcnt_day" #if transit feature class is point file disso
 #                  * (1-(posted speed limit - threshold speed limit)*speed penalty factor)
 # FYI, CSI WILL BE UPDATED AND NORMALIZED BASED ON REGIONAL MAX FOR PPA3
 
-cs_buffdist = "2640 Feet" # feet
+cs_buffdist = 2640 # feet
+col_area_ac = 'GISAc'
 cs_lu_facs = [col_area_ac, col_k12_enr, col_emptot, col_du]
 
 cs_threshold_speed = 40 # MPH

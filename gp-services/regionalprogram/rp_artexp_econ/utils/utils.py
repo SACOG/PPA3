@@ -11,7 +11,7 @@
 # --------------------------------
 import os
 import sys
-import json
+from time import sleep
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
@@ -143,7 +143,19 @@ def log_row_to_table(data_row_dict, dest_table):
     data_values = list(data_row_dict.values())
 
     with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-        cur.insertRow(data_values)
+        tries = 0
+        while tries <= 3:
+            # give 3 tries at inserting the row. During first 3 tries, if fail, wait then try again.
+            tries += 1
+            try:
+                cur.insertRow(data_values)
+                break # if successful, then break loop and finish function
+            except RuntimeError:
+                sleep(15)
+        
+        # if failing after 3 tries, try 4th time and if that fails, let the error happen.
+        if tries > 3: cur.insertRow(data_values)
+                
 
     arcpy.AddMessage(f"Logged subreport values to {dest_table}")
 
