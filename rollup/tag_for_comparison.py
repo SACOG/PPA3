@@ -127,7 +127,7 @@ OVERALL PROCESS:
 
 
 if __name__ == '__main__':
-    pdf_folder = r'C:\Users\dconly\Desktop\Temporary\temp_ppa'
+    pdf_folder = input("Enter path to folder with PPA PDF reports: ").strip("\"") # C:\Users\dconly\Desktop\Temporary\2025_ppa_stip_runs20250402
 
     master_fc_table = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb\project_master'
     set_value = 1
