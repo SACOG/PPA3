@@ -165,7 +165,6 @@ tmc_buff_dist_ft = "90 Feet"  # buffer distance, in feet, around the TMCs
 # ===================================MODEL-BASED LAND USE  PARAMETERS==============================================
 
 # parameters for mix index
-import pandas as pd
 
 # input columns for land use mix calculation--MUST MATCH COLNAMES IN mix_idx_params_csv
 col_parcelid = 'PARCELID'
@@ -182,8 +181,6 @@ ilut_sum_buffdist = "2640 Feet" # feet, default = 2640 (0.5mi)
 
 
 col_lutype = 'LUTYPE'
-lutype_parks = 'Park and/or Open Space'
-lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
 
 mix_idx_col = 'mix_index'
 
@@ -286,7 +283,6 @@ threshold_val = 0.9  # if more than 90% of project length is in greenfield, then
 
 # for measuring loss in acres of natural resources within project area (nat resources = forest, parks, ag land)
 buff_nat_resources = "2640 Feet" #feet. Is area of consideration when measuring acres of natural resources lost within project area.
-lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
 
 
 # =============================JSON CONFIG PARAMETERS FROM USER INTERFACE===============

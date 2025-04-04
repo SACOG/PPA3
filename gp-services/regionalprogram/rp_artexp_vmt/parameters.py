@@ -166,7 +166,6 @@ tmc_buff_dist_ft = 90  # buffer distance, in feet, around the TMCs
 # ===================================MODEL-BASED LAND USE  PARAMETERS==============================================
 
 # parameters for mix index
-import pandas as pd
 
 # input columns for land use mix calculation--MUST MATCH COLNAMES IN mix_idx_params_csv
 col_parcelid = 'PARCELID'
@@ -182,8 +181,6 @@ du_mix_buffdist = 5280 #feet, default = 5280
 ilut_sum_buffdist = 2640 # feet, default = 2640 (0.5mi)
 
 col_lutype = 'LUTYPE'
-lutype_parks = 'Park and/or Open Space'
-lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
 
 mix_idx_col = 'mix_index'
 

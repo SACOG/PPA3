@@ -215,10 +215,6 @@ mix_index_buffdist = 5280 #feet
 du_mix_buffdist = 5280 #feet
 ilut_sum_buffdist = 2640 # feet
 
-
-
-lutype_ag = 'Agriculture' #from LUTYPE colume for ILUT table
-
 mix_idx_col = 'mix_index'
 
 
@@ -311,6 +307,5 @@ threshold_val = 0.9  # if more than 90% of project length is in greenfield, then
 
 # for measuring loss in acres of natural resources within project area (nat resources = forest, parks, ag land)
 buff_nat_resources = 2640 #feet. Is area of consideration when measuring acres of natural resources lost within project area.
-lutypes_nat_resources = ['Forest', 'Agriculture', lutype_parks]
 
 
