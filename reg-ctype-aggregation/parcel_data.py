@@ -20,8 +20,10 @@ from time import perf_counter as perf
 import arcpy
 
 import parameters as params
+from utils import utils
 
-def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, parcel_cols=None, whole_region=False):
+@utils.time_it(task_desc='parcel selection')
+def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, whole_region=False):
     arcpy.AddMessage(f"Generating temp parcel file of parcels in project vicinity or zone for year {data_year}...")
     sufx = int(perf()) + 1
     fl_parcel = os.path.join('memory',f'fl_parcel{sufx}')
@@ -43,11 +45,13 @@ def get_buffer_parcels(fc_pclpt, fc_project, buffdist, project_type, data_year, 
     if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)    
 
-    buff_dist = 0 if project_type == params.ptype_area_agg else buffdist
-
-    if not whole_region:
+    if not whole_region and project_type == params.ptype_area_agg:
         # skip this step if using all parcels in region
-        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buff_dist)
+        # fast_spatial_select is much faster than using select-by-location, but does not *yet* allow buffering 
+        # or "have their center in"-based selection
+        out_fc_path = utils.fast_spatial_select(fc_pclpt, fc_project, arcpy.env.scratchGDB, out_fc)            
+    elif not whole_region:
+        arcpy.SelectLayerByLocation_management(fl_parcel, "WITHIN_A_DISTANCE", fl_project, buffdist)
         arcpy.conversion.FeatureClassToFeatureClass(fl_parcel, arcpy.env.scratchGDB, out_fc)
     else:
         out_fc_path = fc_pclpt
@@ -70,7 +74,7 @@ if __name__ == '__main__':
     print(arcpy.env.scratchGDB)
 
     result = get_buffer_parcels(fc_pclpt=pcl_fc, fc_project=pcl_project, 
-    buffdist=buffdist, project_type=projtype, data_year = dyear, parcel_cols=None)
+    buffdist=buffdist, project_type=projtype, data_year = dyear)
 
     print(result)
 

@@ -10,14 +10,24 @@
 # Python Version: 3.x
 # --------------------------------
 import os
+from time import perf_counter
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 import pandas as pd
 import arcpy
 
-import parameters as params
-
+def time_it(task_desc=None):
+    # https://stackoverflow.com/questions/5929107/decorators-with-parameters
+    def time_it_decorator(func):
+        def wrapper(*args, **kwargs):
+            start = perf_counter()
+            result = func(*args, **kwargs)
+            elapsed = round((perf_counter() - start) / 60, 1)
+            print(f"{task_desc} finished in {elapsed} mins.") 
+            return result
+        return wrapper
+    return time_it_decorator
 
 # NOTE - this must be copy/pasted into the script it will be used in, otherwise it will reference the wrong script in the traceback message.
 def trace():
@@ -129,6 +139,42 @@ def rename_dict_keys(dict_in, new_key_dict):
             dict_out[v] = 0
     return dict_out
 
+def fast_spatial_select(input_features, selection_features, out_gdb, out_fc_name,
+                        select_relationship='INTERSECTS'):
+    """
+    Creates feature class that is subset of input_features that intersect
+     selection_features. Is a much faster (6-8x faster) version of arcpy SelectLayerByLocation.
+     NOTE - Cannot select based on "has their center in" relationship, NOR can you add a buffer around the selection feature.
+    """
+        
+    pcl_meta = arcpy.Describe(input_features)
+    out_fc_path = os.path.join(out_gdb, out_fc_name)
+    arcpy.management.CreateFeatureclass(out_gdb, out_fc_name, template=input_features,
+                                        geometry_type=pcl_meta.shapeType.upper(),
+                                        spatial_reference=pcl_meta.spatialReference)
+    
+    polys = []
+    with arcpy.da.SearchCursor(selection_features, field_names=['SHAPE@']) as pcur:
+        for row in pcur:
+            polys.append(row[0])
+
+    if len(polys) == 0:
+        raise Exception(f"ERROR: no features in {selection_features}")
+
+    inscur = arcpy.da.InsertCursor(out_fc_path, field_names="*")
+
+    pcl_fnames = [f.name for f in arcpy.ListFields(out_fc_path)] # needed to ensure correct order of attributes for insert cursor
+    for selection_poly in polys:
+        with arcpy.da.SearchCursor(input_features, field_names=pcl_fnames,
+                                   spatial_filter=selection_poly,
+                                   spatial_relationship=select_relationship) as scur:
+            for row in scur:
+                try:
+                    inscur.insertRow(row)   
+                except:
+                    import pdb; pdb.set_trace()
+
+    return out_fc_path   
 
 if __name__ == '__main__':
     print("Script contains functions only. Do not run this as standalone script.")

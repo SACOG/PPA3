@@ -38,6 +38,7 @@ try:
 except:
     pass
 
+
 def get_poly_avg(input_poly_fc, whole_region=False):
 
     # if scratch GDB weirdly 'becomes' a folder, delete it.
@@ -47,8 +48,8 @@ def get_poly_avg(input_poly_fc, whole_region=False):
     # as of 11/26/2019, each of these outputs are dictionaries
     pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
                         project_type=params.ptype_area_agg, data_year=params.base_year, 
-                        parcel_cols=None, whole_region=whole_region)
-    
+                        whole_region=whole_region) 
+
     tifdir = Path(acc_cfg['tifdir'])
     accdata = {}
     acc_combos = {'emp': 'workers', 'nonwork':'pop', 'edu': 'pop'}
@@ -89,7 +90,11 @@ def get_poly_avg(input_poly_fc, whole_region=False):
     return out_dict
 
 def poly_avg_futyears(input_poly_fc, data_year, whole_region): #IDEALLY could make this part of get_poly_avg as single function with variable number of input args
-    mix_data = mixidx.get_mix_idx(params.parcel_pt_fc_yr(data_year), input_poly_fc, params.ptype_area_agg, whole_region=whole_region)    
+    pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
+                    project_type=params.ptype_area_agg, data_year=params.future_year, 
+                    whole_region=whole_region) 
+
+    mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg, whole_region=whole_region)    
     return mix_data
 
 def get_ppa_agg_data(fc_poly_in, poly_id_field, year_base, year_analysis, whole_region=False, test_run=False):
