@@ -169,10 +169,7 @@ def fast_spatial_select(input_features, selection_features, out_gdb, out_fc_name
                                    spatial_filter=selection_poly,
                                    spatial_relationship=select_relationship) as scur:
             for row in scur:
-                try:
-                    inscur.insertRow(row)   
-                except:
-                    import pdb; pdb.set_trace()
+                inscur.insertRow(row)
 
     return out_fc_path   
 

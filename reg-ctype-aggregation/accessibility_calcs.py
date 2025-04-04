@@ -30,7 +30,8 @@ with open(yaml_file, 'r') as y:
     pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
     acc_cfg = pathconfigs['access_data']
 
-
+# @ut.time_it(task_desc='Getting access raster data near project ')
+# 4/4/2025 - get_raster_pts_near_line takes ~20-25sec to complete for the Ag comm type, and is repeated 5 times--way to speed up?
 def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
 
     # load tif data
@@ -44,7 +45,10 @@ def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
         line_gdf = ut.esri_to_df(esri_obj_path=line_fc, include_geom=True, field_list=None, index_field=None, 
                     crs_val=line_fc_epsg, dissolve=False).to_crs(crs_to_use)
         
-        line_gdf['geometry'] = line_gdf['geometry'].buffer(search_dist) # distance in meters if EPSG 3857 (web mercator)
+        if search_dist > 0:
+            line_gdf['geometry'] = line_gdf['geometry'].buffer(search_dist) # distance in meters if EPSG 3857 (web mercator)
+
+        
         mask_geom = line_gdf.geometry[0]
 
         # use buffer to mask TIF values.
@@ -59,6 +63,10 @@ def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
     row_range = np.arange(vals_array.shape[0])
     col_range = np.arange(vals_array.shape[1])
 
+    # NOTE 4/4/2025 this is a perfromance bottleneck. Over 660,000 iterations
+    # bounding boxes won't really help for commtypes because they cover whole region,
+    # but *could* improve speed for individual projects?
+    # import pdb; pdb.set_trace()
     coord_arr = []
     for r in row_range:
         for c in col_range:

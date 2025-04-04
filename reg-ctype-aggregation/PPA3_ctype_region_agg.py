@@ -46,7 +46,7 @@ def get_poly_avg(input_poly_fc, whole_region=False):
         arcpy.Delete_management(arcpy.env.scratchGDB)
 
     # as of 11/26/2019, each of these outputs are dictionaries
-    pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
+    pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(params.base_year), input_poly_fc, buffdist=0, 
                         project_type=params.ptype_area_agg, data_year=params.base_year, 
                         whole_region=whole_region) 
 
@@ -90,8 +90,8 @@ def get_poly_avg(input_poly_fc, whole_region=False):
     return out_dict
 
 def poly_avg_futyears(input_poly_fc, data_year, whole_region): #IDEALLY could make this part of get_poly_avg as single function with variable number of input args
-    pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(), input_poly_fc, buffdist=0, 
-                    project_type=params.ptype_area_agg, data_year=params.future_year, 
+    pcl_pt_data = get_buffer_parcels(params.parcel_pt_fc_yr(data_year), input_poly_fc, buffdist=0, 
+                    project_type=params.ptype_area_agg, data_year=data_year, 
                     whole_region=whole_region) 
 
     mix_data = mixidx.get_mix_idx(pcl_pt_data, input_poly_fc, params.ptype_area_agg, whole_region=whole_region)    

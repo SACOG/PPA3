@@ -117,6 +117,7 @@ def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
 
     return out_dict_roadtyp_tag
 
+@ut.time_it(task_desc='Collision aggregation ')
 def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     '''Inputs:
         fc_project = project line around which a buffer will be drawn for selecting collision locations
@@ -170,8 +171,6 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
         odict_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, tag_nonfwy)
 
         out_dict.update(odict_nonfwy)
-        # import pdb; pdb.set_trace()
-        # out_dict = odict_fwy.update(odict_nonfwy)
     elif project_type == params.ptype_fwy:
         out_dict = final_agg(df_collndata_fwy, ann_proj_vmt, proj_len_mi, "")
     else:
