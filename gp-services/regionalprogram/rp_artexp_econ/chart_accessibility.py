@@ -16,21 +16,16 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 
 from pathlib import Path
 
-import parameters as params
+from config_links import params, cfg
 from accessibility_calcs import get_acc_data
 from get_agg_values import make_aggval_dict
 
-import yaml
-yaml_file = os.path.join(os.path.dirname(__file__), 'data_paths.yaml')
-with open(yaml_file, 'r') as y:
-    pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
-    acc_cfg = pathconfigs['access_data']
 
 def update_json(json_loaded, fc_project, project_type, project_commtype, destination_type, weight_pop, aggval_csv, k_chart_title):
 
     # project level dict of accessibility script outputs
     # dict_data = get_acc_data(fc_project, fc_accessibility_data, project_type) 
-    
+    acc_cfg = cfg['access_data']
     accdir = acc_cfg['tifdir']
     weights = Path(accdir).joinpath(acc_cfg['wts'][weight_pop]) # population with which to weight avg accessibility (e.g. total pop, workers, etc.)
     dict_data = get_acc_data(fc_project, weights, project_type, destination_type)
