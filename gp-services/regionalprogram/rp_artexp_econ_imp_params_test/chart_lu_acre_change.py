@@ -12,9 +12,10 @@ Python Version: 3.x
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
+sys.path.append(r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\gpconfig') # import params from config folder on server machine
 
 import get_lutype_acres as get_acres
-import parameters as params
+from config_links import params
 
 def update_json(json_loaded, data_year, order_val, fc_poly_parcels, project_fc, project_type,
                 in_lu_type, k_chart_title):

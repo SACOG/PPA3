@@ -12,7 +12,6 @@
 from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).parent))
-from time import perf_counter as perf
 
 import pandas as pd
 import arcpy
@@ -21,14 +20,8 @@ import geopandas as gpd
 import rasterio
 from rasterio.mask import mask
 
-import parameters as params
+from config_links import cfg, params
 from utils import utils as ut
-
-import yaml
-yaml_file = Path(__file__).parent.joinpath('data_paths.yaml')
-with open(yaml_file, 'r') as y:
-    pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
-    acc_cfg = pathconfigs['access_data']
 
 
 def get_raster_pts_near_line(tif, line_fc, valname, search_dist=100):
@@ -86,6 +79,7 @@ def get_acc_data(fc_project, tif_weights, project_type, dest):
     gdf_wt = get_raster_pts_near_line(tif_weights, fc_project, valname=wt, search_dist=searchdist)
 
     out_dict = {}
+    acc_cfg = cfg['access_data']
     acclayer_dict = acc_cfg['acc_lyrs']
     acclayers_dir = Path(acc_cfg['tifdir'])
     accdata_dest = acclayer_dict[dest]

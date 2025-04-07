@@ -13,7 +13,7 @@ Python Version: 3.x
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
-
+sys.path.append(r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\gpconfig') # import params from config folder on server machine
 
 from time import perf_counter as perf
 

@@ -1,7 +1,9 @@
-from pathlib import Path
 import sys
 
-sys.path.append(str(Path(__file__).parent.parent))
+import arcpy
+
+sys.path.append(r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\gpconfig')
 import parameters as params
 
-print(f"success - test value = {params.region_fc}")
+# testv = arcpy.GetParameterAsText(0)
+arcpy.AddMessage(f"success - test value = {params.region_fc}")
