@@ -15,7 +15,7 @@ Python Version: 3.x
 import re
 import json
 
-import parameters as params
+from config_links import params
 
 
 class CongestionReport(object):

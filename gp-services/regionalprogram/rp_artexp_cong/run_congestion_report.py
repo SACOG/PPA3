@@ -19,7 +19,7 @@ import json
 import arcpy
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
-import parameters as params
+from config_links import params
 import parcel_data
 import chart_job_du_tot
 import chart_congestion
