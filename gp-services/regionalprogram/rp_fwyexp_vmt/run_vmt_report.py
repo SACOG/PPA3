@@ -119,8 +119,8 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway' # Broadway16th_2226
-    # project_name = 'causeway'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_I505' # Broadway16th_2226
+    # project_name = 'i505'
     # jurisdiction = 'caltrans'
     # project_type = params.ptype_fwy
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
