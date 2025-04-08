@@ -13,7 +13,7 @@ import os
 
 import arcpy
 
-import parameters as params
+from config_links import params
 import landuse_buff_calcs 
 import transit_svc_measure as ts
 

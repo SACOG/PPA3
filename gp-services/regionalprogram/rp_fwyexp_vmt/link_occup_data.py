@@ -20,7 +20,7 @@ g_ESRI_variable_2 = 'modlink_fl'
 # --------------------------------
 import arcpy
 
-import parameters as params
+from config_links import params
 from utils import utils as ut
 
 

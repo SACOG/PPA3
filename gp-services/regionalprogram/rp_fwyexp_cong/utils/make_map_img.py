@@ -23,7 +23,7 @@ import pandas as pd
 
 import arcpy
 
-import parameters as params
+from config_links import params
 
 
 def trace():

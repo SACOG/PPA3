@@ -23,7 +23,7 @@ import arcpy
 arcpy.env.overwriteOutput = True
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
-import parameters as params
+from config_links import params
 import commtype
 from utils import utils, make_map_img
 

@@ -20,7 +20,7 @@ import json
 import arcpy
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
-import parameters as params
+from config_links import params
 import get_truck_data_fwy as truckdata
 from utils import utils as utils
 

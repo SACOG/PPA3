@@ -13,15 +13,9 @@ from pathlib import Path
 import sys
 sys.path.append(str(Path(__file__).parent)) # enable importing from parent folder
 
-import parameters as params
+from config_links import params, cfg
 import accessibility_calcs as acc_calcs
 import get_agg_values as aggvals
-
-import yaml
-yaml_file = Path(__file__).parent.joinpath('data_paths.yaml')
-with open(yaml_file, 'r') as y:
-    pathconfigs = yaml.load(y, Loader=yaml.FullLoader)
-    acc_cfg = pathconfigs['access_data']
 
 
 def update_json(json_loaded, fc_project, proj_type, project_commtype, weight_pop,
@@ -41,6 +35,7 @@ def update_json(json_loaded, fc_project, proj_type, project_commtype, weight_pop
     output_dict = aggval_dict[k_mode_dest] # remove the top dimension from the dict
     
     # get project-specific values as dict
+    acc_cfg = cfg['access_data']
     wgt_tif = Path(acc_cfg['tifdir']).joinpath(acc_cfg['wts'][weight_pop])
     project_dict = acc_calcs.get_acc_data(fc_project, tif_weights=wgt_tif, project_type=proj_type, dest=dest)
 

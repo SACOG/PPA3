@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import pandas as pd
 import arcpy
 
-import parameters as params
+from config_links import params
 
 
 # NOTE - this must be copy/pasted into the script it will be used in, otherwise it will reference the wrong script in the traceback message.
@@ -98,7 +98,6 @@ def log_row_to_table(data_row_dict, dest_table):
         unlocked = arcpy.TestSchemaLock(dest_table)
         if unlocked:
             with arcpy.da.InsertCursor(dest_table, data_fields) as cur:
-                import pdb; pdb.set_trace()
                 cur.insertRow(data_values)
             success = True
             break

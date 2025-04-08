@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 import pandas as pd
 import arcpy
 
-import parameters as params
+from config_links import params
 
 
 # NOTE - this must be copy/pasted into the script it will be used in, otherwise it will reference the wrong script in the traceback message.

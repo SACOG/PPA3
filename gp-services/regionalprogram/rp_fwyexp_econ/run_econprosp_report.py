@@ -18,7 +18,7 @@ import json
 import arcpy
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
-import parameters as params
+from config_links import params
 import commtype
 import chart_access_xctyp as acc_chart
 from utils import make_map_img as imgmaker
@@ -122,15 +122,15 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5_NoNa' # Broadway16th_2226
-    project_name = 'I5'
-    jurisdiction = 'caltrans'
-    project_type = params.ptype_fwy
-    perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
-    aadt = 150000
-    posted_spd = 65
-    pci = 80
-    email = 'fake@test.com'
+    # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5_NoNa' # Broadway16th_2226
+    # project_name = 'I5'
+    # jurisdiction = 'caltrans'
+    # project_type = params.ptype_fwy
+    # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
+    # aadt = 150000
+    # posted_spd = 65
+    # pci = 80
+    # email = 'fake@test.com'
 
     uis = params.user_inputs
     input_parameter_dict = {

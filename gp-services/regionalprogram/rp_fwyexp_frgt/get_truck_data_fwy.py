@@ -27,7 +27,7 @@ import os
 import arcpy
 import pandas as pd
 
-import parameters as params
+from config_links import params
 import npmrds_data_conflation as ndc
 
 def get_wtdavg_truckdata(in_df, col_name):
