@@ -8,8 +8,8 @@ g_ESRI_variable_2 = 'modlink_fl'
 # Esri end of added variables
 
 # --------------------------------
-# Name:collisions.py
-# Purpose: calculate collision data for PPA tool.
+# Name: link_occup_data.py
+# Purpose: compute transit trip vol and vehicle occup on project based on SACSIM mode links
 #
 #
 # Author: Darren Conly
