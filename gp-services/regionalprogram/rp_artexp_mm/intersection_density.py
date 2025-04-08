@@ -21,7 +21,7 @@ import time
 
 import arcpy
 
-import parameters as params
+from config_links import params
 
 def trace():
     import traceback, inspect

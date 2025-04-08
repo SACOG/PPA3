@@ -18,7 +18,7 @@ arcpy.env.overwriteOutput = True
 
 import pandas as pd
 
-import parameters as params
+from config_links import params
 
 class LandUseBuffCalcs():
     '''

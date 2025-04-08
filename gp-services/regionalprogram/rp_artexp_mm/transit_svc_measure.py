@@ -19,7 +19,7 @@ from time import perf_counter as perf
 
 import arcpy
 
-import parameters as params
+from config_links import params
 
 
 def trace():

@@ -17,7 +17,7 @@ sys.path.append(str(Path(__file__).parent)) # enable importing from parent folde
 from time import perf_counter as perf
 import arcpy
 
-import parameters as params
+from config_links import params
 
 
 def get_ctype_from_ix(ix_fc, quant_field):

@@ -17,7 +17,7 @@ import sys, os, arcpy
 
 import arcpy
 
-import parameters as params
+from config_links import params
 
 
 def netmiles_in_buffer(fc_project, fc_network, project_type):
