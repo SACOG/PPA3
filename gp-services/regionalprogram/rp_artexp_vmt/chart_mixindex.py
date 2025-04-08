@@ -14,7 +14,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
-import parameters as params
+from config_links import params
 from mix_index_for_project import get_mix_idx
 from get_agg_values import make_aggval_dict
 

@@ -24,7 +24,7 @@ from time import perf_counter as perf
 import pandas as pd
 import arcpy
 
-import parameters as params
+from config_links import params
 from utils import utils
 
 # =============FUNCTIONS=============================================

@@ -14,7 +14,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing from parent folder
 
 from landuse_buff_calcs import LandUseBuffCalcs
-import parameters as params
+from config_links import params
 
 
 def update_json(json_loaded, data_year, order_val, pcl_pt_fc, project_fc, project_type):

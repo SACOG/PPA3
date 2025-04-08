@@ -17,7 +17,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__))) # enable importing f
 from time import perf_counter as perf
 import arcpy
 
-import parameters as params
+from config_links import params
 
 def get_proj_ctype(in_project_fc, commtypes_fc):
     '''Get project community type, based on which community type has most spatial overlap with project'''
