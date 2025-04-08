@@ -19,7 +19,7 @@ import json
 import arcpy
 
 
-import parameters as params
+from config_links import params
 import chart_congestion
 import npmrds_data_conflation as npmrds
 from utils import utils as utils

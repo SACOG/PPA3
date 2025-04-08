@@ -15,7 +15,7 @@ import sys, os, arcpy
 
 from time import perf_counter as perf
 
-import parameters as params
+from config_links import params
 
 class GetLandUseArea():
     def __init__(self, fc_project, projtyp, fc_poly_parcels):
