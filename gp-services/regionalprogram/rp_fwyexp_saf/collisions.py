@@ -140,8 +140,9 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     arcpy.MakeFeatureLayer_management(fc_colln_pts, fl_colln_pts)
 
     # if for project segment, get annual VMT for project segment based on user input and segment length
-    df_projlen = ut.esri_object_to_df(fl_project, ["SHAPE@LENGTH"])
-    proj_len_mi = df_projlen.iloc[0][0] / params.ft2mile  # return project length in miles
+    f_shplen = "SHAPE@LENGTH"
+    df_projlen = ut.esri_object_to_df(fl_project, [f_shplen])
+    proj_len_mi = df_projlen[f_shplen].sum() / params.ft2mile  # return project length in miles
 
     # for aggregate, polygon-based avgs (e.g., community type, whole region), use model for VMT; for
     # project, the VMT will be based on combo of project length and user-entered ADT for project

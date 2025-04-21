@@ -109,7 +109,7 @@ def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
                 f"FATAL_COLLISNS": fatal_collns, f"FATAL_COLLISNS_PER_100MVMT": fatalcolln_per_vmt,
                 f"PCT_FATAL_COLLISNS": pct_fatal_collns, f"BIKEPED_COLLISNS": bikeped_collns, 
                 f"BIKEPED_COLLISNS_PER_CLMILE": bikeped_colln_clmile, f"PCT_BIKEPED_COLLISNS": pct_bikeped_collns}
-
+    
     out_dict_roadtyp_tag = {f"{k}{factyp_tag}":v for k, v in out_dict.items()}
 
     output_df = pd.DataFrame(pd.Series(out_dict, index=list(out_dict.keys()))).reset_index()
@@ -140,8 +140,9 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     arcpy.MakeFeatureLayer_management(fc_colln_pts, fl_colln_pts)
 
     # if for project segment, get annual VMT for project segment based on user input and segment length
-    df_projlen = ut.esri_object_to_df(fl_project, ["SHAPE@LENGTH"])
-    proj_len_mi = df_projlen.iloc[0][0] / params.ft2mile  # return project length in miles
+    f_shplen = "SHAPE@LENGTH"
+    df_projlen = ut.esri_object_to_df(fl_project, [f_shplen])
+    proj_len_mi = df_projlen[f_shplen].sum() / params.ft2mile  # return project length in miles
 
     # for aggregate, polygon-based avgs (e.g., community type, whole region), use model for VMT; for
     # project, the VMT will be based on combo of project length and user-entered ADT for project
@@ -153,6 +154,7 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
         proj_len_mi = get_centerline_miles(fc_project, params.reg_artcollcline_fc) # only gets for collector streets and above
     else:
         ann_proj_vmt = project_adt * proj_len_mi * params.ann_factor
+
 
     # get collision totals, separate tables for each facility tpe
     searchdist = 0 if project_type == params.ptype_area_agg else params.colln_searchdist
@@ -170,7 +172,6 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
         odict_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, tag_nonfwy)
 
         out_dict.update(odict_nonfwy)
-        # import pdb; pdb.set_trace()
         # out_dict = odict_fwy.update(odict_nonfwy)
     elif project_type == params.ptype_fwy:
         out_dict = final_agg(df_collndata_fwy, ann_proj_vmt, proj_len_mi, "")
