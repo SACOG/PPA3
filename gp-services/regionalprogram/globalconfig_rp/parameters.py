@@ -134,6 +134,7 @@ acc_search_dist = 100 # meters away from project line that you'll include TIFF c
 # ===================================PROBE-BASED SPEED DATA (E.G. NPMRDS) PARAMETERS================================
 
 # speed data attributes
+col_tmc_id = 'tmc'
 col_ff_speed = "ff_speed"
 col_congest_speed = "havg_spd_worst4hrs"
 col_reliab_ampk = "lottr_ampk"
