@@ -1,5 +1,6 @@
 # Esri start of added imports
 import sys, os, arcpy
+import math
 # Esri end of added imports
 
 # Esri start of added variables
@@ -66,27 +67,111 @@ def get_wtd_speed(in_df, in_field, direction, fld_pc_len_ft):
     
     return {fielddir: proj_mph}
 
+def compute_feature_angles(in_fc, id_field):
+    def get_card_angle(start_x, start_y, end_x, end_y):
+        '''Based on start and end point coordinates, calculates direction in degrees
+        for traveling in straight line between start and end point'''
+        xdiff = end_x - start_x
+        ydiff = end_y - start_y
+        angle_degrees = math.degrees(math.atan2(ydiff, xdiff))
+        
+        return angle_degrees
+
+    f_geom = "SHAPE@"
+    fields = [id_field, f_geom]
+
+    results = {}
+    with arcpy.da.SearchCursor(in_fc, fields) as ucur:
+        for row in ucur:
+            start_lat = row[fields.index(f_geom)].firstPoint.Y
+            start_lon = row[fields.index(f_geom)].firstPoint.X
+            end_lat = row[fields.index(f_geom)].lastPoint.Y
+            end_lon = row[fields.index(f_geom)].lastPoint.X
+            
+            link_id = row[fields.index(id_field)]
+            link_angle = get_card_angle(start_lon, start_lat, end_lon, end_lat)
+            results[link_id] = link_angle
+
+    return results
+
+def list2qrytuple(in_list):
+    # for sql "in list" clauses, correctly formats a list of values as a tuple
+    # in particular if list length is zero, it removes the trailing comma that tuples have
+    qry_clause = f"('{in_list[0]}')"
+    if len(in_list) > 1:
+        qry_clause = tuple(in_list) 
+
+    return qry_clause  
+
+def remove_cross_streets(fl_selected_tmcbuffs, fl_tmc_lines, project_angle):
+    # intersecting_fl assumed to be subset that only contains segments that intersect
+    # fl_project. Goal of this function is to further filter intersecting_fl
+    # to only return fl with segments that intersect fl_project that are not cross streets
+
+    # but how to do for multi-piece projects on multiple streets?
+    # In such a case, each piece of the project maybe should run through this whole process
+    # separately, then re-run the averaging methods at the very end?
+
+    # as stopgap "lazy" fix can remove the cross-traffic *if* there is only one feature (piece).
+    # this would at least fix the issue for single-piece project lines. For multi-piece it shouldn't be too big a problem
+    # because either it's long enough to where cross-traffic wouldn't be an issue, or it's a project 
+    # where it inherently doesn't make sense to try to get a single avg speed (e.g. project spanning multiple intersections)
+
+    # get IDs of TMCs whose buffers intersect project line
+    initial_tmc_selection = []
+    with arcpy.da.SearchCursor(fl_selected_tmcbuffs, [params.col_tmc_id]) as cur:
+        for row in cur: initial_tmc_selection.append(row[0])
+
+    # filter out master TMC line features to be those whose buffers intersect project line
+    qry_tmc_clause = list2qrytuple(initial_tmc_selection)
+    qry = f"{params.col_tmc_id} IN {qry_tmc_clause}"
+    arcpy.management.SelectLayerByAttribute(fl_tmc_lines, 'NEW_SELECTION', qry)
+
+    # get angle of selected TMC lines
+    tmc_angles = compute_feature_angles(fl_tmc_lines, id_field=params.col_tmc_id)
+    
+    # compare angles of selected TMCs vs. project angle. Eliminate if too different from project line (e.g., is clearly a cross street)
+    tmcs_to_keep = []
+    for tmc, angle in tmc_angles.items():
+        angle_diff = project_angle - angle
+        if abs(angle_diff) <= 10:
+            tmcs_to_keep.append(tmc) # if less than 10-degree diff, is okay to continue conflating
+
+    arcpy.management.SelectLayerByAttribute(fl_tmc_lines, 'CLEAR_SELECTION')
+    return tmcs_to_keep
+
+    
 
 def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
-                          fl_tmcs_buffd, fields_calc_dict):
+                          fl_tmcs_buffd, tmc_lines, fields_calc_dict):
 
     speed_data_fields = [k for k, v in fields_calc_dict.items()]
     out_row_dict = {}
     
-    # get length of project
+    # get length of project (sum of lengths of all project pieces)
     fld_shp_len = "SHAPE@LENGTH"
     fld_totprojlen = "proj_length_ft"
+    out_row_dict[fld_totprojlen] = 0
     
     with arcpy.da.SearchCursor(fl_proj, fld_shp_len) as cur:
         for row in cur:
-            out_row_dict[fld_totprojlen] = row[0]
+            out_row_dict[fld_totprojlen] += row[0]
+
+    # if only one feature in the project, compute the angle of the project line
+    # this will be used to help eliminate incorrect TMC matches for short projects
+    # (e.g., a short E-W project that gets N-S congestion data wrongly tagged to it.)
+    project_angle = None
+    is_short = out_row_dict[fld_totprojlen] <= params.tmc_buff_dist_ft * 10
+    if int(arcpy.management.GetCount(fl_proj)[0]) == 1 and is_short:
+        project_angle_data = compute_feature_angles(fl_proj, id_field='OBJECTID')
+        project_angle = [a for a in project_angle_data.values()][0]
     
     for direcn in dirxn_list:
 
         # https://support.esri.com/en/technical-article/000012699
         
         # temporary files
-        scratch_gdb = arcpy.env.scratchGDB # arcpy.env.scratchGDB
+        scratch_gdb = arcpy.env.scratchGDB
         
         temp_intersctpts = os.path.join(scratch_gdb, "temp_intersectpoints")  # r"{}\temp_intersectpoints".format(scratch_gdb)
         temp_intrsctpt_singlpt = os.path.join(scratch_gdb, "temp_intrsctpt_singlpt") # converted from multipoint to single point (1 pt per feature)
@@ -102,10 +187,21 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
         # select TMC buffers that intersect the project and are in indicated direction
         sql_sel_tmcxdir = g_ESRI_variable_3.format(tmc_dir_field, direcn)
         arcpy.SelectLayerByAttribute_management(fl_tmcs_buffd, "SUBSET_SELECTION", sql_sel_tmcxdir)
+        selected_tmc_cnt = int(arcpy.GetCount_management(fl_tmcs_buffd)[0])
+
+        if project_angle and selected_tmc_cnt > 0:
+            # for short, single-piece projects, find out if any TMCs it intersects should be removed because they are just cross strees
+            # and thus we do not want their speed data applied for project
+            tmc_subset = remove_cross_streets(fl_tmcs_buffd, tmc_lines, project_angle)
+            selected_tmc_cnt = len(tmc_subset)
+            if selected_tmc_cnt > 0:
+                cl_no_xstreets = list2qrytuple(tmc_subset)
+                qry_no_xstreets = f"{params.col_tmc_id} IN {cl_no_xstreets}"
+                arcpy.management.SelectLayerByAttribute(fl_tmcs_buffd, 'SUBSET_SELECTION', qry_no_xstreets)
 
         # if no TMC buffers intersect project line, then set TMC length for the direction to be zero
         out_dict_len_field = f"{direcn}_calc_len"
-        if int(arcpy.GetCount_management(fl_tmcs_buffd)[0]) == 0:
+        if selected_tmc_cnt == 0:
             out_row_dict[out_dict_len_field] = 0
         else:
             # split the project line at the boundaries of the TMC buffer, creating points where project line intersects TMC buffer boundaries
@@ -138,13 +234,6 @@ def conflate_tmc2projline(fl_proj, dirxn_list, tmc_dir_field,
             
             # remove rows where there wasn't enough NPMRDS data to get a valid speed or reliability reading
             df_spddata = df_spddata.loc[df_spddata[flds_df].min(axis=1) > 0]
-
-
-            # if there are no TMCs for the current direction, then that intersection length must be zero too
-            # if int(arcpy.GetCount_management(fl_tmcs_buffd)[0]) == 0:
-            #     dir_len = 0
-            # else:
-            #     dir_len = df_spddata[fld_shp_len].sum() #sum of lengths of project segments that intersect TMCs in the specified direction
             
             dir_len = df_spddata[fld_shp_len].sum()
             out_row_dict[out_dict_len_field] = dir_len #"calc" length because it may not be same as project length
@@ -230,12 +319,6 @@ def make_df(in_dict):
     
     return df_out
 
-def remove_cross_streets(fl_project, intersecting_fl):
-    # intersecting_fl assumed to be subset that only contains segments that intersect
-    # fl_project. Goal of this function is to further filter intersecting_fl
-    # to only return fl with segments that intersect fl_project that are not cross streets
-
-    pass
 
 def get_npmrds_data(fc_projline, str_project_type):
     arcpy.AddMessage("Calculating congestion and reliability metrics...")
@@ -269,12 +352,12 @@ def get_npmrds_data(fc_projline, str_project_type):
     arcpy.Buffer_analysis(fl_speed_data, temp_tmcbuff, params.tmc_buff_dist_ft, "FULL", "FLAT")
     arcpy.MakeFeatureLayer_management(temp_tmcbuff, fl_tmc_buff)
 
-    buff_sr_name = arcpy.Describe(temp_tmcbuff).spatialReference.name
+    # buff_sr_name = arcpy.Describe(temp_tmcbuff).spatialReference.name
     # arcpy.AddMessage(f"{temp_tmcbuff} SPATIAL REF NAME: {buff_sr_name}")
 
     # get "full" table with data for all directions
     projdata_df = conflate_tmc2projline(fl_projline, params.directions_tmc, params.col_tmcdir,
-                                        fl_tmc_buff, params.spd_data_calc_dict)
+                                        fl_tmc_buff, fl_speed_data, params.spd_data_calc_dict)
 
     # trim down table to only include outputs for directions that are "on the segment",
     # i.e., that have most overlap with segment
@@ -293,18 +376,24 @@ if __name__ == '__main__':
     from time import perf_counter as perf
     start_time = perf()
 
-    # arcpy.env.workspace = params.fgdb # r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb'
+    arcpy.env.workspace = params.fgdb # r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb'
 
-    # project_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_16thSt_oneway' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
-    # proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
+    project_line = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_avoid_cross_traff_spd' # arcpy.GetParameterAsText(0) #"NPMRDS_confl_testseg_seconn"
+    proj_type = params.ptype_arterial # arcpy.GetParameterAsText(2) #"Freeway"
 
+    #================================
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB) # ensures a new, fresh scratch GDB is created to avoid any weird file-not-found errors
+        print("Deleted arcpy scratch GDB to ensure reliability.")
+    except:
+        pass
 
-    # test_dict = get_npmrds_data(project_line, proj_type)
+    test_dict = get_npmrds_data(project_line, proj_type)
 
-    # print(test_dict)
+    print(test_dict)
 
-    # elapsed_time = round((perf() - start_time)/60, 1)
-    # print("Success! Time elapsed: {} minutes".format(elapsed_time))    
+    elapsed_time = round((perf() - start_time)/60, 1)
+    print("Success! Time elapsed: {} minutes".format(elapsed_time))    
 
 
     
