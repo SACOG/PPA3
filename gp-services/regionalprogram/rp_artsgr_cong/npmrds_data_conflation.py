@@ -1,4 +1,5 @@
 import os
+import re
 import math
 import arcpy
 import pandas as pd
@@ -62,7 +63,10 @@ def conflate_tmc_to_project(project_layer, directions, tmc_dir_field, buffer_lay
     output = {"proj_length_ft": sum(row[0] for row in arcpy.da.SearchCursor(project_layer, [esri_len]))}
     project_angle = None
 
-    if int(arcpy.management.GetCount(project_layer)[0]) == 1 and output["proj_length_ft"] <= params.tmc_buff_dist_ft * 10:
+    if isinstance(params.tmc_buff_dist_ft, str): # for some reason sometimes the buffer dist may be a string, e.g. "90 Feet" instead of integer 90.
+        params.tmc_buff_dist_ft = float(re.findall(r'\d+', params.tmc_buff_dist_ft)[0])
+
+    if int(arcpy.management.GetCount(project_layer)[0]) == 1 and output["proj_length_ft"] <= params.tmc_buff_dist_ft*10:
         # if only one feature in the project, compute the angle of the project line
         # this will be used to help eliminate incorrect TMC matches for short projects
         # (e.g., a short E-W project that gets N-S congestion data wrongly tagged to it.)
@@ -197,7 +201,7 @@ if __name__ == '__main__':
     start = perf_counter()
 
     arcpy.env.workspace = params.fgdb
-    project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_multi_street_x'
+    project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5_NoNa'
     project_type = params.ptype_arterial # params.ptype_arterial params.ptype_fwy
 
     try:
