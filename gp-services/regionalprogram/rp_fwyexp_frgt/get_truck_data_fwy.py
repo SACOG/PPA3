@@ -80,8 +80,11 @@ def get_tmc_truck_data(fc_projline, str_project_type):
     arcpy.MakeFeatureLayer_management(temp_tmcbuff, fl_tmc_buff)
 
     # get "full" table with data for all directions
-    projdata_df = ndc.conflate_tmc2projline(fl_projline, params.directions_tmc, params.col_tmcdir, 
-                                            fl_tmc_buff, params.truck_data_calc_dict)
+    # conflate_tmc_to_project(project_layer, directions, tmc_dir_field, buffer_layer, tmc_layer, field_methods)
+    fl_speed = "fl_speed_data"
+    arcpy.MakeFeatureLayer_management(params.fc_speed_data, fl_speed)
+    projdata_df = ndc.conflate_tmc_to_project(fl_projline, params.directions_tmc, params.col_tmcdir, 
+                                            fl_tmc_buff, fl_speed, params.truck_data_calc_dict)
     
     arcpy.AddMessage(str(projdata_df))
 
@@ -97,11 +100,11 @@ def get_tmc_truck_data(fc_projline, str_project_type):
 
 if __name__ == '__main__':
 
-    workspace = None
-    arcpy.env.workspace = workspace
+    arcpy.env.workspace = params.fgdb
+    arcpy.env.overwriteOutput = True
 
-    project_line = None
-    proj_type = "Freeway"  # arcpy.GetParameterAsText(2) #"Freeway"
+    project_line = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_Causeway'
+    proj_type = params.ptype_fwy
 
     # make feature layers of NPMRDS and project line
 
