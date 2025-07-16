@@ -182,7 +182,7 @@ if __name__ == '__main__':
     email = arcpy.GetParameterAsText(8)
 
     # hard-coded vals for testing
-    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_avoid_cross_traff_spd'
+    # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_multi_street_x'
     # project_name = 'test'
     # jurisdiction = 'test'
     # project_type = params.ptype_arterial

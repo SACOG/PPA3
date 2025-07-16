@@ -42,7 +42,7 @@ class LandUseBuffCalcs():
         arcpy.AddMessage("Aggregating land use data...")
         
         sufx = int(perf()) + 1
-        fl_parcel = os.path.join('memory','fl_parcel{}'.format(sufx))
+        fl_parcel = os.path.join(arcpy.env.scratchGDB,'fl_parcel{}'.format(sufx))
 
         if arcpy.Exists(fl_parcel): arcpy.Delete_management(fl_parcel)
         arcpy.MakeFeatureLayer_management(self.fc_pclpt, fl_parcel)

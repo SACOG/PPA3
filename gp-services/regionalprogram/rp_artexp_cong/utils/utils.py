@@ -47,16 +47,20 @@ def remove_forbidden_chars(in_str):
     
     
 def esri_field_exists(in_tbl, field_name):
-    fields = [f.name for f in arcpy.ListFields(in_tbl)]
+    fields = esri_fields(in_tbl)
     if field_name in fields:
         return True
     else:
         return False
+    
+def esri_fields(esri_obj):
+    return [f.name for f in arcpy.ListFields(esri_obj)]
 
 
 def esri_object_to_df(in_esri_obj, esri_obj_fields, index_field=None):
     '''converts esri gdb table, feature class, feature layer, or SHP to pandas dataframe'''
     data_rows = []
+
     with arcpy.da.SearchCursor(in_esri_obj, esri_obj_fields) as cur:
         for row in cur:
             out_row = list(row)
