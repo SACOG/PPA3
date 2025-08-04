@@ -179,7 +179,7 @@ def get_npmrds_data(project_fc, project_type):
 
     arcpy.SelectLayerByLocation_management(fl_speed, "WITHIN_A_DISTANCE", fl_proj, params.tmc_select_srchdist)
 
-    if project_type == params.ptype_fwy:
+    if project_type in params.ptypes_fwy:
         sql = f"{params.col_roadtype} IN {params.roadtypes_fwy}"
     else:
         sql = f"{params.col_roadtype} NOT IN {params.roadtypes_fwy}"
@@ -202,7 +202,7 @@ if __name__ == '__main__':
 
     arcpy.env.workspace = params.fgdb
     project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5_NoNa'
-    project_type = params.ptype_arterial # params.ptype_arterial params.ptype_fwy
+    project_type = params.ptype_arterial 
 
     try:
         arcpy.Delete_management(arcpy.env.scratchGDB)

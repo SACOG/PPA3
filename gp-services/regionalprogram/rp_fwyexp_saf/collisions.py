@@ -165,7 +165,7 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     df_collndata_nonfwy = df_collndata.loc[df_collndata[params.col_fwytag] != params.ind_fwytag_fwy]
 
     if project_type == params.ptype_area_agg:
-        tag_fwy = params.tags_ptypes[params.ptype_fwy]
+        tag_fwy = params.tags_ptypes[params.ptypes_fwy[0]]
         tag_nonfwy = params.tags_ptypes[params.ptype_arterial]
         out_dict = final_agg(df_collndata_fwy, ann_vmt_fwy, proj_len_mi, tag_fwy)
         odict_nonfwy = final_agg(df_collndata_nonfwy, ann_vmt_nonfwy, proj_len_mi, tag_nonfwy)
@@ -173,7 +173,7 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
         out_dict.update(odict_nonfwy)
         # import pdb; pdb.set_trace()
         # out_dict = odict_fwy.update(odict_nonfwy)
-    elif project_type == params.ptype_fwy:
+    elif project_type in params.ptypes_fwy:
         out_dict = final_agg(df_collndata_fwy, ann_proj_vmt, proj_len_mi, "")
     else:
         out_dict = final_agg(df_collndata_nonfwy, ann_proj_vmt, proj_len_mi, "")

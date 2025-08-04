@@ -24,7 +24,7 @@ def complete_streets_idx(fc_pclpt, fc_project, project_type, posted_speedlim, tr
         '''
     # don't give complete street score for freeway projects or if sponsor didn't enter speed limit
 
-    if project_type == params.ptype_fwy or posted_speedlim <= 1: 
+    if project_type in params.ptypes_fwy or posted_speedlim <= 1: 
         csi = -1
     else:
         arcpy.AddMessage("Calculating complete street score...")
@@ -73,7 +73,7 @@ def complete_streets_idx(fc_pclpt, fc_project, project_type, posted_speedlim, tr
 #     in_pcl_pt_fc = "parcel_data_2016_11062019_pts"
 #     value_fields = [params.col_area_ac, params.col_k12_enr, params.col_emptot, params.col_du]
 #     posted_speedlimit = 30 # mph
-#     ptype = params.ptype_fwy
+#     ptype = params.ptypes_fwy[0]
 
 #     # input line project for basing spatial selection
 #     project_fc = None

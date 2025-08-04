@@ -339,7 +339,7 @@ def get_npmrds_data(fc_projline, str_project_type):
     # problem is that if user draws multi-piece project and each piece is different angle, 
 
     # subset selection to only get TMCs that are same road type (fwy vs. arterial) as project line
-    if str_project_type == params.ptype_fwy:
+    if str_project_type in params.ptypes_fwy:
         sql = g_ESRI_variable_8.format(params.col_roadtype, params.roadtypes_fwy)
         arcpy.SelectLayerByAttribute_management(fl_speed_data, "SUBSET_SELECTION", sql)
     else:

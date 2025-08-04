@@ -72,7 +72,7 @@ def trantrp_per_link(in_df, project_type):
     # compute average # of transit trips per road link
 
     in_df_ptyp = in_df
-    if project_type == params.ptype_fwy:
+    if project_type in params.ptypes_fwy:
         # if project is fwy project, then only use GP links; adding HOV or aux links may
         # make it appear as if decrease in transit trips because % change in links may exceed % change in transit trips
         in_df_ptyp = in_df.loc[in_df[params.col_capclass] == params.capclass_gp]
@@ -123,7 +123,7 @@ def get_linkoccup_data(fc_project, project_type, fc_model_links):
     df_linkdata = ut.esri_object_to_df(fl_model_links, df_cols)
     df_linkdata = df_linkdata[df_linkdata[f_oid].isin(aligned_links)]
 
-    if project_type == params.ptype_fwy:
+    if project_type in params.ptypes_fwy:
         df_linkdata = df_linkdata.loc[df_linkdata[params.col_capclass].isin(params.capclasses_fwy)]
     else:
         df_linkdata = df_linkdata.loc[df_linkdata[params.col_capclass].isin(params.capclass_arterials)]
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
     proj_line_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF'
     model_link_fc = 'model_links_2040'
-    proj_type = params.ptype_fwy
+    proj_type = params.ptypes_fwy[0]
 
     output = get_linkoccup_data(proj_line_fc, proj_type, model_link_fc)
 

@@ -62,7 +62,7 @@ def make_safety_report_fwyexp(input_dict):
 
     # project type tag to append to metric field name
     if project_type not in params.tags_ptypes.keys():
-        project_metric_tag = params.tags_ptypes[params.ptype_fwy]
+        project_metric_tag = params.tags_ptypes[params.ptypes_fwy[0]]
     else:
         project_metric_tag = params.tags_ptypes[project_type]
 
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\Test_I5SMF' # Broadway16th_2226
     # project_name = 'airport'
     # jurisdiction = 'caltrans'
-    # project_type = params.ptype_fwy
+    # project_type = params.ptypes_fwy[0]
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 150000
     # posted_spd = 65

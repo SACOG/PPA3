@@ -122,7 +122,7 @@ if __name__ == '__main__':
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_I505' # Broadway16th_2226
     # project_name = 'i505'
     # jurisdiction = 'caltrans'
-    # project_type = params.ptype_fwy
+    # project_type = params.ptypes_fwy[0]
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 150000
     # posted_spd = 65
