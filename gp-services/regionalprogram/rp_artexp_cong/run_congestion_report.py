@@ -185,7 +185,7 @@ if __name__ == '__main__':
     # project_fc = r'I:\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\test_multi_street_x'
     # project_name = 'test'
     # jurisdiction = 'test'
-    # project_type = params.ptype_arterial
+    # project_type = params.ptype_arterial # 
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 30000
     # posted_spd = 30   
