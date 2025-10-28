@@ -96,6 +96,7 @@ def make_title_guidepg_regpgm(input_dict):
                 "comm_type": project_commtype, 
                 "len_mi": tot_len_mi,
                 "proj_name": project_name,
+                "funding_pgm": input_dict[uis.funding_pgm],
                 "proj_type": input_dict[uis.ptype],
                 "perf_outcomes": input_dict[uis.perf_outcomes],
                 "juris": input_dict[uis.jur],
@@ -129,17 +130,19 @@ if __name__ == '__main__':
     project_fc = arcpy.GetParameterAsText(0)
     project_name = arcpy.GetParameterAsText(1)
     jurisdiction = arcpy.GetParameterAsText(2)
-    project_type = arcpy.GetParameterAsText(3)
-    perf_outcomes = arcpy.GetParameterAsText(4)
-    aadt = arcpy.GetParameterAsText(5)
-    posted_spd = arcpy.GetParameterAsText(6)
-    pci = arcpy.GetParameterAsText(7)
-    email = arcpy.GetParameterAsText(8)
+    funding_pgm = arcpy.GetParameterAsText(3)
+    project_type = arcpy.GetParameterAsText(4)
+    perf_outcomes = arcpy.GetParameterAsText(5)
+    aadt = arcpy.GetParameterAsText(6)
+    posted_spd = arcpy.GetParameterAsText(7)
+    pci = arcpy.GetParameterAsText(8)
+    email = arcpy.GetParameterAsText(9)
 
     # hard-coded vals for testing
     # project_fc = r'\\data-svr\GIS\Projects\Darren\PPA3_GIS\PPA3Testing.gdb\X_St_Oneway'
     # project_name = 'test no ctype intersect'
     # jurisdiction = 'Caltrans'
+    # funding_pgm = 'Test Funding Program'
     # project_type = 'Rehabilitation and Operational Improvements' # 'Arterial or Transit Expansion'
     # perf_outcomes = 'TEST;Reduce Congestion;Reduce VMT'
     # aadt = 150000
@@ -147,23 +150,29 @@ if __name__ == '__main__':
     # pci = 80
     # email = 'fake@test.com'
 
-    if project_type == params.ptype_commdesign:
-        aadt = None
-        posted_spd = None
-        pci = None
+    # if project_type == params.ptype_commdesign:
+    #     aadt = None
+    #     posted_spd = None
+    #     pci = None
 
-    uis = params.user_inputs
-    input_parameter_dict = {
-        uis.geom: project_fc,
-        uis.name: project_name,
-        uis.jur: jurisdiction,
-        uis.ptype: project_type,
-        uis.perf_outcomes: perf_outcomes,
-        uis.aadt: aadt,
-        uis.posted_spd: posted_spd,
-        uis.pci: pci,
-        uis.email: email
-    }
+    try:
+        uis = params.user_inputs
+        input_parameter_dict = {
+            uis.geom: project_fc,
+            uis.name: project_name,
+            uis.jur: jurisdiction,
+            uis.funding_pgm: funding_pgm,
+            uis.ptype: project_type,
+            uis.perf_outcomes: perf_outcomes,
+            uis.aadt: aadt,
+            uis.posted_spd: posted_spd,
+            uis.pci: pci,
+            uis.email: email
+        }
+    except AttributeError:
+        err_desc = utils.trace()[2]
+        msg = f"{err_desc}\nYou may need to update {params.__file__}"
+        raise Exception(msg)
 
     #=================BEGIN SCRIPT===========================
     try:

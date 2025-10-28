@@ -8,7 +8,7 @@ in_fc = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb\pr
 
 df = pd.DataFrame.spatial.from_featureclass(in_fc)
 cols = ['proj_name', 'time_created',
-       'user_email']
+       'user_email', 'funding_pgm']
 
 df = df.sort_values(by='time_created', ascending=False)
 

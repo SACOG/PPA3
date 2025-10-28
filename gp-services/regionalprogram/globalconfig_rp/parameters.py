@@ -302,6 +302,7 @@ class projInputKeys:
         self.geom = "Project_Line"
         self.name = 'Project_Name'
         self.jur = 'Jurisdiction'
+        self.funding_pgm = 'Funding_Program'
         self.ptype = 'Project_Type'
         self.perf_outcomes = 'PerfOutcomes'
         self.aadt = 'AADT'
