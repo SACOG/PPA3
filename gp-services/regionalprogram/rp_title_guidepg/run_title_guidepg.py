@@ -186,7 +186,7 @@ if __name__ == '__main__':
     output_dir = arcpy.env.scratchFolder
     result_path = make_title_guidepg_regpgm(input_dict=input_parameter_dict)
 
-    arcpy.SetParameterAsText(9, result_path) # clickable link to download file
+    arcpy.SetParameterAsText(10, result_path) # clickable link to download file
         
     arcpy.AddMessage(f"wrote JSON output to {result_path}")
 
