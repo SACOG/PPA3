@@ -23,14 +23,28 @@ Iterate through all result tables. for each table:
 
 import arcpy
 
-def clear_out_old_projects(fgdb, query_str, rmv_orphan_uid=True):
+def clear_tbl(tbl, qry_str, uid_field):
+    tblfields = [f.name for f in arcpy.ListFields(tbl)]
+    if uid_field in tblfields:
+        with arcpy.da.UpdateCursor(tbl, field_names="*", where_clause=qry_str) as ucur:
+            for row in ucur:
+                ucur.deleteRow()
+    else:
+        print(f"Field {uid_field} not found in {tbl} table. Skipping to next table...")
+
+def clear_out_old_projects(fgdb, query_str=None, rmv_orphan_uid=True, protect_review_runs=True):
     arcpy.env.workspace = fgdb
     fc_projmaster = 'project_master'
     f_uid = 'project_uid'
     v_orphan_record = 'UID_NOT_FOUND'
 
     # add safeguard to ensure project actually reviewed for funding program do not get deleted
-    query_str = f"{query_str} AND for_review <> 1"
+    if protect_review_runs:
+        qs_protect = "for_review <> 1"
+        if query_str:
+            query_str = f"{query_str} AND {qs_protect}"
+        else:
+            query_str = qs_protect
 
     # get list of uids representing proejcts you want to delete
     uids_to_delete = []
@@ -41,7 +55,9 @@ def clear_out_old_projects(fgdb, query_str, rmv_orphan_uid=True):
 
     if rmv_orphan_uid: uids_to_delete.append(v_orphan_record)
 
-    print(f"deleting results for {len(uids_to_delete)} projects (keeping projects marked for review)...")
+    status_msg = f"deleting results for {len(uids_to_delete)} projects"
+    if protect_review_runs: status_msg.append('(keeping projects marked for review)')
+    print(status_msg)
 
     tbl_list = [fc_projmaster, *arcpy.ListTables()] # list of tables you want to clear out projects from
 
@@ -57,14 +73,10 @@ def clear_out_old_projects(fgdb, query_str, rmv_orphan_uid=True):
     # import pdb; pdb.set_trace()
     if qstr:
         for tbl in tbl_list:
-            tblfields = [f.name for f in arcpy.ListFields(tbl)]
-            if f_uid in tblfields:
-                with arcpy.da.UpdateCursor(tbl, field_names="*", where_clause=qstr) as ucur:
-                    for row in ucur:
-                        ucur.deleteRow()
-            else:
-                print(f"Field {f_uid} not found in {tbl} table. Skipping to next table...")
-    print("cleanup completed!")
+            clear_tbl(tbl, qstr, f_uid)
+
+    projects_left = arcpy.GetCount_management(fc_projmaster)[0]
+    print(f"cleanup completed! {projects_left} in {fc_projmaster}")
 
 
 if __name__ == '__main__':
@@ -72,8 +84,11 @@ if __name__ == '__main__':
     # query_to_delete = """proj_type IN ('TEST', 'test', 'Rehabilitation and Operational Improvements', 
     #                                     'Freeway Expansion', 'Community Design', 'Arterial State of Good Repair',
     #                                     'Arterial or Transit Expansion')"""
-    query_to_delete = "project_uid = 'UID_NOT_FOUND'"
+    # query_to_delete = "project_uid = 'UID_NOT_FOUND'" # set to None if you want to delete all projects
+    query_to_delete = None
+    keep_reviewed_runs = True
     
-    result_gdb = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb'
+    # result_gdb = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data.gdb'
+    result_gdb = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\PPA3_run_data_1.gdb'
 
     clear_out_old_projects(fgdb=result_gdb, query_str=query_to_delete)
