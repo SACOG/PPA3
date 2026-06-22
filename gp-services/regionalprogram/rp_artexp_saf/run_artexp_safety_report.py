@@ -52,7 +52,15 @@ def make_safety_report_artexp(input_dict):
     project_type = input_dict[uis.ptype]
     proj_aadt = int(input_dict[uis.aadt])
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json")
+    # PRODUCTION path (restore once server template is updated with Task 5 chart stubs):
+    # in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json")
+
+    # LOCAL / TESTING path — uses repo copy which has the Task 5 "Collision Types" and
+    # "Primary Collision Factors" chart stubs. Server copy at params.json_templates_dir
+    # does not yet have these entries. Swap comments above/below when server is updated.
+    _json_filename = "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json"
+    in_json = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                           'JSON_regprogram', _json_filename)
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)

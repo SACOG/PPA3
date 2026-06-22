@@ -32,6 +32,14 @@
 					}
 				}
 			]
+		},
+		"Collision Types": {
+			"title": "Collision Types (% of Total Collisions at Project Location)",
+			"features": []
+		},
+		"Primary Collision Factors": {
+			"title": "Primary Collision Factors (% of Total Collisions at Project Location)",
+			"features": []
 		}
 	}
 }
