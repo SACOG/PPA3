@@ -250,6 +250,54 @@ tags_ptypes = {**tags_fwyptypes, ptype_arterial:'_nonfwy', ptype_sgr:'_nonfwy'}
 
 colln_searchdist = 75 # in feet, might have projection-related issues in online tool-how was this resolved in PPA1?
 years_of_collndata = 5
+# Lookup: TYPE_OF_COLLISION single-letter code → human-readable label
+# Source: SWITRS/TIMS codebook (tims.berkeley.edu/help/SWITRS.php)
+col_collision_type = "TYPE_OF_COLLISION"
+collision_type_labels = {
+    'A': 'Head-On',
+    'B': 'Sideswipe',
+    'C': 'Rear End',
+    'D': 'Broadside',
+    'E': 'Hit Object',
+    'F': 'Overturn/Rollover',
+    'G': 'Auto vs. Pedestrian',
+    'H': 'Other',
+    '-': 'Not Stated',
+    'N': 'Not Stated',
+}
+
+# Lookup: PCF_VIOL_CATEGORY two-digit code → human-readable label
+# Source: SWITRS/TIMS codebook (tims.berkeley.edu/help/SWITRS.php)
+col_pcf_category = "PCF_VIOL_CATEGORY"
+pcf_category_labels = {
+    '00': 'Unknown',
+    '01': 'DUI (Alcohol or Drug)',
+    '02': 'Impeding Traffic',
+    '03': 'Unsafe Speed',
+    '04': 'Following Too Closely',
+    '05': 'Wrong Side of Road',
+    '06': 'Improper Passing',
+    '07': 'Unsafe Lane Change',
+    '08': 'Improper Turning',
+    '09': 'Automobile Right of Way',
+    '10': 'Pedestrian Right of Way',
+    '11': 'Pedestrian Violation',
+    '12': 'Traffic Signals/Signs',
+    '13': 'Hazardous Parking',
+    '14': 'Lights',
+    '15': 'Brakes',
+    '16': 'Other Equipment',
+    '17': 'Other Hazardous Violation',
+    '18': 'Other Than Driver',
+    '19': 'Unknown / Not Stated',
+    '20': 'Unknown / Not Stated',
+    '21': 'Unsafe Starting or Backing',
+    '22': 'Other Improper Driving',
+    '-':  'Not Stated',
+}
+
+# Number of top categories to show in breakdown; remainder → "Other"
+colln_type_top_n = 5
 
 # ============================TRANSIT SERVICE DENSITY PARAMETERS===========================
 trn_buff_dist = 1320 # feet, search distance for transit stops from project line
