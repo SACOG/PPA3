@@ -30,7 +30,9 @@ from utils import utils as utils
 def make_sgr_report_artexp(input_dict):
 
     uis = params.user_inputs
-    
+    project_name = input_dict[uis.name]
+    output_dir   = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_SGR_sample_dataSource.json")
 
     with open(in_json, "r") as j_in: # load applicable json template

@@ -54,10 +54,11 @@ def convert_acc_fnames(in_dict):
 def make_econ_report_artexp(input_dict):
 
     uis = params.user_inputs
-    fc_project=input_dict[uis.geom]
-    project_name=input_dict[uis.name]
-    project_type=input_dict[uis.ptype]
-    
+    fc_project   = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]
+    output_dir   = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_EconProsperity_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [params.base_year, params.future_year]
@@ -66,7 +67,7 @@ def make_econ_report_artexp(input_dict):
         loaded_json = json.load(j_in)
 
     # get project community type
-    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(fc_project, params.comm_types_fc)
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
@@ -111,12 +112,12 @@ def make_econ_report_artexp(input_dict):
     agac_future = d_ag_acres[data_years[1]]
 
     # access to jobs chart update
-    acc_data_jobs = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
+    acc_data_jobs = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=fc_project, project_type=project_type,
                                     project_commtype=project_commtype, weight_pop='workers', aggval_csv=params.aggval_csv, destination_type='emp',
                                     k_chart_title="Access to jobs")
 
     # access to edu facilities chart update
-    acc_data_edu = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=project_fc, project_type=project_type,
+    acc_data_edu = chart_accessibility.update_json(json_loaded=loaded_json, fc_project=fc_project, project_type=project_type,
                                     project_commtype=project_commtype, weight_pop='pop',  aggval_csv=params.aggval_csv, destination_type='edu',
                                     k_chart_title="Education Facility")
 

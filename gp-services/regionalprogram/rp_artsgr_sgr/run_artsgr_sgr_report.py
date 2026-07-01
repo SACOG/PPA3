@@ -30,11 +30,13 @@ from utils import utils as utils
 def make_sgr_report_artsgr(input_dict):
 
     uis = params.user_inputs
-    proj_fc = input_dict[uis.geom]
-    proj_typ = input_dict[uis.ptype]
-    project_pci = input_dict[uis.pci]
+    proj_fc        = input_dict[uis.geom]
+    project_name   = input_dict[uis.name]
+    proj_typ       = input_dict[uis.ptype]
+    project_pci    = input_dict[uis.pci]
     proj_postedspd = float(input_dict[uis.posted_spd])
-    proj_aadt = input_dict[uis.aadt]
+    proj_aadt      = input_dict[uis.aadt]
+    output_dir     = arcpy.env.scratchFolder
 
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_SGR_sample_dataSource.json")

@@ -117,7 +117,20 @@ def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
 
     return out_dict_roadtyp_tag
 
-def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
+def colln_buffer_by_speed(posted_spd_mph):
+    """Return collision search buffer in feet, scaled to posted speed limit."""
+    if posted_spd_mph is None or posted_spd_mph <= 0:
+        return params.colln_searchdist
+    spd = float(posted_spd_mph)
+    if spd <= 35:
+        return 75
+    elif spd <= 50:
+        return 150
+    else:
+        return 300
+
+
+def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt, posted_spd=None):
     '''Inputs:
         fc_project = project line around which a buffer will be drawn for selecting collision locations
         project_type = whether it's a freeway project, arterial project, etc. Or if it is a 
@@ -155,8 +168,11 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt):
     else:
         ann_proj_vmt = project_adt * proj_len_mi * params.ann_factor
 
-    # get collision totals, separate tables for each facility tpe
-    searchdist = 0 if project_type == params.ptype_area_agg else params.colln_searchdist
+    # get collision totals, separate tables for each facility type
+    if project_type == params.ptype_area_agg:
+        searchdist = 0
+    else:
+        searchdist = colln_buffer_by_speed(posted_spd)
     arcpy.SelectLayerByLocation_management(fl_colln_pts, 'WITHIN_A_DISTANCE', fl_project, searchdist)
     colln_cols =[params.col_fwytag, params.col_nkilled, params.col_bike_ind, params.col_ped_ind]
     

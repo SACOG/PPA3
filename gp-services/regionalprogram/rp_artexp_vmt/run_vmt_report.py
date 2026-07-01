@@ -37,8 +37,10 @@ import landuse_buff_calcs, accessibility_calcs, mix_index_for_project, get_agg_v
 def make_vmt_report_artexp(input_dict):
 
     uis = params.user_inputs
-    project_fc = input_dict[uis.geom]
-    proj_type = input_dict[uis.ptype]
+    project_fc   = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    proj_type    = input_dict[uis.ptype]
+    output_dir   = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceVMT_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
@@ -62,8 +64,9 @@ def make_vmt_report_artexp(input_dict):
     d_lubuff = {}
     for i, year in enumerate(data_years):
         in_pcl_pt_fc = parcel_fc_dict[year]
-        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-                                    project_fc=project_fc, project_type=proj_type)
+        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc,
+                                    project_fc=project_fc, project_type=proj_type,
+                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv)
 
         # {f"jobs": jobs, f"dwellingUnits": du}
         d_lubuff[year] = d_jobdu

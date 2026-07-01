@@ -21,57 +21,106 @@ import parameters as params
 from utils import utils
 
 
+def _prorate_acc_polygons(fc_project, fc_accdata_seln, project_type, sufx):
+    '''Intersects accessibility polygons with project area and prorates the population
+    field by (intersected area / original area). Returns path to intersected FC.
+
+    For line projects: buffers the line to bg_search_dist first, then intersects.
+    For polygon (area_agg) projects: intersects directly with the project polygon.
+    Prorating ensures boundary block groups are only weighted by their overlap fraction.
+    '''
+    fld_orig_area = 'AREA_origl'
+    fc_buffer   = os.path.join(arcpy.env.scratchGDB, f'TEMP_acc_buff{sufx}')
+    fc_intersect = os.path.join(arcpy.env.scratchGDB, f'TEMP_acc_intsct{sufx}')
+
+    for fc in [fc_buffer, fc_intersect]:
+        if arcpy.Exists(fc):
+            arcpy.Delete_management(fc)
+
+    # Store each polygon's original area before intersecting clips it
+    if fld_orig_area not in [f.name for f in arcpy.ListFields(fc_accdata_seln)]:
+        arcpy.management.AddField(fc_accdata_seln, fld_orig_area, 'DOUBLE')
+    with arcpy.da.UpdateCursor(fc_accdata_seln, [fld_orig_area, 'SHAPE@AREA']) as cur:
+        for row in cur:
+            row[0] = row[1]
+            cur.updateRow(row)
+
+    # Build target geometry: buffer line projects, use polygon directly for area_agg
+    if project_type == params.ptype_area_agg:
+        target_fc = fc_project
+    else:
+        arcpy.analysis.Buffer(fc_project, fc_buffer, params.bg_search_dist)
+        target_fc = fc_buffer
+
+    arcpy.analysis.Intersect([fc_accdata_seln, target_fc], fc_intersect)
+
+    # Prorate population by area ratio (acc scores are per-person averages; only weight changes)
+    with arcpy.da.UpdateCursor(fc_intersect, [fld_orig_area, 'SHAPE@AREA', params.col_pop]) as cur:
+        for row in cur:
+            orig_area = row[0]
+            if orig_area and orig_area > 0:
+                row[2] = row[2] * (row[1] / orig_area)
+            cur.updateRow(row)
+
+    if arcpy.Exists(fc_buffer):
+        arcpy.Delete_management(fc_buffer)
+
+    return fc_intersect
+
+
 def get_acc_data(fc_project, fc_accdata, project_type, get_ej=False):
     '''Calculate average accessibility to selected destination types for all
     polygons that either intersect the project line or are within a community type polygon.
-    Average accessibility is weighted by each polygon's population.'''
-    
+    Population weight is pro-rated by the fraction of each accessibility polygon that
+    overlaps the project buffer, so boundary polygons are not over-counted.'''
+
     arcpy.AddMessage("Calculating accessibility metrics...")
-    
+
     sufx = int(perf()) + 1
-    fl_accdata = os.path.join('memory','fl_accdata{}'.format(sufx))
-    fl_project = 'fl_project'
+    fl_accdata  = os.path.join('memory', f'fl_accdata{sufx}')
+    fl_project  = 'fl_project'
+    fc_temp_seln = os.path.join(arcpy.env.scratchGDB, f'TEMP_acc_seln{sufx}')
 
-    if arcpy.Exists(fl_project): arcpy.Delete_management(fl_project)
+    for fc in [fl_project, fl_accdata]:
+        if arcpy.Exists(fc): arcpy.Delete_management(fc)
+
     arcpy.MakeFeatureLayer_management(fc_project, fl_project)
-
-    if arcpy.Exists(fl_accdata): arcpy.Delete_management(fl_accdata)
     arcpy.MakeFeatureLayer_management(fc_accdata, fl_accdata)
 
-    # select polygons that intersect with the project line
-    searchdist = 0 if project_type == params.ptype_area_agg else params.bg_search_dist
-    arcpy.SelectLayerByLocation_management(fl_accdata, "INTERSECT", fl_project, searchdist, "NEW_SELECTION")
+    # Pre-select accessibility polygons within search distance to limit intersect scope
+    arcpy.SelectLayerByLocation_management(fl_accdata, 'INTERSECT', fl_project,
+                                           params.bg_search_dist, 'NEW_SELECTION')
+    arcpy.CopyFeatures_management(fl_accdata, fc_temp_seln)
 
-    # read accessibility data from selected polygons into a dataframe
+    # Intersect and prorate population by overlapping area fraction
+    fc_intersect = _prorate_acc_polygons(fl_project, fc_temp_seln, project_type, sufx)
+
+    # Read prorated polygons into dataframe
     accdata_fields = [params.col_geoid, params.col_acc_ej_ind, params.col_pop] + params.acc_cols_ej
-    accdata_df = utils.esri_object_to_df(fl_accdata, accdata_fields)
+    accdata_df = utils.esri_object_to_df(fc_intersect, accdata_fields)
 
-    # get pop-weighted accessibility values for all accessibility columns
-
+    # Population-weighted average accessibility (weights are now prorated)
     out_dict = {}
-    if get_ej: # if for enviro justice population, weight by population for EJ polygons only.
+    if get_ej:
         for col in params.acc_cols_ej:
-            col_wtd = "{}_wtd".format(col)
-            col_ej_pop = "{}_EJ".format(params.col_pop)
-            accdata_df[col_wtd] = accdata_df[col] * accdata_df[params.col_pop] * accdata_df[params.col_acc_ej_ind]
+            col_wtd   = f'{col}_wtd'
+            col_ej_pop = f'{params.col_pop}_EJ'
+            accdata_df[col_wtd]    = accdata_df[col] * accdata_df[params.col_pop] * accdata_df[params.col_acc_ej_ind]
             accdata_df[col_ej_pop] = accdata_df[params.col_pop] * accdata_df[params.col_acc_ej_ind]
-            
             tot_ej_pop = accdata_df[col_ej_pop].sum()
-            
-            out_wtd_acc = accdata_df[col_wtd].sum() / tot_ej_pop if tot_ej_pop > 0 else 0
-            col_out_ej = "{}_EJ".format(col)
-            out_dict[col_out_ej] = out_wtd_acc
+            out_dict[f'{col}_EJ'] = accdata_df[col_wtd].sum() / tot_ej_pop if tot_ej_pop > 0 else 0
     else:
         total_pop = accdata_df[params.col_pop].sum()
         for col in params.acc_cols:
-            if total_pop <= 0: # if no one lives near project, get unweighted avg accessibility of block groups near project
-                out_wtd_acc = accdata_df[col].mean()
+            if total_pop <= 0:
+                out_dict[col] = accdata_df[col].mean()
             else:
-                col_wtd = "{}_wtd".format(col)
-                accdata_df[col_wtd] = accdata_df[col] * accdata_df[params.col_pop]
-                out_wtd_acc = accdata_df[col_wtd].sum() / total_pop
-                
-            out_dict[col] = out_wtd_acc
+                accdata_df[f'{col}_wtd'] = accdata_df[col] * accdata_df[params.col_pop]
+                out_dict[col] = accdata_df[f'{col}_wtd'].sum() / total_pop
+
+    for fc in [fc_temp_seln, fc_intersect]:
+        if arcpy.Exists(fc):
+            arcpy.Delete_management(fc)
 
     return out_dict
 

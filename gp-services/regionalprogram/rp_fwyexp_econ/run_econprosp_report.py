@@ -47,10 +47,11 @@ def convert_acc_fnames(in_dict):
 def make_econ_report_fwyexp(input_dict):
 
     uis = params.user_inputs
-    project_fc=input_dict[uis.geom]
-    project_name=input_dict[uis.name]
-    project_type=input_dict[uis.ptype]
-    
+    project_fc   = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]
+    output_dir   = arcpy.env.scratchFolder
+
     in_json = Path(params.json_templates_dir).joinpath("SACOG_{Regional Program}_{Freeway}_EconProsperity_sample_dataSource.json")
 
     with open(in_json, "r") as j_in: # load applicable json template

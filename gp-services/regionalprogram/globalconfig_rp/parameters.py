@@ -203,6 +203,15 @@ col_biketrip_res = 'BIK_TOT_RES'
 col_walktrip_res = 'WLK_TOT_RES'
 ilut_ptrip_mode_fields = [col_sovtrip_res, col_hovtrip_res, col_trntrip_res, col_biketrip_res, col_walktrip_res]
 
+# Census block group poverty and race/ethnicity counts prorated to parcel (POP_TOT * BG share)
+# These fields are added to parcel_data_pts_{year} via layer-building/parcel_census_combine/add_poverty_race_to_parcels.py
+col_pop_pov200 = 'pop_pov200'        # population in HH earning < 200% federal poverty level
+col_pop_white_nh = 'pop_white_nh'    # white non-Hispanic population
+col_pop_afr_am_nh = 'pop_afr_am_nh' # African American non-Hispanic population
+col_pop_asian_nh = 'pop_asian_nh'    # Asian non-Hispanic population
+col_pop_other_nh = 'pop_other_nh'    # other non-Hispanic population (incl. multiracial, Am. Indian)
+col_pop_hisp = 'pop_hisp'            # Hispanic/Latino population (any race)
+
 
 
 # ===================================MODEL NETWORK PARAMETERS==============================================

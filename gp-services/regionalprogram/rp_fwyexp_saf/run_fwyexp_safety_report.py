@@ -47,10 +47,12 @@ def update_tbl_multiple_geos(json_obj, proj_level_val, k_chartname_metric, metri
 def make_safety_report_fwyexp(input_dict):
 
     uis = params.user_inputs
-    fc_project = input_dict[uis.geom]
+    fc_project   = input_dict[uis.geom]
     project_name = input_dict[uis.name]
     project_type = input_dict[uis.ptype]
-    proj_aadt = input_dict[uis.aadt]
+    proj_aadt    = input_dict[uis.aadt]
+    posted_spd   = input_dict.get(uis.posted_spd)
+    output_dir   = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Safety_sample_dataSource.json")
 
@@ -58,7 +60,7 @@ def make_safety_report_fwyexp(input_dict):
         loaded_json = json.load(j_in)
 
     # get project community type
-    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(fc_project, params.comm_types_fc)
 
     # project type tag to append to metric field name
     if project_type not in params.tags_ptypes.keys():
@@ -66,8 +68,9 @@ def make_safety_report_fwyexp(input_dict):
     else:
         project_metric_tag = params.tags_ptypes[project_type]
 
-    # get dict of collision data
-    collision_data_project = collisions.get_collision_data(fc_project, project_type, params.collisions_fc, proj_aadt)
+    # get dict of collision data (buffer distance scales with posted speed limit)
+    collision_data_project = collisions.get_collision_data(fc_project, project_type, params.collisions_fc,
+                                                           proj_aadt, posted_spd=posted_spd)
 
     # update dict keys to reflect project location (freeway or non-freeway)
     collision_data_project = {f"{k}{project_metric_tag}":v for k, v in collision_data_project.items()}

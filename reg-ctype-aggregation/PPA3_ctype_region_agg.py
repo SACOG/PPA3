@@ -79,12 +79,35 @@ def get_poly_avg(input_poly_fc, whole_region=False):
     key_yes_ej = max(list(pop_x_ej.keys()))
     pct_pop_ej = {'Pct_PopEJArea': pop_x_ej[key_yes_ej] / pop_tot if pop_tot > 0 else 0}
 
+    # Poverty and ethnic breakdown benchmarks
+    # Requires pop_pov200, pop_white_nh, etc. fields on parcel FC
+    # (added by layer-building/parcel_census_combine/add_poverty_race_to_parcels.py)
+    poverty_race_cols = [params.col_pop_ilut, params.col_pop_pov200, params.col_pop_white_nh,
+                         params.col_pop_afr_am_nh, params.col_pop_asian_nh, params.col_pop_other_nh,
+                         params.col_pop_hisp]
+    poverty_race_data = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg,
+                                         poverty_race_cols, buffered_pcls=True).point_sum()
+    pr_pop_tot = poverty_race_data.get(params.col_pop_ilut, 0)
+
+    if pr_pop_tot > 0:
+        equity_benchmarks = {
+            'Pct_Pov200': poverty_race_data.get(params.col_pop_pov200, 0) / pr_pop_tot,
+            'Pct_White_NH': poverty_race_data.get(params.col_pop_white_nh, 0) / pr_pop_tot,
+            'Pct_AfrAm_NH': poverty_race_data.get(params.col_pop_afr_am_nh, 0) / pr_pop_tot,
+            'Pct_Asian_NH': poverty_race_data.get(params.col_pop_asian_nh, 0) / pr_pop_tot,
+            'Pct_Other_NH': poverty_race_data.get(params.col_pop_other_nh, 0) / pr_pop_tot,
+            'Pct_Hisp': poverty_race_data.get(params.col_pop_hisp, 0) / pr_pop_tot,
+        }
+    else:
+        equity_benchmarks = {k: 0 for k in ['Pct_Pov200', 'Pct_White_NH', 'Pct_AfrAm_NH',
+                                              'Pct_Asian_NH', 'Pct_Other_NH', 'Pct_Hisp']}
+
     job_pop_dens = LandUseBuffCalcs(pcl_pt_data, input_poly_fc, params.ptype_area_agg, \
                                             [params.col_du, params.col_emptot], buffered_pcls=True).point_sum_density()
 
     out_dict = {}
-    for d in [accdata, collision_data, mix_data, intsecn_dens, bikeway_covg, tran_stop_density, pct_pop_ej,\
-              emp_ind_pct, job_pop_dens]:
+    for d in [accdata, collision_data, mix_data, intsecn_dens, bikeway_covg, tran_stop_density, pct_pop_ej,
+              equity_benchmarks, emp_ind_pct, job_pop_dens]:
         out_dict.update(d)
 
     return out_dict

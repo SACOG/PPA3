@@ -66,10 +66,12 @@ def direction_field_translator(in_congdata_dict):
 def make_congestion_rpt_artsgr(input_dict):
 
     uis = params.user_inputs
-    fc_project = input_dict[uis.geom]
+    fc_project   = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
     project_type = input_dict[uis.ptype]
-    aadt = input_dict[uis.aadt]
-    
+    aadt         = input_dict[uis.aadt]
+    output_dir   = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_ReduceCongestion_sample_dataSource.json")
 
     with open(in_json, "r") as j_in: # load applicable json template

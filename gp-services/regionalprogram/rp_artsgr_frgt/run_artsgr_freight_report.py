@@ -47,9 +47,10 @@ def pct_jobs_sector_year(parcel_pt_file, col_emptot, col_empsector):
 def make_frgt_report_artsgr(input_dict):
 
     uis = params.user_inputs
-    fc_project = input_dict[uis.geom]
+    fc_project   = input_dict[uis.geom]
     project_name = input_dict[uis.name]
-    
+    output_dir   = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_Freight_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [params.base_year]

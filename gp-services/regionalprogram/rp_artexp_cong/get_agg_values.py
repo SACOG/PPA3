@@ -4,8 +4,8 @@ Purpose: Some PPA charts require getting aggregate values
 
 
 Author: Darren Conly
-Last Updated: 
-Updated by: 
+Last Updated:
+Updated by:
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
@@ -19,7 +19,7 @@ def make_aggval_dict(aggval_csv, metric_cols, proj_ctype, yearkey, geo_regn,
     df_agg = pd.read_csv(aggval_csv)
     metname_col = "metric_name"
     df_agg = df_agg.rename(columns={'Unnamed: 0':metname_col, 'REGION': geo_regn})
-    
+
     if yearval:
         aggdatadf_proj = df_agg.loc[(df_agg[metname_col].isin(metric_cols)) & \
             (df_agg[yearkey] == yearval)] \
@@ -33,11 +33,6 @@ def make_aggval_dict(aggval_csv, metric_cols, proj_ctype, yearkey, geo_regn,
     aggval_dict = {d[metname_col]:{proj_ctype:d[proj_ctype],
                       geo_regn:d[geo_regn],
                       yearkey:d[yearkey]} for d in agg_dict_list}
-
-    # Return None for any requested metric not yet present in the CSV (e.g., before aggregation re-run)
-    for col in metric_cols:
-        if col not in aggval_dict:
-            aggval_dict[col] = {proj_ctype: None, geo_regn: None, yearkey: None}
 
     return aggval_dict
 

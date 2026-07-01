@@ -27,10 +27,11 @@ from utils import utils as utils
 def make_freight_rept_fwyexp(input_dict):
 
     uis = params.user_inputs
-    fc_project=input_dict[uis.geom]
-    project_name=input_dict[uis.name]
-    project_type=input_dict[uis.ptype]
-    
+    fc_project   = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]
+    output_dir   = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Freight_sample_dataSource.json")
 
     with open(in_json, "r") as j_in: # load applicable json template

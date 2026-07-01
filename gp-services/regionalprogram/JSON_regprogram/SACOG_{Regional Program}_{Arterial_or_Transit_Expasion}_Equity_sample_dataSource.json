@@ -4,5 +4,37 @@
 		"Within project location": 0.56,
 		"Within community type": 0.37,
 		"Within region": 0.37
+	},
+	"Share of population in households below 200% federal poverty level": {
+		"Within project location": 0.25,
+		"Within community type": null,
+		"Within region": null
+	},
+	"Ethnic composition of population near project": {
+		"White non-Hispanic": {
+			"Within project location": 0.45,
+			"Within community type": null,
+			"Within region": null
+		},
+		"African American non-Hispanic": {
+			"Within project location": 0.12,
+			"Within community type": null,
+			"Within region": null
+		},
+		"Asian non-Hispanic": {
+			"Within project location": 0.10,
+			"Within community type": null,
+			"Within region": null
+		},
+		"Other non-Hispanic": {
+			"Within project location": 0.08,
+			"Within community type": null,
+			"Within region": null
+		},
+		"Hispanic/Latino": {
+			"Within project location": 0.25,
+			"Within community type": null,
+			"Within region": null
+		}
 	}
 }

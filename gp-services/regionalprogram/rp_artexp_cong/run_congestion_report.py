@@ -20,6 +20,7 @@ import arcpy
 arcpy.SetLogHistory(False) # prevents an XML log file from being created every time script is run; long terms saves hard drive space
 
 from config_links import params
+import commtype
 import parcel_data
 import chart_job_du_tot
 import chart_congestion
@@ -72,15 +73,21 @@ def direction_field_translator(in_congdata_dict):
 def make_congestion_rpt_artexp(input_dict):
 
     uis = params.user_inputs
-    fc_project = input_dict[uis.geom]
-    ptype = input_dict[uis.ptype]
-    
+    fc_project    = input_dict[uis.geom]
+    project_name  = input_dict[uis.name]
+    ptype         = input_dict[uis.ptype]
+    aadt          = input_dict[uis.aadt]
+    output_dir    = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceCongestion_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [params.base_year, params.future_year]
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
+
+    # get project community type for benchmark comparisons
+    project_commtype = commtype.get_proj_ctype(fc_project, params.comm_types_fc)
 
     # get parcels within buffer of project, make FC of them
     parcel_fc_dict = {}
@@ -90,13 +97,13 @@ def make_congestion_rpt_artexp(input_dict):
                             buffdist=lu_buffdist_ft, project_type=ptype, data_year=year)
         parcel_fc_dict[year] = pcl_buff_fc
 
-    # calc land use buffer values (job + du totals)
-
+    # calc land use density (jobs/acre and DU/acre)
     d_lubuff = {}
     for i, year in enumerate(data_years):
         in_pcl_pt_fc = parcel_fc_dict[year]
-        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc, 
-                                    project_fc=project_fc, project_type=ptype)
+        d_jobdu = chart_job_du_tot.update_json(json_loaded=loaded_json, data_year=year, order_val=i, pcl_pt_fc=in_pcl_pt_fc,
+                                    project_fc=fc_project, project_type=ptype,
+                                    project_commtype=project_commtype, aggval_csv=params.aggval_csv)
 
         # {f"jobs": jobs, f"dwellingUnits": du}
         d_lubuff[year] = d_jobdu
@@ -107,19 +114,19 @@ def make_congestion_rpt_artexp(input_dict):
     du_future = d_lubuff[data_years[1]]["dwellingUnits"]
 
     # get congestion data
-    congn_data = npmrds.get_npmrds_data(fc_project, project_type)
+    congn_data = npmrds.get_npmrds_data(fc_project, ptype)
 
     cong_rpt_obj = chart_congestion.CongestionReport(congn_data, loaded_json)
     cong_rpt_obj.update_all_congestion_data()
 
     # get congestion ratio for each direction
     cong_data2 = cong_rpt_obj.parse_congestion()
-    
+
     # get congestion ratio and congested speed for worst direction
     worst_data = {}
     cong_ratios = {f"{k}congrat":v[cong_rpt_obj.tag_congratio] for k, v in cong_data2.items()}
     congn_data.update(cong_ratios)
-    
+
     worst_congrat = min([v[cong_rpt_obj.tag_congratio] for k, v in cong_data2.items()])
     worst_data["congrat_wrst"] = worst_congrat
 
