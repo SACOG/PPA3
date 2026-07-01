@@ -54,7 +54,15 @@ def make_safety_report_artexp(input_dict):
     posted_spd   = input_dict.get(uis.posted_spd)
     output_dir   = arcpy.env.scratchFolder
     
-    in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json")
+    # PRODUCTION path (restore once server template is updated with Task 5 chart stubs):
+    # in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json")
+
+    # LOCAL / TESTING path — uses repo copy which has the Task 5 "Collision Types" and
+    # "Primary Collision Factors" chart stubs. Server copy at params.json_templates_dir
+    # does not yet have these entries. Swap comments above/below when server is updated.
+    _json_filename = "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Safety_sample_dataSource.json"
+    in_json = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                           'JSON_regprogram', _json_filename)
 
     with open(in_json, "r") as j_in: # load applicable json template
         loaded_json = json.load(j_in)
@@ -138,7 +146,22 @@ def make_safety_report_artexp(input_dict):
         loaded_json[params.k_charts][k_chartname_bpfatal][params.k_features][i][params.k_attrs] \
             [params.geo_region] = val_regn
 
-        
+    # Collision type breakdown chart
+    k_colln_type_breakdown = f"COLLN_TYPE_BREAKDOWN{project_metric_tag}"
+    colln_type_features = collision_data_project[k_colln_type_breakdown]
+    k_chartname_colln_type = "Collision Types"
+    loaded_json[params.k_charts][k_chartname_colln_type][params.k_features] = [
+        {params.k_attrs: feat} for feat in colln_type_features
+    ]
+
+    # Primary collision factor breakdown chart
+    k_colln_factor_breakdown = f"COLLN_FACTOR_BREAKDOWN{project_metric_tag}"
+    colln_factor_features = collision_data_project[k_colln_factor_breakdown]
+    k_chartname_colln_factor = "Primary Collision Factors"
+    loaded_json[params.k_charts][k_chartname_colln_factor][params.k_features] = [
+        {params.k_attrs: feat} for feat in colln_factor_features
+    ]
+
     # write out to new JSON file
     output_sufx = str(dt.datetime.now().strftime('%Y%m%d_%H%M'))
     out_file_name = f"SafetyRpt{project_name}{output_sufx}.json"
@@ -155,7 +178,7 @@ def make_safety_report_artexp(input_dict):
     bikeped_crash_pct = collision_data_project[tag_pct_bikeped]
 
     data_to_log = {
-        'project_uid': project_uid, 'crash_cnt': tot_collns, 
+        'project_uid': project_uid, 'crash_cnt': tot_collns,
         'crash_100mvmt': colln_rate_proj, 'crash_bkpd_clmile': colln_bkpd_proj,
         'crashpct_fatal': fatal_crash_pct, 'crash_bkpd_pct': bikeped_crash_pct
     }

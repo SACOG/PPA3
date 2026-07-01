@@ -88,6 +88,53 @@ def get_centerline_miles(selection_poly_fc, centerline_fc):
 
     return cline_miles / params.ft2mile
 
+def get_type_breakdown(in_df, col, label_dict, top_n):
+    """
+    Builds a ranked breakdown of collision categories for the JSON chart.
+
+    Args:
+        in_df      : DataFrame of collision records near the project
+        col        : column name to aggregate (e.g. TYPE_OF_COLLISION)
+        label_dict : dict mapping raw code → display label (from params)
+        top_n      : max number of categories to show before rolling into 'Other'
+
+    Returns a list of dicts, e.g.:
+        [
+            {"type": "Rear End",   "Project": 0.4200},
+            {"type": "Broadside",  "Project": 0.2100},
+            ...
+            {"type": "Other",      "Project": 0.0800},
+        ]
+    Pct values are fractions of total (0.0–1.0), rounded to 4 decimal places.
+    """
+    total = len(in_df)
+    if total == 0:
+        return [{"type": "No collisions in vicinity", "Project": 0}]
+
+    # map raw codes → labels; anything not in dict falls back to the raw code string
+    mapped = (
+        in_df[col]
+        .fillna('-')
+        .astype(str)
+        .str.strip()
+        .map(lambda x: label_dict.get(x, x))
+    )
+
+    # group "Not Stated" variants — both '-' and 'N' map to same label, so value_counts merges them
+    counts = mapped.value_counts()
+
+    top    = counts.iloc[:top_n]
+    other  = counts.iloc[top_n:].sum()
+
+    features = []
+    for label, count in top.items():
+        features.append({"type": label, "Project": round(count / total, 4)})
+
+    if other > 0:
+        features.append({"type": "Other", "Project": round(other / total, 4)})
+
+    return features
+
 def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
     total_collns = in_df.shape[0]
     fatal_collns = in_df.loc[in_df[params.col_nkilled] > 0].shape[0]
@@ -105,12 +152,25 @@ def final_agg(in_df, ann_vmt, proj_len_mi, factyp_tag):
     fatalcolln_per_vmt = avg_ann_fatalcolln / ann_vmt * 100000000 if ann_vmt > 0 else -1
     pct_fatal_collns = avg_ann_fatalcolln / avg_ann_collisions if avg_ann_collisions > 0 else 0
 
-    out_dict = {f"TOT_COLLISNS": total_collns, f"TOT_COLLISNS_PER_100MVMT": colln_rate_per_vmt,
-                f"FATAL_COLLISNS": fatal_collns, f"FATAL_COLLISNS_PER_100MVMT": fatalcolln_per_vmt,
-                f"PCT_FATAL_COLLISNS": pct_fatal_collns, f"BIKEPED_COLLISNS": bikeped_collns, 
-                f"BIKEPED_COLLISNS_PER_CLMILE": bikeped_colln_clmile, f"PCT_BIKEPED_COLLISNS": pct_bikeped_collns}
-    
-    out_dict_roadtyp_tag = {f"{k}{factyp_tag}":v for k, v in out_dict.items()}
+    out_dict = {
+        f"TOT_COLLISNS": total_collns,
+        f"TOT_COLLISNS_PER_100MVMT": colln_rate_per_vmt,
+        f"FATAL_COLLISNS": fatal_collns,
+        f"FATAL_COLLISNS_PER_100MVMT": fatalcolln_per_vmt,
+        f"PCT_FATAL_COLLISNS": pct_fatal_collns,
+        f"BIKEPED_COLLISNS": bikeped_collns,
+        f"BIKEPED_COLLISNS_PER_CLMILE": bikeped_colln_clmile,
+        f"PCT_BIKEPED_COLLISNS": pct_bikeped_collns,
+        # --- Task 5 additions ---
+        "COLLN_TYPE_BREAKDOWN": get_type_breakdown(
+            in_df, params.col_collision_type, params.collision_type_labels, params.colln_type_top_n
+        ),
+        "COLLN_FACTOR_BREAKDOWN": get_type_breakdown(
+            in_df, params.col_pcf_category, params.pcf_category_labels, params.colln_type_top_n
+        ),
+    }
+
+    out_dict_roadtyp_tag = {f"{k}{factyp_tag}": v for k, v in out_dict.items()}
 
     output_df = pd.DataFrame(pd.Series(out_dict, index=list(out_dict.keys()))).reset_index()
     output_df[params.col_fwytag] = factyp_tag
@@ -177,7 +237,7 @@ def get_collision_data(fc_project, project_type, fc_colln_pts, project_adt, post
     else:
         searchdist = colln_buffer_by_speed(posted_spd)
     arcpy.SelectLayerByLocation_management(fl_colln_pts, 'WITHIN_A_DISTANCE', fl_project, searchdist)
-    colln_cols =[params.col_fwytag, params.col_nkilled, params.col_bike_ind, params.col_ped_ind]
+    colln_cols = [params.col_fwytag,params.col_nkilled,params.col_bike_ind,params.col_ped_ind,params.col_collision_type,params.col_pcf_category,]
     
     df_collndata = ut.esri_object_to_df(fl_colln_pts, colln_cols)
     df_collndata_fwy = df_collndata.loc[df_collndata[params.col_fwytag] == params.ind_fwytag_fwy]

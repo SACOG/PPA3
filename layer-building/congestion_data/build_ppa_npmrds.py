@@ -20,21 +20,28 @@ Input data (provide via CONFIG block below):
     direction, f_system, nhs, miles, start/end lat-longs
   - NHS true-shape shapefile (or feature class)
   - Old true-shape feature class for geometry reuse
-Update the congestion line
-update TIMS NOW(AFTER WRAPPING UP CONGESTION)
-dont start
--accessibility
--climate-vmt
--TIMS should be the next ocus
--green means go
 
 Output:
   - ESRI feature class with congestion metrics + geometry + tru_shp_yr flag
 
 Author: Terrell, originally based on Darren Conly's notebook
 """
-
 from __future__ import annotations
+
+# ---------------------------------------------------------------------
+# PROJ database setup — must come before any geo imports
+# ---------------------------------------------------------------------
+import os
+os.environ["PROJ_LIB"] = r"C:\Users\tenoru\AppData\Local\ESRI\conda\envs\arcpro_env\Library\share\proj"
+os.environ["PROJ_DATA"] = os.environ["PROJ_LIB"]  # newer pyproj uses this name
+
+# Belt-and-suspenders: also set programmatically in case env vars are too late
+import pyproj
+pyproj.datadir.set_data_dir(os.environ["PROJ_LIB"])
+print(f"pyproj data dir: {pyproj.datadir.get_data_dir()}")
+from pyproj import CRS
+_ = CRS.from_epsg(4326)  # fail fast if PROJ db is broken
+print("EPSG:4326 resolves OK")
 
 import datetime as dt
 import logging
@@ -46,7 +53,7 @@ import duckdb
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.geometry import LineString
+from shapely.geometry import LineString, MultiLineString
 
 
 # Optional arcpy imports — only needed for feature-class export and CRS lookup.
@@ -62,23 +69,23 @@ except ImportError:
 # =====================================================================
 # CONFIG — edit for each annual update
 # =====================================================================
-congestion_layer_update= Path(r"C:\Users\tenoru\Downloads\data_layer_update\congestion")  # base path for this year's update
+congestion_update_path=Path(r"I:\Projects\Josh\PPA\Layer_update\Congestion")
+local_congestion_path= Path(r"C:\Users\tenoru\Downloads\Layer_update\Congestion")  # for testing on local machine
 CONFIG = {
     # --- Input CSVs from RITIS Massive Data Downloader ---
     # Path to the travel-time CSV(s). Can be a single file or a glob pattern
     # for multiple files (e.g. monthly exports). DuckDB handles both.
     # Expected columns: tmc_code, measurement_tstamp, speed, travel_time_seconds
-    "tt_csv_path": r"I:\Projects\Josh\PPA\layer_update\congestion\npmrds_2025_alltmc_paxtruck_comb.csv",
+    "tt_csv_path": local_congestion_path /"npmrds_2025_alltmc_paxtruck_comb.csv",
 
     # Path to TMC_Identification.csv from RITIS download
     # Expected columns include: tmc, road, route_numb, direction, f_system,
     # nhs, miles, start_latitude, start_longitude, end_latitude, end_longitude
-    "tmc_id_csv_path": r"C:\Users\tenoru\Downloads\npmrds_2025_alltmc_paxtruck_comb\TMC_Identification.csv",
+    "tmc_id_csv_path": local_congestion_path / "TMC_Identification.csv",
 
     # --- Geometry inputs ---
     # NHS true-shape shapefile/feature class for the new vintage
-    "nhs_shp": r"C:\Users\tenoru\Downloads\nhs_2025_sacog.shp", #
-
+    "nhs_shp": local_congestion_path  / "NPMRDS_2025_NHS_SACOG.shp",
     # List of older true-shape sources to try, in priority order.
     # First entry is tried first; geometries from later entries fill gaps.
     # Each entry: (path, vintage_year, dissolve_field)
@@ -89,12 +96,17 @@ CONFIG = {
 
     # --- Output ---
     # Sample output location for now.
-    "out_gdb": r"C:\Users\tenoru\Downloads\PPA3_GIS\PPA3_GIS.gdb",
+    "out_gdb": local_congestion_path  / "PPA3_GIS.gdb",
     "data_year": 2025,
 
     # Optional: cache the metrics DataFrame to CSV so you don't have to
     # recompute on subsequent runs. Set to None to disable.
-    "metrics_cache_csv": r"C:\Users\tenoru\Downloads\PPA3_GIS\cache\npmrds_metrics_2025.csv",
+    "metrics_cache_csv": local_congestion_path  / "cache" / "npmrds_metrics_2025.csv",
+
+    # If True, load metrics from `metrics_cache_csv` if it exists, skipping
+    # the ~5min DuckDB stage. Useful when iterating on Stages 2-4 and the
+    # underlying RITIS CSVs haven't changed. Set False to force recompute.
+    "use_metrics_cache": True,
 
     # --- Tolerances (both previously hardcoded — now exposed) ---
     # Max distance in feet between old and new TMC start/end points to
@@ -153,6 +165,8 @@ def find_tmc_field(gdf):
     raise ValueError(
         f"No TMC field found in shapefile. Columns: {gdf.columns.tolist()}"
     )
+
+
 # =====================================================================
 # Stage 1 — congestion metrics via DuckDB
 # =====================================================================
@@ -444,17 +458,39 @@ def compute_metrics_duckdb(tt_csv_path: str, tmc_id_csv_path: str,
 # =====================================================================
 
 def load_geom_layer(path, fields, target_epsg):
-    if not HAS_ARCPY:
+    path = str(path)  # arcpy hates Path objects
+
+    # Shapefiles: just use geopandas, skip arcpy entirely
+    is_shp = path.lower().endswith(".shp")
+
+    if is_shp or not HAS_ARCPY:
         gdf = gpd.read_file(path)
         if fields is not None:
             gdf = gdf[fields + ["geometry"]]
     else:
+        # .gdb feature class — needs arcpy
         if fields is None:
             sedf = pd.DataFrame.spatial.from_featureclass(path)
         else:
             sedf = pd.DataFrame.spatial.from_featureclass(path, fields=fields)
-        gdf = gpd.GeoDataFrame(sedf, geometry=sedf.spatial.name,
-                                crs=sedf.spatial.sr.factoryCode)
+
+        # arcgis SpatialReference: prefer latestWkid (modern EPSG) over wkid
+        # (often legacy ESRI codes in 102xxx/103xxx range). EPSG codes don't
+        # exceed ~33000, so anything >= 100000 is an ESRI authority code.
+        sr = sedf.spatial.sr
+        wkid = sr.get("wkid") if hasattr(sr, "get") else getattr(sr, "wkid", None)
+        latest = sr.get("latestWkid") if hasattr(sr, "get") else getattr(sr, "latestWkid", None)
+
+        crs = None
+        if latest and latest < 100000:
+            crs = f"EPSG:{latest}"
+        elif wkid and wkid < 100000:
+            crs = f"EPSG:{wkid}"
+        elif wkid:
+            crs = f"ESRI:{wkid}"  # fall back to ESRI authority
+
+        gdf = gpd.GeoDataFrame(sedf, geometry=sedf.spatial.name, crs=crs)
+
     if gdf.crs is None or gdf.crs.to_epsg() != target_epsg:
         gdf = gdf.to_crs(f"EPSG:{target_epsg}")
     return gdf
@@ -514,14 +550,42 @@ def reuse_old_geometry(in_gdf: gpd.GeoDataFrame, old_shp_path: str,
     old_gdf = load_geom_layer(old_shp_path, fields=[dissolve_field], target_epsg=crs)
     old_gdf = old_gdf.dissolve(by=dissolve_field).reset_index()
 
-    # Extract start/end points of old geometries
-    old_gdf["startpt_old"] = old_gdf.geometry.apply(lambda g: g.coords[0] if g else None)
-    old_gdf["endpt_old"] = old_gdf.geometry.apply(lambda g: g.coords[-1] if g else None)
-    old_gdf = old_gdf.rename(columns={"geometry": f"geometry_{old_year}"})
+    # Dissolve can produce MultiLineStrings; .explode() guarantees single-part
+    # geometries, then we keep the longest piece per TMC (downstream endpoint
+    # check will reject any TMC where this heuristic chose the wrong piece).
+    n_multi = (old_gdf.geometry.geom_type == "MultiLineString").sum()
+    if n_multi:
+        log.info(f"  exploding {n_multi} multi-part geometries")
+        old_gdf = old_gdf.explode(index_parts=False).reset_index(drop=True)
+        old_gdf["_len"] = old_gdf.geometry.length
+        old_gdf = (old_gdf.sort_values("_len", ascending=False)
+                          .drop_duplicates(subset=[dissolve_field], keep="first")
+                          .drop(columns=["_len"])
+                          .reset_index(drop=True))
+
+    # Hard sanity check — anything other than LineString here means a bug
+    bad = (old_gdf.geometry.geom_type != "LineString").sum()
+    if bad:
+        raise RuntimeError(
+            f"After cleanup, {bad} geometries are not LineStrings — "
+            f"types: {old_gdf.geometry.geom_type.value_counts().to_dict()}"
+        )
+
+    # Extract start/end points of old geometries.
+    # Build a plain pd.DataFrame for the merge — renaming the active geometry
+    # column on a GeoDataFrame via .rename() is unreliable (geopandas tracks
+    # the geometry column name internally), so we sidestep it.
+    geom_col = f"geometry_{old_year}"
+    old_attrs = pd.DataFrame({
+        dissolve_field: old_gdf[dissolve_field].values,
+        geom_col: old_gdf.geometry.values,
+        "startpt_old": old_gdf.geometry.apply(lambda g: g.coords[0]).values,
+        "endpt_old": old_gdf.geometry.apply(lambda g: g.coords[-1]).values,
+    })
 
     # Merge onto input
     merged = in_gdf.merge(
-        old_gdf[[dissolve_field, f"geometry_{old_year}", "startpt_old", "endpt_old"]],
+        old_attrs,
         how="left", left_on="tmc", right_on=dissolve_field,
         suffixes=("", f"_{old_year}"),
     )
@@ -578,8 +642,12 @@ def reuse_old_geometry(in_gdf: gpd.GeoDataFrame, old_shp_path: str,
     merged.loc[auto_resolved, "tru_shp_yr"] = data_year
     log.info(f"  {auto_resolved.sum():,} sticks auto-resolved (length within {length_tol*100:.2f}% of spec)")
 
-    # Clean up working columns
-    drop_cols = [f"geometry_{old_year}", "startpt_old", "endpt_old", dissolve_field]
+    # Clean up working columns. Only drop dissolve_field if it's distinct from
+    # the main "tmc" join key — when they share a name, the merge collapses
+    # them into one column, and dropping it would kill the next iteration.
+    drop_cols = [f"geometry_{old_year}", "startpt_old", "endpt_old"]
+    if dissolve_field != "tmc":
+        drop_cols.append(dissolve_field)
     merged.drop(columns=[c for c in drop_cols if c in merged.columns], inplace=True)
 
     return merged
@@ -600,7 +668,19 @@ def export_feature_class(gdf: gpd.GeoDataFrame, out_gdb: str,
     log.info("Exporting to feature class")
     sufx = dt.datetime.now().strftime("%Y%m%d_%H%M")
     outname = f"NPMRDS_{data_year}data_{sufx}"
-    out_path = str(Path(out_gdb) / outname)
+    out_gdb = str(out_gdb)
+
+    # Auto-create the output FGDB if it doesn't exist yet
+    out_gdb_path = Path(out_gdb)
+    if not out_gdb_path.exists():
+        log.info(f"  output FGDB doesn't exist — creating {out_gdb_path}")
+        out_gdb_path.parent.mkdir(parents=True, exist_ok=True)
+        arcpy.management.CreateFileGDB(
+            out_folder_path=str(out_gdb_path.parent),
+            out_name=out_gdb_path.name,
+        )
+
+    out_path = str(out_gdb_path / outname)
 
     # Drop intermediate columns that shouldn't be in the published feature class
     drop_cols = ["tmc_appearance_n", "start_latitude", "start_longitude",
@@ -622,15 +702,20 @@ def main(cfg: dict = CONFIG) -> None:
     log.info(f"PPA NPMRDS build — data year {cfg['data_year']}")
     log.info("=" * 60)
 
-    # Stage 1: metrics
-    metrics_df = compute_metrics_duckdb(
-        cfg["tt_csv_path"], cfg["tmc_id_csv_path"], cfg
-    )
-    if cfg.get("metrics_cache_csv"):
-        cache_path = Path(cfg["metrics_cache_csv"])
-        cache_path.parent.mkdir(parents=True, exist_ok=True)
-        metrics_df.to_csv(cache_path, index=False)
-        log.info(f"  metrics cached to {cache_path}")
+    # Stage 1: metrics (load from cache if available and enabled)
+    cache_path = Path(cfg["metrics_cache_csv"]) if cfg.get("metrics_cache_csv") else None
+    if cfg.get("use_metrics_cache") and cache_path and cache_path.exists():
+        log.info(f"Loading cached metrics from {cache_path}")
+        metrics_df = pd.read_csv(cache_path)
+        log.info(f"  loaded {len(metrics_df):,} TMCs from cache")
+    else:
+        metrics_df = compute_metrics_duckdb(
+            cfg["tt_csv_path"], cfg["tmc_id_csv_path"], cfg
+        )
+        if cache_path:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            metrics_df.to_csv(cache_path, index=False)
+            log.info(f"  metrics cached to {cache_path}")
 
     # Stage 2: NHS geometry
     gdf = attach_nhs_geometry(metrics_df, cfg["nhs_shp"], cfg)
