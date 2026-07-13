@@ -1,0 +1,84 @@
+{
+    "congestionRatio": {
+        "first": {
+            "name": "Null",
+            "value": 0
+        },
+        "second": {
+            "name": "Null",
+            "value": 0
+        }
+    },
+    "projectAADT": 30000,
+    "charts": {
+        "Free flow vs Congested Speeds": {
+            "title": "Free-flow vs. Congested Speeds",
+            "features": [
+                {
+                    "attributes": {
+                        "type": "Null",
+                        "freeFlowSpeed": 0,
+                        "averageCongestedSpeed": 0
+                    }
+                },
+                {
+                    "attributes": {
+                        "type": "Null",
+                        "freeFlowSpeed": 0,
+                        "averageCongestedSpeed": 0
+                    }
+                }
+            ]
+        },
+        "Travel Time Reliability Index": {
+            "title": "Travel Time Reliability Index",
+            "features": [
+                {
+                    "attributes": {
+                        "type": "Null",
+                        "AMPeak": 0,
+                        "PMPeak": 0,
+                        "midday": 0,
+                        "weekend": 0
+                    }
+                },
+                {
+                    "attributes": {
+                        "type": "Null",
+                        "AMPeak": 0,
+                        "PMPeak": 0,
+                        "midday": 0,
+                        "weekend": 0
+                    }
+                }
+            ]
+        },
+        "Jobs and Dwelling": {
+            "title": "Total Jobs and Dwelling Units within 0.5mi of project",
+            "features": [
+                {
+                    "attributes": {
+                        "year": "2020",
+                        "jobs": 8.167009646081565,
+                        "dwellingUnits": 3.0835965496196924,
+                        "commtype_jobs": 1.704505256,
+                        "region_jobs": 0.265858004,
+                        "commtype_du": 2.440418763,
+                        "region_du": 0.247375092
+                    }
+                },
+                {
+                    "attributes": {
+                        "year": "2035",
+                        "jobs": 13.415545209713892,
+                        "dwellingUnits": 6.59179372910627,
+                        "commtype_jobs": 0,
+                        "region_jobs": 0,
+                        "commtype_du": 0,
+                        "region_du": 0
+                    }
+                }
+            ]
+        }
+    }
+}
