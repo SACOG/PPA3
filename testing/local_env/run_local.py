@@ -19,6 +19,7 @@ OUT_DIR = os.path.join(HERE, "out")
 # subreport -> (folder rel to gp-services, entry module, entry function)
 ENTRYPOINTS = {
     "rp_artexp_cong": ("regionalprogram/rp_artexp_cong", "run_congestion_report", "make_congestion_rpt_artexp"),
+    "rp_artexp_vmt": ("regionalprogram/rp_artexp_vmt", "run_vmt_report", "make_vmt_report_artexp"),
 }
 
 # strings that must NOT appear in the target folder's code/config when running local
