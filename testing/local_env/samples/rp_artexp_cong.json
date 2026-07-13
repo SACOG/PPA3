@@ -1,0 +1,11 @@
+{
+  "Project_Line": "I:\\Projects\\Darren\\PPA_V2_GIS\\PPA_V2.gdb\\Polylines",
+  "Project_Name": "local_density_smoketest",
+  "Jurisdiction": "test",
+  "Project_Type": "Arterial or Transit Expansion",
+  "PerfOutcomes": "Reduce Congestion;Reduce VMT",
+  "AADT": 30000,
+  "Posted_Speed_Limit": 30,
+  "PCI": 80,
+  "userEmail": "fake@test.com"
+}
