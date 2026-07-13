@@ -7,7 +7,7 @@ import yaml
 # Set PPA3_LOCAL_CONFIG to a local globalconfig dir (parameters.py + data_paths.yaml)
 # to redirect this subreport at local test data. Unset => production, unchanged.
 _PROD_CONFIG = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\globalconfig'
-config_dir = os.environ.get('PPA3_LOCAL_CONFIG', _PROD_CONFIG)
+config_dir = os.environ.get('PPA3_LOCAL_CONFIG') or _PROD_CONFIG
 
 #===================================================================
 # load parameters py file

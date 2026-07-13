@@ -69,7 +69,7 @@ def stage_globalconfig():
     shutil.copy2(REPO_PARAMS, os.path.join(CFG_DIR, "parameters.py"))
     # local-pathed data_paths.yaml. rootdir + gisdir + dir_csv are arranged so that
     # parameters.py builds: fgdb->PPA3Testing.gdb, log_fgdb->PPA3Testing_run.gdb,
-    # aggval_csv->ROOT\RegionalProgram\CSV\..., tifdir->ROOT\access_tif.
+    # aggval_csv->ROOT\CSV\... (dir_regpgm: .), tifdir->ROOT\access_tif.
     yaml_text = f"""sde:
   path: {GDB}
   region_fc: sacog_region
