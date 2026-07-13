@@ -139,6 +139,7 @@ def report_sizes():
 
 
 if __name__ == "__main__":
+    os.makedirs(ROOT, exist_ok=True)  # must exist before CreateFileGDB runs in export_fcs()
     print("Exporting shared feature classes (read-only from SDE)...")
     export_fcs()
     print("Copying rasters, CSV, JSON templates...")
