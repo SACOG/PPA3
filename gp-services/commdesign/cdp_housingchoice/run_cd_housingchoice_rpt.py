@@ -9,7 +9,13 @@ Updated by:
 Copyright:   (c) SACOG
 Python Version: 3.x
 """
-    
+
+# NOTE (TCAC opportunity score): the TCAC max-index value is written to the result JSON
+# (tcacIndex / tcacCategory). It is intentionally NOT logged to the cd_houschoice archive
+# table yet: log_row_to_table inserts by dict keys, so logging these two fields first
+# requires adding tcac_index / tcac_category columns to cd_houschoice. To enable archive
+# logging later: add those two columns to the table, then re-add the two data_to_log lines.
+
 
 import os
 import sys
@@ -103,9 +109,6 @@ def cd_housingchoice_rpt(input_dict):
     }
 
     data_to_log.update(row_data)
-
-    data_to_log['tcac_index'] = tcac["tcac_index"]
-    data_to_log['tcac_category'] = tcac["tcac_category"]
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'cd_houschoice'))                                      
 
