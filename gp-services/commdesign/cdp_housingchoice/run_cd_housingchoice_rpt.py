@@ -23,7 +23,8 @@ arcpy.SetLogHistory(False) # prevents an XML log file from being created every t
 
 import landuse_buff_calcs as lubuff
 import parameters as params
-import parcel_data 
+import parcel_data
+import tcac_score
 from utils import utils as utils
 
 def cd_housingchoice_rpt(input_dict):
@@ -85,6 +86,12 @@ def cd_housingchoice_rpt(input_dict):
             field_name = f"{htyp_fname}_{relref}"
             row_data[field_name] = val
 
+    # TCAC opportunity score: max composite index among intersected TCAC areas, + its category
+    tcac = tcac_score.get_max_tcac(fc_project, params.tcac_fc,
+                                   params.col_tcac_index, params.col_tcac_category)
+    loaded_json["tcacIndex"] = tcac["tcac_index"]
+    loaded_json["tcacCategory"] = tcac["tcac_category"]
+
     # log results to data tables
     project_uid = utils.get_project_uid(proj_name=input_dict[uis.name], 
                                         proj_type=input_dict[uis.ptype], 
@@ -96,6 +103,9 @@ def cd_housingchoice_rpt(input_dict):
     }
 
     data_to_log.update(row_data)
+
+    data_to_log['tcac_index'] = tcac["tcac_index"]
+    data_to_log['tcac_category'] = tcac["tcac_category"]
 
     utils.log_row_to_table(data_row_dict=data_to_log, dest_table=os.path.join(params.log_fgdb, 'cd_houschoice'))                                      
 
