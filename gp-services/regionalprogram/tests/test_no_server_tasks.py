@@ -340,6 +340,53 @@ class TestInputDictSignature(unittest.TestCase):
 
 
 # ---------------------------------------------------------------------------
+# TCAC opportunity score — test _select_max_tcac (no arcpy)
+# ---------------------------------------------------------------------------
+import os as _os_tcac
+_CDP_HC = _os_tcac.path.abspath(
+    _os_tcac.path.join(_os_tcac.path.dirname(__file__), '..', '..', 'commdesign', 'cdp_housingchoice')
+)
+if _CDP_HC not in sys.path:
+    sys.path.insert(0, _CDP_HC)
+from tcac_score import _select_max_tcac  # must import WITHOUT pulling arcpy
+
+
+class TestTcacMaxSelection(unittest.TestCase):
+    """TCAC: verify _select_max_tcac picks the max-index row and reports its category."""
+
+    def test_picks_max_index_and_category(self):
+        rows = [(0.10, 'Low Resource'), (0.90, 'Highest Resource'), (0.50, 'Moderate Resource')]
+        self.assertEqual(_select_max_tcac(rows), (0.90, 'Highest Resource'))
+
+    def test_negative_indices(self):
+        rows = [(-0.50, 'Low Resource'), (-1.10, 'High Segregation & Poverty')]
+        self.assertEqual(_select_max_tcac(rows), (-0.50, 'Low Resource'))
+
+    def test_skips_none_index(self):
+        rows = [(None, 'Highest Resource'), (0.20, 'Low Resource')]
+        self.assertEqual(_select_max_tcac(rows), (0.20, 'Low Resource'))
+
+    def test_all_none_index_returns_none_pair(self):
+        rows = [(None, 'X'), (None, 'Y')]
+        self.assertEqual(_select_max_tcac(rows), (None, None))
+
+    def test_empty_returns_none_pair(self):
+        self.assertEqual(_select_max_tcac([]), (None, None))
+
+    def test_blank_category_on_max_becomes_not_categorized(self):
+        rows = [(0.90, '   '), (0.10, 'Low Resource')]
+        self.assertEqual(_select_max_tcac(rows), (0.90, 'Not Categorized'))
+
+    def test_none_category_on_max_becomes_not_categorized(self):
+        rows = [(0.90, None), (0.10, 'Low Resource')]
+        self.assertEqual(_select_max_tcac(rows), (0.90, 'Not Categorized'))
+
+    def test_index_tie_first_wins(self):
+        rows = [(0.50, 'First'), (0.50, 'Second')]
+        self.assertEqual(_select_max_tcac(rows), (0.50, 'First'))
+
+
+# ---------------------------------------------------------------------------
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
