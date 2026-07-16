@@ -31,3 +31,23 @@ def _select_max_tcac(rows):
     if best_category is None or str(best_category).strip() == "":
         best_category = "Not Categorized"
     return (best_index, best_category)
+
+
+def get_max_tcac(fc_project, fc_tcac, col_index="index_", col_category="oppcat"):
+    """Return the max TCAC index (and its category) among polygons fc_project intersects.
+
+    fc_tcac resolves against arcpy.env.workspace (the fgdb). Read-only.
+    Returns {"tcac_index": float|None, "tcac_category": str|None}.
+    """
+    import arcpy
+
+    lyr = "tcac_sel_lyr"
+    if arcpy.Exists(lyr):
+        arcpy.management.Delete(lyr)
+    arcpy.management.MakeFeatureLayer(fc_tcac, lyr)
+    arcpy.management.SelectLayerByLocation(lyr, "INTERSECT", fc_project)
+    rows = [(r[0], r[1]) for r in arcpy.da.SearchCursor(lyr, [col_index, col_category])]
+    arcpy.management.Delete(lyr)
+
+    max_index, category = _select_max_tcac(rows)
+    return {"tcac_index": max_index, "tcac_category": category}

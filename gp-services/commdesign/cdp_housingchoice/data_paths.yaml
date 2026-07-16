@@ -13,7 +13,8 @@ sde:
   reg_centerline_fc: RegionalCenterline_2024
   reg_artcollcline_fc: OSM_ArterialCollector_2022 # ArterialCollector_2019 # road centerlines but for collectors and above (no local streets/alleys)
   reg_bikeway_fc: BikeRte_C1_C2_C4_2024 # BikeRte_C1_C2_C4_2017
-  proj_line_template_fc: Project_Line_Template # has symbology that the project line will use.    
+  proj_line_template_fc: Project_Line_Template # has symbology that the project line will use.
+  tcac_fc: TCAC_2021 # HCD/TCAC opportunity areas; fields index_ (score) + oppcat (category)
 
 server_data:
   rootdir: \\Arcserverppa-svr\PPA_SVR\PPA_03_01

@@ -50,6 +50,10 @@ reg_bikeway_fc = pathconfigs['sde']['reg_bikeway_fc'] # 'BikeRte_C1_C2_C4_2017'
 
 proj_line_template_fc = pathconfigs['sde']['proj_line_template_fc'] # has symbology that the project line will use.
 
+tcac_fc = pathconfigs['sde']['tcac_fc']  # TCAC opportunity areas FC
+col_tcac_index = 'index_'      # TCAC composite opportunity index (Double)
+col_tcac_category = 'oppcat'   # TCAC opportunity category label (String)
+
 
 # tables that results will be logged to--critical for making roll-ups and analyzing past project results
 log_fgdb = os.path.join(gis_dir, pathconfigs['server_data']['gisdir']['archived_run_db'])
