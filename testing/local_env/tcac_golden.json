@@ -1,0 +1,18 @@
+{
+  "description": "Golden reference for the TCAC opportunity-score indicator. Known-correct result, verified 2026-07-16 (integration run MATCH OK). Regenerate with: verify_tcac.py --update-golden (only after confirming the run is correct).",
+  "indicator": "get_max_tcac (gp-services/commdesign/cdp_housingchoice/tcac_score.py)",
+  "captured": "2026-07-16",
+  "input": {
+    "project_line": "I:\\Projects\\Darren\\PPA_V2_GIS\\PPA_V2.gdb\\TestTruxelBridge",
+    "tcac_fc": "TCAC_2021",
+    "intersecting_polygons": [
+      {"index_": 0.0, "oppcat": "High Segregation & Poverty"},
+      {"index_": -0.36555535, "oppcat": "Low Resource"},
+      {"index_": -0.33749149, "oppcat": "Low Resource"}
+    ]
+  },
+  "expected_output": {
+    "tcac_index": 0.0,
+    "tcac_category": "High Segregation & Poverty"
+  }
+}
