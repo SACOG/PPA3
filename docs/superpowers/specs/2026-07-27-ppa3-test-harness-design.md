@@ -146,18 +146,34 @@ Two independent axes, each proven against the CMCP + ATP captures and the Federa
 |---|---|---|---|
 | **STIP** | full 8 | full 6 | user-selectable |
 | **CMCP US50** | full 8 *(captured)* | full 6 *(inferred)* | user-selectable |
-| **ATP** | fixed 5: VMT, Safety, Multimodal, Econ, SGR *(captured)* | n/a (bike/ped) | fixed |
+| **ATP** | fixed 5: VMT, Safety, Multimodal, Econ, SGR *(captured)* | n/a (confirmed — non-freeway only) | fixed |
 | **Federal Funding** | fixed 8 *(form screenshot)* | fixed 6 *(form screenshot)* | fixed |
 
 "Fixed" ≠ "curated": Federal is fixed **and full**; ATP is fixed **and curated**. The two axes are
 truly independent.
 
-### UI note: Federal Funding's two-button routing
+### Why Federal Funding routes through a two-button screen (not cosmetic)
 
-Federal Funding routes project-type selection through an intermediate two-button screen
-("Federal Funding Non-Freeway / Freeway Investment") instead of an in-form dropdown. This is
-**cosmetic** — it only sets `projectType` earlier; the POST body is identical. The harness models
-`projectType` as a plain input and does not replicate this routing.
+Federal Funding is the only program presented as a **parent** with two child entries
+("Federal Funding Non-Freeway / Freeway Investment"); STIP, CMCP, and ATP are single leaf entries.
+The reason follows from the fixed-vs-selectable distinction and is load-bearing:
+
+- The project form is a **shared component** with a project-type dropdown + an outcomes area.
+- **Selectable** programs (STIP, CMCP) use one form for both types — the type dropdown drives which
+  outcome checkboxes appear, so the user enters with either type and can switch live. No pre-selection.
+- **Fixed** programs have an outcome set that *depends on project type* (Non-Freeway = fixed 8,
+  Freeway = fixed 6). A fixed program offering **both** types cannot render a single pre-filled form
+  until the type is known — so Federal resolves the type up front via two buttons, each launching the
+  form pre-loaded and locked to that type's fixed outcome set.
+- **ATP** is also fixed but offers only **one** type (non-freeway; freeway confirmed n/a by SACOG),
+  so it needs no pre-selector — a single button suffices. This is corroborating evidence for the rule.
+
+**Harness implication:** dispatch is unchanged (projectType→services, program→outcome-set), but the
+harness records Federal as **two reportName variants** ("Federal Funding Non-Freeway Investment" /
+"Federal Funding Freeway Investment"), not one, matching the tool. `PROGRAM_PRESETS` already keys by
+(program, projectType), so both resolve correctly. This explanation is reasoned from observed
+behavior; the menu definition lives in the VertiGIS viewer-app config (not in the captured HARs).
+A Federal run capture would confirm the exact reportName strings.
 
 ---
 
@@ -284,16 +300,21 @@ run-detail page: the dispatch order + per-service status + raw output, driven st
 ## Open items (non-blocking)
 
 1. **Federal Funding & CMCP-Freeway not run-captured.** Their presets come from screenshots/inference,
-   not a HAR. Faithful, but a future run capture would confirm dataSourceName/reportUrl strings. Presets
-   are editable data, so any correction is a one-line change.
-2. **ATP-Freeway** — assumed n/a (ATP is bike/ped). Confirm if ATP ever offers a freeway type.
+   not a HAR. Faithful, but a future run capture would confirm dataSourceName/reportUrl strings and the
+   exact Federal reportName variants. Presets are editable data, so any correction is a one-line change.
+2. **ATP-Freeway — confirmed n/a** by SACOG (ATP is non-freeway/bike-ped only). No preset needed.
 3. **Live workflow config is authored in VertiGIS Designer, not on the file share** (confirmed by an
-   exhaustive name+content search of `\\Arcserverppa-svr\...\PPA_03_01`). `stip_config.json` +
-   the captures are the validated stand-in. If the live 4-program config is ever exported (browser
-   DevTools or VertiGIS), drop it in and point `dispatch.load_workflow_config` at it — no code change.
+   exhaustive name+content search of `\\Arcserverppa-svr\...\PPA_03_01`, and by the captured workflow
+   items being execution definitions that `ForEach` over the browser-supplied `reports[]`, not menus).
+   `stip_config.json` + the captures are the validated stand-in. If the live 4-program config is ever
+   exported (browser DevTools or VertiGIS), drop it in and point `dispatch.load_workflow_config` at it —
+   no code change.
 4. **`project_master`/`rp_*` archive tables** are absent from the local run gdb, so the log-write step
-   fails locally (expected, prod-safe). Creating empty tables with correct schemas would let a fully
-   clean end-to-end run through the log write; deferred (schemas unspecified; guessing could mask bugs).
+   fails locally (expected, prod-safe — it runs *after* the result JSON is written and targets the local
+   empty gdb, never production). **Now resolvable:** with VPN access, the real table schemas can be read
+   read-only from the production `PPA3_run_data.gdb` and recreated as empty local tables, enabling a
+   fully clean end-to-end local run through the log write. Previously deferred only because the schemas
+   were unspecified; reading them from prod removes that blocker. Optional add-on to the plan.
 
 ---
 
