@@ -46,7 +46,8 @@ class TestRunReport(unittest.TestCase):
             manifest = json.load(open(os.path.join(run_dir, "manifest.json")))
             statuses = {s["service"]: s["status"] for s in manifest["services"]}
             self.assertEqual(statuses["RPArtExpSafety"], "failed")
-            self.assertEqual(statuses["RPArtExpVMT"], "ok")  # others still ran
+            self.assertEqual(statuses["RPArtExpVMT"], "ok")  # ran before the failure
+            self.assertEqual(statuses["RPArtSGRSGR"], "ok")  # last service, ran after the failure
 
 
 if __name__ == "__main__":
