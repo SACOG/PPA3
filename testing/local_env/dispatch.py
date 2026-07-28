@@ -52,3 +52,66 @@ OUTCOME_SERVICE_MAP = {
     "Non-Freeway Investment": _NONFREEWAY,
     "Freeway Investment":     _FREEWAY,
 }
+
+# --- Full ordered outcome catalogs per projectType (dict preserves insertion order) ---
+_NF_CATALOG = list(_NONFREEWAY.keys())   # the full 8, in canonical order
+_FW_CATALOG = list(_FREEWAY.keys())      # the full 6, in canonical order
+
+# ATP sends a fixed, curated 5 in this exact order (from live_config_atp_run.json).
+_ATP_NF_FIXED = [
+    "Multimodal/Transportation Choice (Reduce VMT)",
+    "Safety or Security",
+    "Multimodal/Transportation Choice (Encourage Multimodal Travel)",
+    "Freight Movement (Economic Prosperity)",
+    "Maintain State of Good Repair",
+]
+
+# program -> projectType -> {mode, outcomes}. "selectable" = user picks (checkboxes);
+# "fixed" = program predetermines the set. Capture-backed where noted in the spec.
+PROGRAM_PRESETS = {
+    "STIP": {
+        "Non-Freeway Investment": {"mode": "selectable", "outcomes": _NF_CATALOG},
+        "Freeway Investment":     {"mode": "selectable", "outcomes": _FW_CATALOG},
+    },
+    "CMCP US50": {
+        "Non-Freeway Investment": {"mode": "selectable", "outcomes": _NF_CATALOG},   # captured
+        "Freeway Investment":     {"mode": "selectable", "outcomes": _FW_CATALOG},   # inferred
+    },
+    "Active Transportation Program": {
+        "Non-Freeway Investment": {"mode": "fixed", "outcomes": _ATP_NF_FIXED},      # captured
+        # ATP freeway: confirmed n/a (non-freeway only)
+    },
+    "Regional Federal Funding Program": {
+        "Non-Freeway Investment": {"mode": "fixed", "outcomes": _NF_CATALOG},        # captured
+        "Freeway Investment":     {"mode": "fixed", "outcomes": _FW_CATALOG},        # captured
+    },
+}
+
+
+def _registry_entry(service):
+    folder, module, fn = SERVICE_REGISTRY[service]
+    return {"folder": folder, "module": module, "entry_function": fn}
+
+
+def resolve_dispatch(program, project_type, selected_outcomes=None):
+    """Return the ordered dispatch list [{outcome, service, folder, module, entry_function}, ...],
+    title first — mirroring the live tool's titleReport + reports[]."""
+    if program not in PROGRAM_PRESETS:
+        raise ValueError(f"unknown program {program!r}; known: {list(PROGRAM_PRESETS)}")
+    if project_type not in PROGRAM_PRESETS[program]:
+        raise ValueError(f"program {program!r} does not offer project type {project_type!r}")
+    preset = PROGRAM_PRESETS[program][project_type]
+    catalog = preset["outcomes"]
+
+    if preset["mode"] == "fixed" or selected_outcomes is None:
+        outcomes = list(catalog)
+    else:
+        chosen = set(selected_outcomes)
+        outcomes = [o for o in catalog if o in chosen]   # preserve catalog order
+
+    svc_map = OUTCOME_SERVICE_MAP[project_type]
+    result = [dict(outcome="(title)", service=TITLE_SERVICE, **_registry_entry(TITLE_SERVICE))]
+    for o in outcomes:
+        svc = svc_map[o]
+        result.append(dict(outcome=o, service=svc, **_registry_entry(svc)))
+    return result
