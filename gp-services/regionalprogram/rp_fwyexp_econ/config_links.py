@@ -1,9 +1,11 @@
 from pathlib import Path
 import sys
+import os
 import yaml
 
 # set path to global configuration files
-config_dir = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\globalconfig'
+_PROD_CONFIG = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\globalconfig'
+config_dir = os.environ.get('PPA3_LOCAL_CONFIG') or _PROD_CONFIG
 
 #===================================================================
 # load parameters py file

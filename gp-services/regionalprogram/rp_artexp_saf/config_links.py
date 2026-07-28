@@ -1,28 +1,24 @@
 from pathlib import Path
 import sys
+import os
 import yaml
 
 # =============================================================================
-# VERSION: Task 5 local/testing build — branch data_layer_update
+# VERSION: Task 4 — rolled onto the PPA3_LOCAL_CONFIG env-var switch.
 #
-# config_dir is pointing at the LOCAL REPO copy of globalconfig_rp so that the
-# Task 5 constants added to parameters.py are available without a server-side
-# file deployment.  The production server copy at the path below does NOT yet
-# have these constants:
+# Set PPA3_LOCAL_CONFIG to a local globalconfig dir (parameters.py + data_paths.yaml)
+# to redirect this subreport at local test data. Unset => production, unchanged.
+#
+# NOTE (carried over from the Task 5 local/testing build): the PRODUCTION server
+# copy of parameters.py at the path below does NOT yet have the Task 5 collision
+# constants deployed:
 #   col_collision_type, collision_type_labels,
 #   col_pcf_category, pcf_category_labels, colln_type_top_n
-#
-# TO CONNECT TO PRODUCTION SERVER:
-#   1. Copy globalconfig_rp/parameters.py to the server:
-#      \\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\globalconfig\
-#   2. Swap config_dir below — comment out the local line, uncomment server line.
+# These must be deployed to the server's globalconfig before prod-mode runs of
+# this subreport will have them available.
 # =============================================================================
-
-# PRODUCTION (uncomment after step 1 above):
-# config_dir = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\globalconfig'
-
-# LOCAL / TESTING (active — Task 5 branch):
-config_dir = r'C:\Users\tenoru\Downloads\PPA3\gp-services\regionalprogram\globalconfig_rp'
+_PROD_CONFIG = r'\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\globalconfig'
+config_dir = os.environ.get('PPA3_LOCAL_CONFIG') or _PROD_CONFIG
 
 #===================================================================
 # load parameters py file
