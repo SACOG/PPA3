@@ -1,0 +1,6 @@
+{
+  "TestTruxelBridge": {
+    "fc_path": "I:\\Projects\\Darren\\PPA_V2_GIS\\PPA_V2.gdb\\TestTruxelBridge",
+    "valid_project_types": ["Non-Freeway Investment", "Freeway Investment"]
+  }
+}

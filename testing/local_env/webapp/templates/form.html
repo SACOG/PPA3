@@ -1,0 +1,53 @@
+<!doctype html>
+<title>PPA3 Test Harness</title>
+<h1>PPA3 Test Harness — Run a report</h1>
+<form method="post" action="/run">
+  <label>Program:
+    <select name="program" id="program"></select></label><br>
+  <label>Project type:
+    <select name="project_type" id="project_type"></select></label><br>
+  <label>Project line:
+    <select name="project_line">
+      {% for name in lines %}<option value="{{ name }}">{{ name }}</option>{% endfor %}
+    </select></label><br>
+  <label>Project name: <input name="project_name" required></label><br>
+  <label>Jurisdiction: <input name="jurisdiction" value="Sacramento"></label><br>
+  <label>AADT: <input name="aadt" type="number" value="0"></label><br>
+  <label>Posted speed: <input name="posted_speed" type="number" value="0"></label><br>
+  <label>PCI: <input name="pci" type="number" value="0"></label><br>
+  <label>Email: <input name="email" type="email" value="test@example.com"></label><br>
+  <fieldset><legend>Performance outcomes</legend>
+    <div id="outcomes"></div>
+    <em id="mode-note"></em>
+  </fieldset>
+  <button type="submit">Run</button>
+</form>
+<script>
+  const PROGRAMS = {{ programs_json|safe }};
+  const progSel = document.getElementById("program");
+  const typeSel = document.getElementById("project_type");
+  const outDiv = document.getElementById("outcomes");
+  const note = document.getElementById("mode-note");
+  Object.keys(PROGRAMS).forEach(p => progSel.add(new Option(p, p)));
+  function refreshTypes() {
+    typeSel.innerHTML = "";
+    Object.keys(PROGRAMS[progSel.value]).forEach(t => typeSel.add(new Option(t, t)));
+    refreshOutcomes();
+  }
+  function refreshOutcomes() {
+    const preset = PROGRAMS[progSel.value][typeSel.value];
+    outDiv.innerHTML = "";
+    preset.outcomes.forEach(o => {
+      const id = "o_" + o.replace(/\W/g, "");
+      outDiv.insertAdjacentHTML("beforeend",
+        `<label><input type="checkbox" name="outcomes" value="${o}" checked> ${o}</label><br>`);
+    });
+    // fixed-mode: pre-checked but the dev may still uncheck (test-tool flexibility)
+    note.textContent = preset.mode === "fixed"
+      ? "This program's outcomes are fixed in the real tool; pre-selected here, but you may override for testing."
+      : "Select the outcomes to include.";
+  }
+  progSel.addEventListener("change", refreshTypes);
+  typeSel.addEventListener("change", refreshOutcomes);
+  refreshTypes();
+</script>
