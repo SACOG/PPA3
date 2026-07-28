@@ -13,16 +13,17 @@ import time
 import importlib
 import datetime as dt
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import dispatch
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 LOCAL_CONFIG = r"C:\PPA3Testing\globalconfig"
 OUT_DIR = os.path.join(HERE, "out")
 
-# subreport -> (folder rel to gp-services, entry module, entry function)
-ENTRYPOINTS = {
-    "rp_artexp_cong": ("regionalprogram/rp_artexp_cong", "run_congestion_report", "make_congestion_rpt_artexp"),
-    "rp_artexp_vmt": ("regionalprogram/rp_artexp_vmt", "run_vmt_report", "make_vmt_report_artexp"),
-}
+# subreport short-name -> (folder rel to gp-services/regionalprogram, entry module, entry function)
+ENTRYPOINTS = {svc: ("regionalprogram/" + folder, module, fn)
+               for svc, (folder, module, fn) in dispatch.SERVICE_REGISTRY.items()}
 
 # strings that must NOT appear in the target folder's code/config when running local
 FORBIDDEN = ["Arcserverppa-svr", "owner_PPA.sde", "TruncateTable", "DisconnectUser"]
