@@ -147,7 +147,7 @@ Two independent axes, each proven against the CMCP + ATP captures and the Federa
 | **STIP** | full 8 | full 6 | user-selectable |
 | **CMCP US50** | full 8 *(captured)* | full 6 *(inferred)* | user-selectable |
 | **ATP** | fixed 5: VMT, Safety, Multimodal, Econ, SGR *(captured)* | n/a (confirmed — non-freeway only) | fixed |
-| **Federal Funding** | fixed 8 *(form screenshot)* | fixed 6 *(form screenshot)* | fixed |
+| **Federal Funding** *(reportName: "Regional Federal Funding Program")* | fixed 8 *(captured)* | fixed 6 *(captured)* | fixed |
 
 "Fixed" ≠ "curated": Federal is fixed **and full**; ATP is fixed **and curated**. The two axes are
 truly independent.
@@ -168,12 +168,13 @@ The reason follows from the fixed-vs-selectable distinction and is load-bearing:
 - **ATP** is also fixed but offers only **one** type (non-freeway; freeway confirmed n/a by SACOG),
   so it needs no pre-selector — a single button suffices. This is corroborating evidence for the rule.
 
-**Harness implication:** dispatch is unchanged (projectType→services, program→outcome-set), but the
-harness records Federal as **two reportName variants** ("Federal Funding Non-Freeway Investment" /
-"Federal Funding Freeway Investment"), not one, matching the tool. `PROGRAM_PRESETS` already keys by
-(program, projectType), so both resolve correctly. This explanation is reasoned from observed
-behavior; the menu definition lives in the VertiGIS viewer-app config (not in the captured HARs).
-A Federal run capture would confirm the exact reportName strings.
+**Harness implication (confirmed by the Federal capture, 2026-07-28):** both sub-buttons send the
+**same** `reportName` — `"Regional Federal Funding Program"` — differing only in `projectType`. So
+Federal is **one program with two projectType presets**, structurally identical to STIP/CMCP; the
+only differences are that Federal's outcomes are fixed and it pre-selects the type via buttons rather
+than a live dropdown. Dispatch is unchanged (projectType→services, program→outcome-set), and
+`PROGRAM_PRESETS` keying by (program, projectType) models it directly — no special-casing. (An earlier
+hypothesis that the two buttons were two distinct reportName values was disproven by the capture.)
 
 ---
 
@@ -299,9 +300,9 @@ run-detail page: the dispatch order + per-service status + raw output, driven st
 
 ## Open items (non-blocking)
 
-1. **Federal Funding & CMCP-Freeway not run-captured.** Their presets come from screenshots/inference,
-   not a HAR. Faithful, but a future run capture would confirm dataSourceName/reportUrl strings and the
-   exact Federal reportName variants. Presets are editable data, so any correction is a one-line change.
+1. **CMCP-Freeway not run-captured.** STIP, CMCP-NonFreeway, ATP, and both Federal sub-types are now
+   captured from real runs; only CMCP-Freeway's preset is inferred (assumed full-6 selectable, like
+   STIP-Freeway). Presets are editable data, so any correction is a one-line change.
 2. **ATP-Freeway — confirmed n/a** by SACOG (ATP is non-freeway/bike-ped only). No preset needed.
 3. **Live workflow config is authored in VertiGIS Designer, not on the file share** (confirmed by an
    exhaustive name+content search of `\\Arcserverppa-svr\...\PPA_03_01`, and by the captured workflow
@@ -314,7 +315,8 @@ run-detail page: the dispatch order + per-service status + raw output, driven st
    empty gdb, never production). **Now resolvable:** with VPN access, the real table schemas can be read
    read-only from the production `PPA3_run_data.gdb` and recreated as empty local tables, enabling a
    fully clean end-to-end local run through the log write. Previously deferred only because the schemas
-   were unspecified; reading them from prod removes that blocker. Optional add-on to the plan.
+   were unspecified; reading them from prod removes that blocker. **Included in the implementation plan
+   as an optional task** (user-approved 2026-07-28).
 
 ---
 
