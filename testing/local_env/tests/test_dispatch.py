@@ -82,5 +82,24 @@ class TestResolveDispatch(unittest.TestCase):
         self.assertEqual(first["entry_function"], "make_title_guidepg_regpgm")
 
 
+class TestLoadWorkflowConfig(unittest.TestCase):
+    def setUp(self):
+        repo = os.path.dirname(os.path.dirname(os.path.dirname(HERE)))
+        self.stip = os.path.join(repo, "gp-services", "workflow-configs", "stip2025", "stip_config.json")
+
+    def test_parses_stip_config_despite_equals_prefix(self):
+        cfg = dispatch.load_workflow_config(self.stip)
+        self.assertIn("Non-Freeway Investment", cfg)
+        self.assertIn("Freeway Investment", cfg)
+
+    def test_stip_config_agrees_with_hardcoded_map(self):
+        # every (outcome -> service) parsed from the live-validated config must match our map
+        cfg = dispatch.load_workflow_config(self.stip)
+        for ptype, pairs in cfg.items():
+            for outcome, service in pairs:
+                self.assertEqual(dispatch.OUTCOME_SERVICE_MAP[ptype][outcome], service,
+                                 f"{ptype} / {outcome}")
+
+
 if __name__ == "__main__":
     unittest.main()

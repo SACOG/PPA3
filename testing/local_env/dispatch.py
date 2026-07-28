@@ -8,6 +8,9 @@ Data is grounded in real run captures (PPA3_Handoff/live_config_*_run.json) and 
 tool documentation. See docs/superpowers/specs/2026-07-27-ppa3-test-harness-design.md.
 """
 
+import json
+import re
+
 TITLE_SERVICE = "RPTitleAndGuide"
 
 # service short-name -> (folder, entry_module, entry_function)
@@ -115,3 +118,35 @@ def resolve_dispatch(program, project_type, selected_outcomes=None):
         svc = svc_map[o]
         result.append(dict(outcome=o, service=svc, **_registry_entry(svc)))
     return result
+
+
+# stip_config.json uses projectType name "Non-Freeway Investment"; older wfconfig_regpgm files
+# use "Arterial or Transit Expansion" etc. We only need the two names our maps use, so we map
+# the config's project "name" through this alias table; unknown names pass through unchanged.
+_PTYPE_ALIASES = {
+    "Non-Freeway Investment": "Non-Freeway Investment",
+    "Freeway Investment": "Freeway Investment",
+    "Arterial or Transit Expansion": "Non-Freeway Investment",
+    "Freeway Expansion": "Freeway Investment",
+}
+_SVC_RE = re.compile(r"services/(\w+)/GPServer")
+
+
+def load_workflow_config(path):
+    """Parse a workflow-config JSON (tolerating a leading '=' and either schema shape) into
+    {projectType: [(outcome_name, service_short), ...]}. Used to cross-check / regenerate
+    OUTCOME_SERVICE_MAP if a live config is ever dropped in."""
+    with open(path, "r", encoding="ascii", errors="ignore") as f:
+        text = f.read()
+    text = text.lstrip().lstrip("=").strip()
+    data = json.loads(text)
+    out = {}
+    for proj in data.get("projects", []):
+        ptype = _PTYPE_ALIASES.get(proj.get("name"), proj.get("name"))
+        pairs = []
+        for rep in proj.get("report", []):
+            m = _SVC_RE.search(rep.get("dataUrl", ""))
+            if m:
+                pairs.append((rep.get("name"), m.group(1)))
+        out[ptype] = pairs
+    return out
