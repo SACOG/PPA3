@@ -198,7 +198,178 @@ fields in the golden file are all zero/null — `TestTruxelBridge` did not
 conflate to NPMRDS TMC segments in this run; that is incidental to this task
 (density was the target), not a defect being asserted here.
 
-## 10. Do NOT run these (out of scope / unsafe / stale)
+## 10. Phase 1 orchestrator — the web app (`testing/local_env/webapp/`)
+
+Beyond running one subreport at a time via `run_local.py`, there is now a
+Phase-1 harness that reproduces a whole PPA report run — title service +
+however many outcome services a program/projectType dispatches — through a
+small local Flask app, driving the same `orchestrator.run_report()` a
+scripted/programmatic call would use.
+
+### Launching it
+
+```powershell
+& "C:\Users\tenoru\AppData\Local\Programs\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe" testing\local_env\webapp\app.py
+```
+
+Then open **http://127.0.0.1:5000**. `app.py` sets `app.config["RUN_REPORT"] =
+orchestrator.run_report` (swappable in tests via a `_runner` stub — see
+`tests/test_webapp.py`); it does not itself import `arcpy` — only
+`orchestrator.run_report` shells out to a fresh Pro-python subprocess per
+service (via `run_local.py`), so a real run still needs the Pro python and,
+for anything referencing `I:\...` project lines, VPN/network access.
+
+### Form fields (`webapp/templates/form.html`)
+
+- **Program** — populated from `dispatch.PROGRAM_PRESETS` keys (STIP, CMCP
+  US50, Active Transportation Program, Regional Federal Funding Program).
+- **Project type** — populated from the chosen program's presets
+  (`Non-Freeway Investment` / `Freeway Investment`, whichever the program
+  offers — ATP offers non-freeway only).
+- **Project line** — a dropdown of the named lines in
+  `testing/local_env/samples/lines.json` (currently `TestTruxelBridge`); the
+  form posts the friendly name, `app.py` resolves it to the real `fc_path`.
+- **Project name, Jurisdiction, AADT, Posted speed, PCI, Email** — plain
+  inputs, defaulted (`Jurisdiction=Sacramento`, `Email=test@example.com`,
+  numeric fields default `0`), passed straight through to the sample JSON
+  `orchestrator._write_sample()` builds for `run_local.py`.
+- **Performance outcomes** — checkboxes populated client-side from the
+  selected program+projectType's outcome catalog. In `"selectable"` mode
+  (STIP, CMCP) the checkboxes are real filters; in `"fixed"` mode (ATP,
+  Regional Federal Funding Program) they are pre-checked and informational —
+  the dev may still uncheck for test flexibility, but the real tool always
+  sends its fixed set. `POST /run` reads them via
+  `request.form.getlist("outcomes")`, defaulting to `None` (which
+  `resolve_dispatch` treats as "use the full/fixed catalog").
+
+### Dispatch resolution
+
+Submitting the form calls `dispatch.resolve_dispatch(program, project_type,
+selected_outcomes)`, which returns the ordered `[{outcome, service, folder,
+module, entry_function}, ...]` list — title service first, then one entry per
+outcome, each outcome mapped to its service short-name via
+`OUTCOME_SERVICE_MAP[project_type]`. This mapping is grounded in real capture
+data (`PPA3_Handoff/live_config_*_run.json`) and cross-checked against
+`stip_config.json`-shaped workflow configs via `load_workflow_config()` (which
+tolerates the leading `=` prefix and both project/report schema shapes seen in
+the wild) — see `tests/test_dispatch.py::TestLoadWorkflowConfig` and
+`TestServiceMaps` for the agreement checks.
+
+### The four-program preset model (`dispatch.PROGRAM_PRESETS`)
+
+| Program | Non-Freeway | Freeway |
+|---|---|---|
+| STIP | selectable, full 8-outcome catalog | selectable, full 6-outcome catalog |
+| CMCP US50 | selectable, full 8 (captured) | selectable, full 6 (inferred) |
+| Active Transportation Program | **fixed**, curated 5 (captured) | n/a — confirmed non-freeway only |
+| Regional Federal Funding Program | **fixed**, full 8 (captured) | **fixed**, full 6 (captured) |
+
+"Selectable" programs let the user pick a subset via checkboxes (filtered,
+catalog order preserved); "fixed" programs ignore `selected_outcomes` and
+always dispatch their full/curated set regardless of what's checked in the
+UI. ATP's fixed 5, in dispatch order, are VMT, Safety, MultiModal,
+EconProsp, SGR (`RPArtExpVMT`, `RPArtExpSafety`, `RPArtExpMultiModal`,
+`RPArtExpEconProsp`, `RPArtSGRSGR`), preceded by the title service
+(`RPTitleAndGuide`) — i.e. 6 services total, matching the "title + 5" shorthand
+used elsewhere in this repo's docs.
+
+### Where runs land
+
+Each submitted run creates `testing/local_env/out/runs/<YYYYmmdd_HHMMSS>/`
+containing:
+- `manifest.json` — inputs + ordered `services: [{service, outcome, status}]`,
+  flushed to disk after each service so a killed/hung run still leaves partial
+  progress visible.
+- `_sample.json` — the `run_local.py`-shaped input dict built from the form.
+- `<Service>.json` — that service's result JSON (only written on success —
+  copied from wherever the subreport wrote its output).
+- `<Service>.log` — combined stdout+stderr from that service's subprocess
+  (present whether it succeeded or failed — this is where to look first for a
+  failed service's traceback).
+- `merged.json` — all successful services' JSON merged under their service
+  key (`{}` if every service in the run failed).
+
+`/run/<stamp>` (the detail page) renders the manifest's per-service status and
+pretty-prints any `<Service>.json` that exists; `/runs` (history) lists every
+stamp under `out/runs/` that has a `manifest.json`. `out/runs/` is scratch
+output under the existing `testing/local_env/out/` gitignore — nothing here
+is meant to be committed.
+
+### Optional: `build_run_tables.py`
+
+Every service's `run_*.py` writes its result JSON *before* attempting the
+archive log-write step (`utils.get_project_uid()` +
+`utils.log_row_to_table()`, which need a `project_master` table and a
+per-service `rp_*` table in `params.log_fgdb`). `build_test_gdb.py` creates
+`PPA3Testing_run.gdb` **empty**, so on a fresh sandbox every service's
+log-write step fails locally — expected, and not prod-unsafe, since
+`params.log_fgdb` in local-config mode always resolves to the local
+disposable gdb.
+
+`testing/local_env/build_run_tables.py` is an **optional** follow-on step
+that read-only-copies the real *schemas* (via `arcpy.management.CreateTable`
+with a prod template — no rows) of `project_master` + the arterial `rp_*`
+tables into `PPA3Testing_run.gdb`, so those services' log-write step can
+succeed locally too:
+
+```powershell
+& "C:\Users\tenoru\AppData\Local\Programs\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe" testing\local_env\build_run_tables.py
+```
+
+As of this task, `project_master` and the 8 ARTERIAL `rp_*` tables exist
+locally (created in Task 8). **`rp_title_guidepg` and the `rp_fwyexp_*`
+tables are not present in prod under those folder-name spellings**, so
+`build_run_tables.py` skips them — the title service and any freeway service
+will still fail their local log-write step even after running this script.
+That is incidental to the local sandbox, not a defect in the real tool.
+
+Separately: `CreateTable` always creates a non-spatial attribute Table, even
+when the prod source is a spatial FeatureClass. During this task's live run,
+`RPArtSGRSGR`'s log-write step failed with `MakeFeatureLayer` reporting
+`project_master ... does not exist or is not supported` even though
+`arcpy.Exists()` confirms the table is present — consistent with
+`MakeFeatureLayer` requiring a spatial feature class and finding a
+`CreateTable`-produced plain Table instead. Flagging this as a known gap in
+`build_run_tables.py` (worth fixing later if a fully clean archive log-write
+is ever needed locally); it is not a defect in the production tool.
+
+### Phase 2 is out of scope here
+
+This harness (Phase 1) proves the dispatch model and exercises each service's
+*computation* against local data, producing per-service JSON and a merged
+JSON. It does **not** render an actual PPA report (map images, charts,
+PDF/VertiGIS layout) from that JSON — turning `merged.json` into something
+that looks like the real report output is a separate, not-yet-started Phase 2
+effort.
+
+### Task 9 validation results (2026-07-28)
+
+- **Step 1 (no-arcpy suite):** `pytest testing/local_env/tests -v` → **19
+  passed** (dispatch 12, orchestrator 2, webapp 5) in 0.34s.
+- **Step 2 (real end-to-end run):** ran `orchestrator.run_report()` directly
+  (same code path `POST /run` uses) for `program="Active Transportation
+  Program"`, `project_type="Non-Freeway Investment"`,
+  `project_line=TestTruxelBridge`, with `PPA3_LOCAL_CONFIG` set. The
+  orchestrator completed and produced a full run folder
+  (`out/runs/20260728_171524/`) with `manifest.json`, `merged.json`
+  (`{}`), 6 `.log` files, and `_sample.json`. Dispatch order matched the
+  expected ATP sequence exactly: `RPTitleAndGuide, RPArtExpVMT,
+  RPArtExpSafety, RPArtExpMultiModal, RPArtExpEconProsp, RPArtSGRSGR`. All 6
+  services reported `status: "failed"` in the manifest — acceptable per the
+  task's pass criterion, and each for a distinct, legible reason recorded in
+  its `.log`: `RPTitleAndGuide`/`RPArtExpSafety` — `commtype.get_proj_ctype`'s
+  intersect+`GetCount` step ("not a Table View"/"not a Raster Layer");
+  `RPArtExpVMT`/`RPArtExpEconProsp` — `ModuleNotFoundError: geopandas` (not
+  installed in the arcgispro-py3 env); `RPArtExpMultiModal` — a `NameError:
+  project_fc` (an undefined-variable bug in `run_artexp_mm_report.py`, likely
+  a leftover from the Task-2 global-scope-leakage refactor — worth a follow-up
+  look); `RPArtSGRSGR` — got the furthest (successfully computed and printed
+  land-use/complete-street-score/transit-density output) before failing at
+  the `project_master` log-write step per the `CreateTable`-schema gap noted
+  above. No individual failure blocked the run as a whole; the orchestrator's
+  continue-on-service-failure behavior worked as designed.
+
+## 11. Do NOT run these (out of scope / unsafe / stale)
 
 - `batch_fix_collnrate.ipynb` — one-off batch-fix notebook; not part of the
   local test loop and may target prod paths. (Not present in the current repo
