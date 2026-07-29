@@ -120,6 +120,17 @@ def main():
                   getattr(uis, "email"): raw["userEmail"]}
 
     import arcpy
+    # Mirror the report scripts' __main__ setup: force a FRESH scratch GDB before running.
+    # The report modules (e.g. commtype) build feature-class paths under arcpy.env.scratchGDB.
+    # If a stale scratch.gdb has degraded into a plain folder, arcpy writes SHAPEFILES there
+    # instead of gdb feature classes, so those gdb-style paths don't resolve and Intersect/
+    # GetCount fail (ERROR 000840). Deleting it makes arcpy recreate a valid File GDB. The
+    # report scripts do this in their __main__ guard; run_local calls the entry function
+    # directly, bypassing that guard, so it must do the refresh itself.
+    try:
+        arcpy.Delete_management(arcpy.env.scratchGDB)
+    except Exception:
+        pass
     arcpy.env.workspace = c.params.fgdb
     scratch_folder = arcpy.env.scratchFolder
     run_start = time.time()
