@@ -1,0 +1,8 @@
+<!doctype html>
+<title>PPA3 Test Harness — Run history</title>
+<h1>Run history</h1>
+<p><a href="/">&larr; new run</a></p>
+<ul>
+  {% for s in stamps %}<li><a href="/run/{{ s }}">{{ s }}</a></li>{% endfor %}
+  {% if not stamps %}<li><em>no runs yet</em></li>{% endif %}
+</ul>

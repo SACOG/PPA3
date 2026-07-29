@@ -1,4 +1,4 @@
-"""
+r"""
 app.py — Flask UI for the PPA3 test harness. No arcpy: it imports dispatch (pure) and calls
 orchestrator.run_report, which shells out to the Pro python per service. Run:
   & "...\arcgispro-py3\python.exe" testing\local_env\webapp\app.py   (then open http://127.0.0.1:5000)
@@ -21,11 +21,6 @@ app.config["RUNS_ROOT"] = os.path.join(LOCAL_ENV, "out", "runs")
 
 with open(os.path.join(LOCAL_ENV, "samples", "lines.json")) as f:
     LINES = json.load(f)
-
-
-def _programs_json():
-    """program -> {projectType -> {mode, outcomes}} for the form's dynamic JS."""
-    return dispatch.PROGRAM_PRESETS
 
 
 @app.route("/")
@@ -54,10 +49,39 @@ def run():
     return redirect(url_for("run_detail", stamp=stamp))
 
 
-# run_detail/history routes are added in Task 7; a stub keeps url_for happy until then.
+def _load_run(stamp):
+    run_dir = os.path.join(app.config["RUNS_ROOT"], stamp)
+    mpath = os.path.join(run_dir, "manifest.json")
+    if not os.path.isfile(mpath):
+        return None, None
+    with open(mpath) as f:
+        manifest = json.load(f)
+    outputs = {}
+    for svc in manifest["services"]:
+        jp = os.path.join(run_dir, svc["service"] + ".json")
+        if os.path.isfile(jp):
+            try:
+                outputs[svc["service"]] = json.dumps(json.load(open(jp)), indent=2)
+            except (OSError, ValueError):
+                outputs[svc["service"]] = None
+    return manifest, outputs
+
+
 @app.route("/run/<stamp>")
 def run_detail(stamp):
-    return f"run {stamp}"  # replaced in Task 7
+    manifest, outputs = _load_run(stamp)
+    if manifest is None:
+        abort(404)
+    return render_template("detail.html", stamp=stamp, manifest=manifest, outputs=outputs)
+
+
+@app.route("/runs")
+def history():
+    root = app.config["RUNS_ROOT"]
+    stamps = sorted([d for d in os.listdir(root)
+                     if os.path.isfile(os.path.join(root, d, "manifest.json"))],
+                    reverse=True) if os.path.isdir(root) else []
+    return render_template("history.html", stamps=stamps)
 
 
 if __name__ == "__main__":

@@ -42,5 +42,33 @@ class TestForm(unittest.TestCase):
                          r"I:\Projects\Darren\PPA_V2_GIS\PPA_V2.gdb\TestTruxelBridge")
 
 
+import json, tempfile
+
+class TestDashboard(unittest.TestCase):
+    def setUp(self):
+        self.client = webapp.app.test_client()
+        self.tmp = tempfile.mkdtemp()
+        webapp.app.config["RUNS_ROOT"] = self.tmp
+        run_dir = os.path.join(self.tmp, "20260101_000000")
+        os.makedirs(run_dir)
+        json.dump({"timestamp": "20260101_000000",
+                   "inputs": {"program": "STIP", "project_type": "Non-Freeway Investment"},
+                   "services": [{"service": "RPTitleAndGuide", "outcome": "(title)", "status": "ok"},
+                                {"service": "RPArtExpSafety", "outcome": "Safety or Security",
+                                 "status": "failed"}]},
+                  open(os.path.join(run_dir, "manifest.json"), "w"))
+        json.dump({"total": 6}, open(os.path.join(run_dir, "RPTitleAndGuide.json"), "w"))
+
+    def test_detail_shows_services_and_statuses(self):
+        html = self.client.get("/run/20260101_000000").get_data(as_text=True)
+        self.assertIn("RPArtExpSafety", html)
+        self.assertIn("failed", html)
+        self.assertIn("Safety or Security", html)
+
+    def test_history_lists_the_run(self):
+        html = self.client.get("/runs").get_data(as_text=True)
+        self.assertIn("20260101_000000", html)
+
+
 if __name__ == "__main__":
     unittest.main()
