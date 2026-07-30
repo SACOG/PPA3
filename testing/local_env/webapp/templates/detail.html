@@ -1,7 +1,7 @@
 <!doctype html>
 <title>Run {{ stamp }}</title>
 <h1>Run {{ stamp }}</h1>
-<p><a href="/">&larr; new run</a> | <a href="/runs">run history</a></p>
+<p><a href="/">&larr; new run</a> | <a href="/runs">run history</a> | <a href="/run/{{ stamp }}/report">view report</a></p>
 <p><b>Program:</b> {{ manifest.inputs.program }} &mdash;
    <b>Type:</b> {{ manifest.inputs.project_type }}</p>
 <h2>Dispatched services (in order)</h2>

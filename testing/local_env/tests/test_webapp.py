@@ -52,12 +52,20 @@ class TestDashboard(unittest.TestCase):
         run_dir = os.path.join(self.tmp, "20260101_000000")
         os.makedirs(run_dir)
         json.dump({"timestamp": "20260101_000000",
-                   "inputs": {"program": "STIP", "project_type": "Non-Freeway Investment"},
+                   "inputs": {"program": "STIP", "project_type": "Non-Freeway Investment",
+                              "project_name": "t", "jurisdiction": "Sacramento",
+                              "aadt": 0, "posted_speed": 0, "pci": 0},
                    "services": [{"service": "RPTitleAndGuide", "outcome": "(title)", "status": "ok"},
                                 {"service": "RPArtExpSafety", "outcome": "Safety or Security",
                                  "status": "failed"}]},
                   open(os.path.join(run_dir, "manifest.json"), "w"))
         json.dump({"total": 6}, open(os.path.join(run_dir, "RPTitleAndGuide.json"), "w"))
+        json.dump({"RPTitleAndGuide": {
+                       "Project Length Centerline Miles": 0.5,
+                       "Project Community Type": "Established Communities",
+                       "Project Unique ID": "test-uid-123",
+                   }},
+                  open(os.path.join(run_dir, "merged.json"), "w"))
 
     def test_detail_shows_services_and_statuses(self):
         html = self.client.get("/run/20260101_000000").get_data(as_text=True)
@@ -68,6 +76,21 @@ class TestDashboard(unittest.TestCase):
     def test_history_lists_the_run(self):
         html = self.client.get("/runs").get_data(as_text=True)
         self.assertIn("20260101_000000", html)
+
+    def test_report_route_renders_html_for_a_valid_run(self):
+        resp = self.client.get("/run/20260101_000000/report")
+        self.assertEqual(resp.status_code, 200)
+        html = resp.get_data(as_text=True)
+        self.assertIn("Using This Report", html)
+        self.assertIn("t", html)  # project_name from the fixture's inputs
+
+    def test_report_route_404s_for_unknown_stamp(self):
+        resp = self.client.get("/run/nonexistent-stamp/report")
+        self.assertEqual(resp.status_code, 404)
+
+    def test_detail_page_links_to_report(self):
+        html = self.client.get("/run/20260101_000000").get_data(as_text=True)
+        self.assertIn('href="/run/20260101_000000/report"', html)
 
 
 if __name__ == "__main__":

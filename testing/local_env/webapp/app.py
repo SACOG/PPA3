@@ -7,13 +7,15 @@ import os
 import sys
 import json
 
-from flask import Flask, render_template, request, redirect, url_for, abort
+from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOCAL_ENV = os.path.dirname(HERE)
 sys.path.insert(0, LOCAL_ENV)
 import dispatch
 import orchestrator
+sys.path.insert(0, os.path.join(LOCAL_ENV, "reporting"))
+import render as report_render
 
 app = Flask(__name__)
 app.config["RUN_REPORT"] = orchestrator.run_report
@@ -73,6 +75,18 @@ def run_detail(stamp):
     if manifest is None:
         abort(404)
     return render_template("detail.html", stamp=stamp, manifest=manifest, outputs=outputs)
+
+
+@app.route("/run/<stamp>/report")
+def run_report_view(stamp):
+    run_dir = os.path.join(app.config["RUNS_ROOT"], stamp)
+    if not os.path.isfile(os.path.join(run_dir, "manifest.json")):
+        abort(404)
+    try:
+        out_path = report_render.render_report(run_dir)
+    except (OSError, ValueError, KeyError) as exc:
+        abort(500, f"report render failed: {exc}")
+    return send_from_directory(run_dir, os.path.basename(out_path))
 
 
 @app.route("/runs")
