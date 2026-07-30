@@ -68,5 +68,27 @@ class TestSafetyLayout(unittest.TestCase):
         self.assertEqual([c["type"] for c in section["cards"]], ["kpi", "image", "table", "chart", "table"])
 
 
+@unittest.skipUnless(os.path.isfile(LOCAL_ATP_RUN), "local ATP harness run not present")
+class TestMultiModalLayout(unittest.TestCase):
+    def setUp(self):
+        self.layout = layout_loader.load_layout("RPArtExpMultiModal")
+        self.data = _load_local_merged()["RPArtExpMultiModal"]
+
+    def test_layout_loads(self):
+        self.assertIsNotNone(self.layout)
+
+    def test_no_card_reports_missing_against_real_local_data(self):
+        section = cards.build_section(self.layout, self.data)
+        missing = [c for c in section["cards"] if c["missing"]]
+        self.assertEqual(missing, [])
+
+    def test_six_cards_in_golden_order(self):
+        section = cards.build_section(self.layout, self.data)
+        self.assertEqual(
+            [c["type"] for c in section["cards"]],
+            ["table", "table", "image", "table", "image", "chart"],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
