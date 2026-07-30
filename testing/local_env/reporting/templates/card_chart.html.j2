@@ -1,0 +1,13 @@
+<div class="card card-chart">
+  {% if card.sub_outcome %}<p class="sub-outcome">{{ card.sub_outcome }}</p>{% endif %}
+  {% if card.subtitle %}<h2>{{ card.subtitle }}</h2>{% endif %}
+  {% if card.question %}<p class="question">{{ card.question }}</p>{% endif %}
+  {% if card.note %}<p class="note">{{ card.note }}</p>{% endif %}
+  {% if card.missing %}
+    <p class="no-data">(no data)</p>
+  {% else %}
+    <canvas class="chart-canvas" data-chart='{{ card.chart_json }}'></canvas>
+  {% endif %}
+  {% if card.y_label %}<p class="axis-label">{{ card.y_label }}</p>{% endif %}
+  {% if card.footnote %}<p class="footnote">{{ card.footnote }}</p>{% endif %}
+</div>

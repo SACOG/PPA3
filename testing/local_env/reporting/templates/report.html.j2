@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PPA Report: {{ project_title }}</title>
+<link rel="stylesheet" href="static/report.css">
+<script src="static/chart.umd.min.js"></script>
+</head>
+<body>
+<h1 class="report-title">Project Performance Assessment Report: {{ project_title }}</h1>
+{% for section in sections %}
+{% include "section.html.j2" %}
+{% endfor %}
+<script>
+document.querySelectorAll('.chart-canvas').forEach(function (canvas) {
+  var spec = JSON.parse(canvas.dataset.chart);
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: spec.categories,
+      datasets: spec.series.map(function (s) { return {label: s.label, data: s.data}; })
+    },
+    options: {responsive: true, plugins: {legend: {display: spec.series.length > 1}}}
+  });
+});
+</script>
+</body>
+</html>

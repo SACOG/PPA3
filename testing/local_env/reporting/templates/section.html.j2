@@ -1,0 +1,18 @@
+<section class="outcome-section" id="{{ section.service }}">
+  <h1>{{ section.section_title }}</h1>
+  {% if section.unavailable %}
+    <p class="section-unavailable">Section unavailable (service failed or no local layout config yet)</p>
+  {% else %}
+    {% for card in section.cards %}
+      {% if card.type == "kpi" %}
+        {% include "card_kpi.html.j2" %}
+      {% elif card.type == "table" %}
+        {% include "card_table.html.j2" %}
+      {% elif card.type == "chart" %}
+        {% include "card_chart.html.j2" %}
+      {% elif card.type == "image" %}
+        {% include "card_image.html.j2" %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</section>
