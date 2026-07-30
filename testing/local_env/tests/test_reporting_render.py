@@ -129,5 +129,37 @@ class TestRenderReport(unittest.TestCase):
             self.assertIn("Active Transportation Program", html)  # ATP intro included
 
 
+LOCAL_ATP_RUN_DIR = os.path.join(os.path.dirname(HERE), "out", "runs", "20260729_172109")
+
+
+@unittest.skipUnless(os.path.isdir(LOCAL_ATP_RUN_DIR), "local ATP harness run not present")
+class TestRenderRealLocalRun(unittest.TestCase):
+    def test_renders_all_five_atp_sections_with_no_placeholders(self):
+        out_path = render.render_report(
+            LOCAL_ATP_RUN_DIR,
+            output_path=os.path.join(tempfile.mkdtemp(), "report.html"),
+        )
+        with open(out_path, encoding="utf-8") as f:
+            html = f.read()
+
+        # All 5 ATP outcome section headers present
+        for title in [
+            "Multimodal/Transportation Choice (Reduce VMT)",
+            "Safety",
+            "Multimodal/Transportation Choice (Encourage Multimodal Travel)",
+            "Economic Prosperity",
+            "Maintain State of Good Repair",
+        ]:
+            self.assertIn(title, html, f"missing section: {title}")
+
+        # No section fell back to "unavailable" and no card silently reported "(no data)"
+        self.assertNotIn("section-unavailable", html)
+        self.assertNotIn("(no data)", html)
+
+        # Title-page fields sourced from this specific run's manifest.json
+        self.assertIn("verify_run", html)
+        self.assertIn("Sacramento", html)
+
+
 if __name__ == "__main__":
     unittest.main()
