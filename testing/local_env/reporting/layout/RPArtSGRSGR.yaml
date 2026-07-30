@@ -1,0 +1,29 @@
+service: RPArtSGRSGR
+section_title: "Maintain State of Good Repair"
+cards:
+  - type: kpi
+    source: "Pavement Condition Index"
+    subtitle: "Pavement Condition Index (PCI)"
+    question: "Is the pavement in poor condition?"
+
+  - type: kpi
+    source: "ADT"
+    subtitle: "Average Daily Traffic (ADT)"
+    question: "Does the corridor carry high traffic volumes?"
+
+  - type: kpi
+    source: "Complete Streets Index"
+    subtitle: "Complete Streets Index (0-100)"
+    question: "Does the corridor support multimodal travel and safety?"
+    footnote: >
+      The complete streets index (CSI) is a 0-100 score based on the densities of
+      students, transit service, jobs, and dwelling units within a half mile of the
+      project location and the project location's posted speed limit. A higher CSI means
+      the street is more likely to support many users of all modes (bike, walk, transit,
+      drive) and thus derive greater benefit from complete streets treatments that make
+      the project location better serve all types of road users. As posted speed limit
+      increases beyond 40mph, the CSI will fall with all else being equal since fast
+      vehicle speeds are less conducive to the street serving all users. (The golden PDF
+      also shows a per-community-type CSI benchmark table here; that benchmark isn't
+      present in merged.json's RPArtSGRSGR output, so it's omitted in v1 -- see this
+      plan's Task 9 open item.)
