@@ -132,6 +132,10 @@ def main():
         arcpy.Delete_management(arcpy.env.scratchGDB)
     except Exception:
         pass
+    # GP services run with overwriteOutput on; many modules assume it (they re-MakeFeatureLayer
+    # the same in-memory layer name, e.g. the freight service's "fl_speed_data"). Plain python
+    # defaults it off, so set it here to match the service runtime and avoid ERROR 000725.
+    arcpy.env.overwriteOutput = True
     arcpy.env.workspace = c.params.fgdb
     scratch_folder = arcpy.env.scratchFolder
     run_start = time.time()

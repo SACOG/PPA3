@@ -19,5 +19,7 @@ SHARED_FCS = [
     "parcel_data_pts_2035",
     "parcel_data_polys_2020",
     "parcel_data_polys_2035",
+    "model_links_2020",
+    "model_links_2035",
     "TCAC_2021",
 ]
