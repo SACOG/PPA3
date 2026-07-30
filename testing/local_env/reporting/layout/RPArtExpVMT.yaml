@@ -1,0 +1,56 @@
+service: RPArtExpVMT
+section_title: "Multimodal/Transportation Choice (Reduce VMT)"
+cards:
+  - type: chart
+    source_chart: "Jobs and Dwelling"
+    subtitle: "Jobs and Houses nearby by 2035"
+    question: "Will the project serve areas with significant growth in jobs and housing?"
+    x_field: year
+    series:
+      - field: jobs
+        label: Jobs
+      - field: dwellingUnits
+        label: Dwelling Units
+    y_label: "Total Jobs and Dwelling Units within 0.5mi of project"
+
+  - type: chart
+    source_chart: "Land Use Diversity"
+    subtitle: "Walk/bike destinations nearby (land use by 2035)*"
+    question: "Does the project connect to a mix of land uses that support walking and biking?"
+    x_field: type
+    series:
+      - field: "diversity 2020"
+        label: "2020"
+      - field: "diversity 2035"
+        label: "2035"
+    y_label: "Land Use Mix Index"
+    footnote: >
+      *The land use diversity index ranges from 0 to 1 and measures an area's ratio of
+      households to K-12 student enrollment, park acreage, and employment in the retail,
+      service, and food sectors. A score of 1 indicates an "ideal" ratio of households to
+      amenities that people use on a daily basis like shopping, restaurants, schools, etc.
+      that in turn increases the likelihood that people living in those households will
+      either walk or bike to these destinations, or drive a shorter distance.
+
+  - type: chart
+    source_chart: "Base Year Service Accessibility"
+    subtitle: "Walk/bike destinations nearby (mode share)*"
+    question: "Are key destinations accessible by walking, biking, or transit?"
+    x_field: type
+    series:
+      - field: Project
+        label: Project
+      - field: "Community Type"
+        label: "Community Type"
+      - field: Region
+        label: Region
+    y_label: "Total Services Accessible"
+    footnote: >
+      *"Services" include parks, K-12 schools, higher education facilities, libraries,
+      hospitals, other medical service facilities, grocery stores, pharmacies, clothing
+      stores, and banks. Similar to the land use diversity index, if a project has more of
+      these types of services within a feasible biking, walking, or transit trip, then
+      people who live or work near the project segment will on average generate less VMT
+      in order to access these services. And in contrast to the diversity index, which
+      shows services as a ratio of households to services, this indicator gives a better
+      sense of the total amount of services available.
