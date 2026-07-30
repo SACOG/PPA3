@@ -128,6 +128,17 @@ class TestRenderReport(unittest.TestCase):
             self.assertIn("Using This Report", html)
             self.assertIn("Active Transportation Program", html)  # ATP intro included
 
+            # Fix 1 regression check: assets must be inlined, not relative-linked.
+            # Prevents accidental revert of inline CSS/JS fix (report.html renders blank if
+            # it tries to load static/report.css and static/chart.umd.min.js as relative paths
+            # from an arbitrary run_dir -- those files never exist there).
+            self.assertNotIn('href="static/', html, "CSS must be inlined, not linked as static/report.css")
+            self.assertNotIn('src="static/', html, "JS must be inlined, not linked as static/chart.umd.min.js")
+            # A distinctive CSS rule from report.css must be inlined, not linked.
+            self.assertIn(".report-title", html, "report.css styles must be inlined")
+            # A distinctive string from the vendored Chart.js build must be inlined, not linked.
+            self.assertIn("Chart.js", html, "Chart.js must be inlined")
+
 
 LOCAL_ATP_RUN_DIR = os.path.join(os.path.dirname(HERE), "out", "runs", "20260729_172109")
 
