@@ -1,0 +1,390 @@
+{
+  "RPTitleAndGuide": {
+    "Project Length Centerline Miles": 0.6267798586689034,
+    "Project Community Type": "Established Communities",
+    "Image Url": "https://services.sacog.org/gisppa/rest/directories/arcgisjobs/rptitleandguide_gpserver/j9deed3e30b504a6d8a3d43817bc8072d/scratch/CoverPage.PNG",
+    "Project Unique ID": "028f081f-3e15-4a2f-8375-a5c73154382e"
+  },
+  "RPArtExpVMT": {
+    "charts": {
+      "Jobs and Dwelling": {
+        "title": "Total Jobs and Dwelling Units within 0.5mi of Project",
+        "features": [
+          {
+            "attributes": {
+              "year": "2020",
+              "jobs": 1223.0,
+              "dwellingUnits": 627.0
+            }
+          },
+          {
+            "attributes": {
+              "year": "2035",
+              "jobs": 1223.0,
+              "dwellingUnits": 913.0
+            }
+          }
+        ]
+      },
+      "Land Use Diversity": {
+        "title": "Land Use Diversity within 1mi of Project",
+        "features": [
+          {
+            "attributes": {
+              "type": "Project",
+              "diversity 2020": 0.4622794448387708,
+              "diversity 2035": 0.629961972370461
+            }
+          },
+          {
+            "attributes": {
+              "type": "Community Type",
+              "diversity 2020": 0.706057066,
+              "diversity 2035": 0.717473606
+            }
+          },
+          {
+            "attributes": {
+              "type": "Region",
+              "diversity 2020": 0.999999974,
+              "diversity 2035": 1.0
+            }
+          }
+        ]
+      },
+      "Base Year Service Accessibility": {
+        "title": "Base Year Service Accessibility",
+        "features": [
+          {
+            "attributes": {
+              "type": "Transit",
+              "Project": 1.8442822694778442,
+              "Community Type": 45.69916153,
+              "Region": 43.02540207
+            }
+          },
+          {
+            "attributes": {
+              "type": "Bike",
+              "Project": 1.0,
+              "Community Type": 11.3578167,
+              "Region": 10.07514191
+            }
+          },
+          {
+            "attributes": {
+              "type": "Walk",
+              "Project": 0.0,
+              "Community Type": 2.406193733,
+              "Region": 2.165472269
+            }
+          }
+        ]
+      }
+    }
+  },
+  "RPArtExpCongestion": {
+    "congestionRatio": {
+      "first": {
+        "name": "Null",
+        "value": 0.0
+      },
+      "second": {
+        "name": "Null",
+        "value": 0.0
+      }
+    },
+    "projectAADT": "0",
+    "charts": {
+      "Free flow vs Congested Speeds": {
+        "title": "Free-flow vs. Congested Speeds",
+        "features": [
+          {
+            "attributes": {
+              "type": "Null",
+              "freeFlowSpeed": 0.0,
+              "averageCongestedSpeed": 0.0
+            }
+          },
+          {
+            "attributes": {
+              "type": "Null",
+              "freeFlowSpeed": 0.0,
+              "averageCongestedSpeed": 0.0
+            }
+          }
+        ]
+      },
+      "Travel Time Reliability Index": {
+        "title": "Travel Time Reliability Index",
+        "features": [
+          {
+            "attributes": {
+              "type": "Null",
+              "AMPeak": 0.0,
+              "PMPeak": 0.0,
+              "midday": 0.0,
+              "weekend": 0.0
+            }
+          },
+          {
+            "attributes": {
+              "type": "Null",
+              "AMPeak": 0.0,
+              "PMPeak": 0.0,
+              "midday": 0.0,
+              "weekend": 0.0
+            }
+          }
+        ]
+      },
+      "Jobs and Dwelling": {
+        "title": "Total Jobs and Dwelling Units within 0.5mi of project",
+        "features": [
+          {
+            "attributes": {
+              "year": "2020",
+              "jobs": 1223.0,
+              "dwellingUnits": 627.0
+            }
+          },
+          {
+            "attributes": {
+              "year": "2035",
+              "jobs": 1223.0,
+              "dwellingUnits": 913.0
+            }
+          }
+        ]
+      }
+    }
+  },
+  "RPArtExpMultiModal": {
+    "Intersections per acre": {
+      "Within 0.25mi": 0.021462869813672823,
+      "Community Type": 0.130208486,
+      "Region": 0.017032926
+    },
+    "Bike lanes and paths as share of total road miles": {
+      "Within 0.25mi": 0.0,
+      "Community Type": 0.207131603,
+      "Region": 0.122178282
+    },
+    "Bikeway Image Url": "https://services.sacog.org/gisppa/rest/directories/arcgisjobs/rpartexpmultimodal_gpserver/j58565a5696164afeaffce36629a44b97/scratch/BikeRoutes.PNG",
+    "Transit vehicle stops per acre": {
+      "Within 0.25mi": 0.0,
+      "Community Type": 0.187181697,
+      "Region": 0.03234902
+    },
+    "Transit Service Density Image Url": "https://services.sacog.org/gisppa/rest/directories/arcgisjobs/rpartexpmultimodal_gpserver/j58565a5696164afeaffce36629a44b97/scratch/TransitSvc.PNG",
+    "charts": {
+      "Residential Mode Split": {
+        "title": "Residential Mode Split within 0.5mi of Project Location",
+        "features": [
+          {
+            "attributes": {
+              "type": "Single-occupant vehicle",
+              "year 2020": 0.4409138655462185,
+              "year 2035": 0.44555555555555554
+            }
+          },
+          {
+            "attributes": {
+              "type": "Carpool",
+              "year 2020": 0.4894957983193277,
+              "year 2035": 0.4774358974358974
+            }
+          },
+          {
+            "attributes": {
+              "type": "Transit",
+              "year 2020": 0.0013130252100840337,
+              "year 2035": 0.0020512820512820513
+            }
+          },
+          {
+            "attributes": {
+              "type": "Biking",
+              "year 2020": 0.009322478991596638,
+              "year 2035": 0.016666666666666666
+            }
+          },
+          {
+            "attributes": {
+              "type": "Walking",
+              "year 2020": 0.054490546218487396,
+              "year 2035": 0.05435897435897436
+            }
+          }
+        ]
+      }
+    }
+  },
+  "RPArtExpEconProsp": {
+    "Total new jobs added": 0.0,
+    "K12 Enrollment": 436.0,
+    "charts": {
+      "Access to jobs": {
+        "title": "Base Year Job Accessibility by Mode from Project",
+        "features": [
+          {
+            "attributes": {
+              "type": "Transit",
+              "Project": 587.6538696289062,
+              "Community Type": 21089.06445,
+              "Region": 21823.02344
+            }
+          },
+          {
+            "attributes": {
+              "type": "Bike",
+              "Project": 2597.96142578125,
+              "Community Type": 12457.28613,
+              "Region": 12610.49219
+            }
+          },
+          {
+            "attributes": {
+              "type": "Walk",
+              "Project": 770.3846435546875,
+              "Community Type": 2480.224365,
+              "Region": 2902.07959
+            }
+          },
+          {
+            "attributes": {
+              "type": "Drive",
+              "Project": 153607.765625,
+              "Community Type": 171678.875,
+              "Region": 159471.0156
+            }
+          }
+        ]
+      },
+      "Education Facility": {
+        "title": "Base Year Education Accessibility by Mode",
+        "features": [
+          {
+            "attributes": {
+              "type": "Transit",
+              "Project": 0.009732360020279884,
+              "Community Type": 17.55501556,
+              "Region": 16.19885445
+            }
+          },
+          {
+            "attributes": {
+              "type": "Bike",
+              "Project": 5.94647216796875,
+              "Community Type": 13.38056755,
+              "Region": 11.82006359
+            }
+          },
+          {
+            "attributes": {
+              "type": "Walk",
+              "Project": 1.0,
+              "Community Type": 3.078191996,
+              "Region": 2.676369429
+            }
+          }
+        ]
+      },
+      "Change in Ag acreage": {
+        "title": "Change in Ag acreage share within 0.5mi of project location",
+        "features": [
+          {
+            "attributes": {
+              "year": "2020",
+              "value": 1.489349166103529
+            }
+          },
+          {
+            "attributes": {
+              "year": "2035",
+              "value": 1.489349166103529
+            }
+          }
+        ]
+      }
+    }
+  },
+  "RPArtExpFreight": {
+    "Percent Project on STAA": 0.0,
+    "STAA network Image Url": "https://services.sacog.org/gisppa/rest/directories/arcgisjobs/rpartexpfreight_gpserver/jb10a3fb5dbc341349aaaa3107f0faed7/scratch/TruckRtes.PNG",
+    "Share of jobs in industrial sectors": {
+      "Within 0.5mi of project": 0.4856909239574816,
+      "Within community type": 0.201474577,
+      "Within region": 0.161202132
+    },
+    "charts": {
+      "Change in share of industrial jobs": {
+        "title": "Share of Industrial Jobs",
+        "features": [
+          {
+            "attributes": {
+              "year": "2020",
+              "value": 0.4856909239574816
+            }
+          },
+          {
+            "attributes": {
+              "year": "2035",
+              "value": 0.4856909239574816
+            }
+          }
+        ]
+      }
+    }
+  },
+  "RPArtExpSafety": {
+    "Total collisions": 0.0,
+    "Collision heat map Image Url": "https://services.sacog.org/gisppa/rest/directories/arcgisjobs/rpartexpsafety_gpserver/je0cdd625a706430e99aed3549de49c0f/scratch/CollisionHeat_NonFwy.PNG",
+    "Collisions per 100 million VMT": {
+      "Project": -1.0,
+      "Community Type": 96.56567644,
+      "Region": 95.41811392
+    },
+    "Bike and Ped Collisions per Project Centerline": {
+      "Project": 0.0,
+      "Community Type": 1.758419622,
+      "Region": 1.284448732
+    },
+    "charts": {
+      "Fatal and BikePed Collisions": {
+        "title": "Fatal and Bike-Ped Collisions",
+        "features": [
+          {
+            "attributes": {
+              "type": "Pct of collisions that are fatal",
+              "Project": 0.0,
+              "Community Type": 0.018825179,
+              "Region": 0.024390244
+            }
+          },
+          {
+            "attributes": {
+              "type": "Pct of collisions with bike/ped",
+              "Project": 0.0,
+              "Community Type": 0.1387885,
+              "Region": 0.131580102
+            }
+          }
+        ]
+      }
+    }
+  },
+  "RPArtSGRSGR": {
+    "Pavement Condition Index": "0",
+    "ADT": "0",
+    "Complete Streets Index": -1.0
+  },
+  "RPArtExpEquity": {
+    "Population": 78.0,
+    "Share of population living in EJ community": {
+      "Within project location": 0.03961401726764855,
+      "Within community type": 0.212117292,
+      "Within region": 0.250763575
+    }
+  }
+}

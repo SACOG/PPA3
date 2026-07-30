@@ -1,0 +1,62 @@
+{
+  "timestamp": "20260727_000000",
+  "inputs": {
+    "program": "CMCP US50",
+    "project_type": "Non-Freeway Investment",
+    "selected_outcomes": null,
+    "project_line": null,
+    "project_name": "random proj",
+    "jurisdiction": "Sacramento",
+    "aadt": 0.0,
+    "posted_speed": 0.0,
+    "pci": 0.0,
+    "email": "tenoru@sacog.org"
+  },
+  "services": [
+    {
+      "service": "RPTitleAndGuide",
+      "outcome": "(title)",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpVMT",
+      "outcome": "Multimodal/Transportation Choice (Reduce VMT)",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpCongestion",
+      "outcome": "Multimodal/Transportation Choice (Reduce Congestion)",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpMultiModal",
+      "outcome": "Multimodal/Transportation Choice (Encourage Multimodal Travel)",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpEconProsp",
+      "outcome": "Freight Movement (Economic Prosperity)",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpFreight",
+      "outcome": "Freight Movement (Freight Mobility)",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpSafety",
+      "outcome": "Safety or Security",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtSGRSGR",
+      "outcome": "Maintain State of Good Repair",
+      "status": "ok"
+    },
+    {
+      "service": "RPArtExpEquity",
+      "outcome": "Benefits to the Transportation Network and Impacted Communities",
+      "status": "ok"
+    }
+  ]
+}
