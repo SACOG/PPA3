@@ -1,0 +1,55 @@
+service: RPArtExpEconProsp
+# Printed golden header is "Economic Prosperity" -- dispatch.py's outcome checkbox label is the
+# longer "Freight Movement (Economic Prosperity)".
+section_title: "Economic Prosperity"
+cards:
+  - type: chart
+    source_chart: "Access to jobs"
+    sub_outcome: "Sub outcome: Increase Job Access"
+    subtitle: "Jobs accessible by mode"
+    question: "Are jobs accessible by walking, biking, or transit?"
+    x_field: type
+    series:
+      - field: Project
+        label: Project
+      - field: "Community Type"
+        label: "Community Type"
+      - field: Region
+        label: Region
+    y_label: "Total Jobs Accessible"
+
+  - type: kpi
+    source: "Total new jobs added"
+    subtitle: "Job growth (2020 to 2035)"
+    question: "Will the project serve areas with significant growth in jobs?"
+
+  - type: kpi
+    source: "K12 Enrollment"
+    sub_outcome: "Sub outcome: Increase School Access"
+    subtitle: "K-12 Enrollment"
+    question: "Are their significant numbers of students within 0.5mi from the project?"
+
+  - type: chart
+    source_chart: "Education Facility"
+    subtitle: "Educational facilities accessible by mode"
+    question: "Are schools accessible by walking, biking, or transit within 0.5mi from the project?"
+    x_field: type
+    series:
+      - field: Project
+        label: Project
+      - field: "Community Type"
+        label: "Community Type"
+      - field: Region
+        label: Region
+    y_label: "Total Services Accessible"
+
+  - type: chart
+    source_chart: "Change in Ag acreage"
+    sub_outcome: "Sub outcome: Support Ag Economy"
+    subtitle: "Acres of Agricultural Use change, 2020 to 2035"
+    question: "Will the project be serving areas with high existing agricultural uses that are preserved by 2035?"
+    x_field: year
+    series:
+      - field: value
+        label: "Change in Ag acreage within 0.5mi of project location"
+    y_label: "Acres"
