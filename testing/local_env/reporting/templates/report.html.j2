@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <title>PPA Report: {{ project.name }}</title>
-<link rel="stylesheet" href="static/report.css">
-<script src="static/chart.umd.min.js"></script>
+<style>{{ inline_css | safe }}</style>
+<!-- chart.umd.min.js vendored inline below (Fix 1: report.html must be openable fully offline
+     with no relative static/ path dependency, from any run_dir it's written into) -->
+<script>{{ inline_js | safe }}</script>
 </head>
 <body>
 {% include "title_page.html.j2" %}

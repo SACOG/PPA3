@@ -11,6 +11,7 @@ import jinja2
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(HERE, "templates")
+STATIC_DIR = os.path.join(HERE, "static")
 sys.path.insert(0, HERE)
 import cards  # noqa: E402
 import layout_loader  # noqa: E402
@@ -25,13 +26,27 @@ def _env():
     )
 
 
-def render_html(sections, project_title):
+def _load_inline_assets():
+    """Read the vendored CSS/JS so they can be inlined into the rendered HTML, making the
+    output a genuinely single-file, fully-offline report (see Fix 1: relative static/ paths
+    only exist next to templates, not next to a rendered report.html in an arbitrary run_dir).
+    """
+    with open(os.path.join(STATIC_DIR, "report.css"), encoding="utf-8") as f:
+        css = f.read()
+    with open(os.path.join(STATIC_DIR, "chart.umd.min.js"), encoding="utf-8") as f:
+        js = f.read()
+    return css, js
+
+
+def render_html(sections, project_title, inline_css="", inline_js=""):
     template = _env().get_template("report.html.j2")
     return template.render(
         sections=sections,
         project_title=project_title,
         project={"name": project_title},
         show_atp_intro=False,
+        inline_css=inline_css,
+        inline_js=inline_js,
     )
 
 
@@ -44,7 +59,10 @@ def load_run(run_dir):
 
 
 def _format_stamp(stamp):
-    dt = datetime.strptime(stamp, "%Y%m%d_%H%M%S")
+    try:
+        dt = datetime.strptime(stamp, "%Y%m%d_%H%M%S")
+    except (TypeError, ValueError):
+        return "(unknown)"
     return dt.strftime("%A, %B %d, %Y %I:%M %p")
 
 
@@ -70,14 +88,29 @@ def build_project_context(manifest, merged, report_generated):
 def build_sections(manifest, merged):
     sections = []
     for entry in manifest.get("services", []):
-        service = entry["service"]
+        service = entry.get("service")
+        if not service:
+            # Malformed manifest entry -- nothing to key a section on, skip rather than crash.
+            continue
         if service == "RPTitleAndGuide":
             continue
         ok = entry.get("status") == "ok" and service in merged
         layout_cfg = layout_loader.load_layout(service) if ok else None
         if ok and layout_cfg is not None:
-            section = cards.build_section(layout_cfg, merged[service])
-            section["unavailable"] = False
+            try:
+                section = cards.build_section(layout_cfg, merged[service])
+                section["unavailable"] = False
+            except Exception:
+                # A service reported "ok" but its data was malformed in a way a card builder
+                # didn't expect (null data, missing "features"/"attributes", etc). Degrade this
+                # one section to unavailable instead of crashing the whole report -- see the
+                # plan's "never crash the whole render" global constraint.
+                section = {
+                    "service": service,
+                    "section_title": entry.get("outcome", service),
+                    "unavailable": True,
+                    "cards": [],
+                }
         else:
             section = {
                 "service": service,
@@ -91,10 +124,11 @@ def build_sections(manifest, merged):
 
 def render_report(run_dir, output_path=None):
     manifest, merged = load_run(run_dir)
-    report_generated = _format_stamp(manifest["timestamp"])
+    report_generated = _format_stamp(manifest.get("timestamp"))
     project = build_project_context(manifest, merged, report_generated)
     sections = build_sections(manifest, merged)
     show_atp_intro = manifest["inputs"].get("program") == "Active Transportation Program"
+    inline_css, inline_js = _load_inline_assets()
 
     template = _env().get_template("report.html.j2")
     html = template.render(
@@ -102,6 +136,8 @@ def render_report(run_dir, output_path=None):
         project_title=project["name"],
         project=project,
         show_atp_intro=show_atp_intro,
+        inline_css=inline_css,
+        inline_js=inline_js,
     )
 
     if output_path is None:

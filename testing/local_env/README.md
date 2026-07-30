@@ -333,14 +333,19 @@ when the prod source is a spatial FeatureClass. During this task's live run,
 `build_run_tables.py` (worth fixing later if a fully clean archive log-write
 is ever needed locally); it is not a defect in the production tool.
 
-### Phase 2 is out of scope here
+### Phase 2: report rendering
 
 This harness (Phase 1) proves the dispatch model and exercises each service's
 *computation* against local data, producing per-service JSON and a merged
-JSON. It does **not** render an actual PPA report (map images, charts,
-PDF/VertiGIS layout) from that JSON — turning `merged.json` into something
-that looks like the real report output is a separate, not-yet-started Phase 2
-effort.
+JSON. A Phase 2 renderer now exists at `testing/local_env/reporting/`: it
+turns a Phase-1 run's `manifest.json` + `merged.json` into a single-file,
+browser-viewable `report.html` (`python3 testing/local_env/reporting/render.py
+<run_dir>`), with per-service card layouts defined in
+`testing/local_env/reporting/layout/`. As of this plan it covers the ATP path
+only (the 5 outcome sections VertiGIS dispatches for an Active Transportation
+Program project) — it does not yet cover Freeway/non-ATP report paths, and it
+does not produce map images or a PDF/VertiGIS-rendered layout (those still
+need the server + VertiGIS).
 
 ### Task 9 validation results (2026-07-28)
 

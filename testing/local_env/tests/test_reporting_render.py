@@ -152,13 +152,105 @@ class TestRenderRealLocalRun(unittest.TestCase):
         ]:
             self.assertIn(title, html, f"missing section: {title}")
 
-        # No section fell back to "unavailable" and no card silently reported "(no data)"
-        self.assertNotIn("section-unavailable", html)
+        # No section fell back to "unavailable" and no card silently reported "(no data)".
+        # NOTE: checking for the bare substring "section-unavailable" would false-positive now
+        # that report.css is inlined (Fix 1) -- the CSS rule `.section-unavailable { ... }`
+        # itself contains that substring. Check for the actual rendered usage instead (the
+        # class attribute section.html.j2 emits on the placeholder <p>, see cards.py/render.py
+        # "unavailable" section fallback shape).
+        self.assertNotIn('class="section-unavailable"', html)
         self.assertNotIn("(no data)", html)
 
         # Title-page fields sourced from this specific run's manifest.json
         self.assertIn("verify_run", html)
         self.assertIn("Sacramento", html)
+
+    def test_report_is_fully_offline_no_relative_static_paths(self):
+        # Fix 1 regression: report.html.j2 used to link static/report.css and
+        # static/chart.umd.min.js as paths RELATIVE TO THE OUTPUT FILE, but that static/ dir
+        # never exists next to a rendered report.html in a run_dir -- every chart rendered as
+        # a blank canvas and the report was entirely unstyled. Both assets must now be inlined.
+        out_path = render.render_report(
+            LOCAL_ATP_RUN_DIR,
+            output_path=os.path.join(tempfile.mkdtemp(), "report.html"),
+        )
+        with open(out_path, encoding="utf-8") as f:
+            html = f.read()
+
+        self.assertNotIn('href="static/', html)
+        self.assertNotIn('src="static/', html)
+        # A distinctive CSS rule from report.css must be inlined, not linked.
+        self.assertIn(".report-title", html)
+        # A distinctive string from the vendored Chart.js build must be inlined, not linked.
+        self.assertIn("Chart.js", html)
+
+
+class TestBuildSectionsExceptionSafety(unittest.TestCase):
+    """Fix 2 regression: build_sections() must degrade a single malformed service to an
+    "unavailable" section instead of letting cards.py's builders crash the whole render."""
+
+    def test_ok_service_with_none_data_degrades_to_unavailable(self):
+        manifest = {"services": [
+            {"service": "RPArtSGRSGR", "outcome": "Maintain State of Good Repair", "status": "ok"},
+        ]}
+        merged = {"RPArtSGRSGR": None}
+        sections = render.build_sections(manifest, merged)
+        self.assertEqual(len(sections), 1)
+        self.assertTrue(sections[0]["unavailable"])
+        self.assertEqual(sections[0]["cards"], [])
+
+    def test_chart_card_missing_features_key_degrades_to_unavailable(self):
+        manifest = {"services": [
+            {"service": "RPArtExpVMT", "outcome": "Multimodal/Transportation Choice (Reduce VMT)", "status": "ok"},
+        ]}
+        # "charts" present but the named chart dict has no "features" key -> cards.build_chart_card
+        # would raise KeyError on raw["features"] without the try/except guard. "Jobs and
+        # Dwelling" is the actual source_chart key the RPArtExpVMT layout's first card reads
+        # (its subtitle "Jobs and Houses nearby by 2035" is a different, display-only string).
+        merged = {"RPArtExpVMT": {"charts": {"Jobs and Dwelling": {"title": "t"}}}}
+        sections = render.build_sections(manifest, merged)
+        self.assertEqual(len(sections), 1)
+        self.assertTrue(sections[0]["unavailable"])
+
+    def test_manifest_entry_missing_service_key_is_skipped_not_raised(self):
+        manifest = {"services": [
+            {"outcome": "no service key here", "status": "ok"},
+            {"service": "RPArtSGRSGR", "outcome": "Maintain State of Good Repair", "status": "failed(x)"},
+        ]}
+        merged = {}
+        sections = render.build_sections(manifest, merged)
+        # The malformed entry is skipped entirely; only the valid one produces a section.
+        self.assertEqual(len(sections), 1)
+        self.assertEqual(sections[0]["service"], "RPArtSGRSGR")
+
+
+class TestFormatStampFallback(unittest.TestCase):
+    """Fix 2 regression: _format_stamp() must not crash render_report() over a missing or
+    malformed manifest["timestamp"] -- that's a title-page cosmetic field, not worth a hard
+    failure."""
+
+    def test_missing_timestamp_falls_back(self):
+        self.assertEqual(render._format_stamp(None), "(unknown)")
+
+    def test_malformed_timestamp_falls_back(self):
+        self.assertEqual(render._format_stamp("not-a-timestamp"), "(unknown)")
+
+    def test_render_report_survives_missing_timestamp_in_manifest(self):
+        with tempfile.TemporaryDirectory() as run_dir:
+            manifest = {
+                "inputs": {"program": "Active Transportation Program", "project_name": "no_timestamp_run"},
+                "services": [],
+            }
+            merged = {}
+            with open(os.path.join(run_dir, "manifest.json"), "w", encoding="utf-8") as f:
+                json.dump(manifest, f)
+            with open(os.path.join(run_dir, "merged.json"), "w", encoding="utf-8") as f:
+                json.dump(merged, f)
+
+            out_path = render.render_report(run_dir)
+            with open(out_path, encoding="utf-8") as f:
+                html = f.read()
+            self.assertIn("(unknown)", html)
 
 
 if __name__ == "__main__":
