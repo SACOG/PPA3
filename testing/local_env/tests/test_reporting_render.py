@@ -1,5 +1,7 @@
+import json
 import os
 import sys
+import tempfile
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -39,6 +41,92 @@ class TestRenderHtmlSkeleton(unittest.TestCase):
         section = {"service": "RPArtExpEquity", "section_title": "Equity", "unavailable": True, "cards": []}
         html = render.render_html([section], project_title="Test Project")
         self.assertIn("section-unavailable", html)
+
+
+class TestBuildProjectContext(unittest.TestCase):
+    def test_pulls_from_manifest_inputs_and_title_service(self):
+        manifest = {
+            "timestamp": "20260729_172109",
+            "inputs": {
+                "program": "Active Transportation Program",
+                "project_type": "Non-Freeway Investment",
+                "project_name": "verify_run",
+                "jurisdiction": "Sacramento",
+                "aadt": 15000,
+                "posted_speed": 35,
+                "pci": 70,
+            },
+        }
+        merged = {"RPTitleAndGuide": {
+            "Project Length Centerline Miles": 0.6674009841521,
+            "Project Community Type": "Established Communities",
+            "Project Unique ID": "fb86f0b5-9b1d-4774-bbcd-889ec7306d69",
+        }}
+        ctx = render.build_project_context(manifest, merged, report_generated="Wednesday, July 29, 2026")
+        self.assertEqual(ctx["name"], "verify_run")
+        self.assertEqual(ctx["jurisdiction"], "Sacramento")
+        self.assertEqual(ctx["funding_program"], "Active Transportation Program")
+        self.assertEqual(ctx["length_miles"], 0.67)
+        self.assertEqual(ctx["community_type"], "Established Communities")
+        self.assertEqual(ctx["uid"], "fb86f0b5-9b1d-4774-bbcd-889ec7306d69")
+        self.assertEqual(ctx["report_generated"], "Wednesday, July 29, 2026")
+
+
+class TestBuildSections(unittest.TestCase):
+    def test_skips_title_includes_ok_services_flags_missing(self):
+        manifest = {"services": [
+            {"service": "RPTitleAndGuide", "outcome": "(title)", "status": "ok"},
+            {"service": "RPArtSGRSGR", "outcome": "Maintain State of Good Repair", "status": "ok"},
+            {"service": "RPArtExpVMT", "outcome": "Multimodal/Transportation Choice (Reduce VMT)", "status": "failed(x)"},
+        ]}
+        merged = {"RPArtSGRSGR": {"Pavement Condition Index": 70, "ADT": 15000, "Complete Streets Index": 3.8}}
+        sections = render.build_sections(manifest, merged)
+        # RPArtSGRSGR has a real layout config (authored in Task 9) -> should render normally
+        sgr = next(s for s in sections if s["service"] == "RPArtSGRSGR")
+        self.assertFalse(sgr["unavailable"])
+        # RPArtExpVMT failed upstream -> unavailable, no crash
+        vmt = next(s for s in sections if s["service"] == "RPArtExpVMT")
+        self.assertTrue(vmt["unavailable"])
+        # Title is never treated as an outcome section
+        self.assertNotIn("RPTitleAndGuide", [s["service"] for s in sections])
+
+
+class TestRenderReport(unittest.TestCase):
+    def test_writes_report_html_from_a_run_dir(self):
+        with tempfile.TemporaryDirectory() as run_dir:
+            manifest = {
+                "timestamp": "20260729_172109",
+                "inputs": {
+                    "program": "Active Transportation Program", "project_type": "Non-Freeway Investment",
+                    "project_name": "verify_run", "jurisdiction": "Sacramento",
+                    "aadt": 15000, "posted_speed": 35, "pci": 70,
+                },
+                "services": [
+                    {"service": "RPTitleAndGuide", "outcome": "(title)", "status": "ok"},
+                    {"service": "RPArtSGRSGR", "outcome": "Maintain State of Good Repair", "status": "ok"},
+                ],
+            }
+            merged = {
+                "RPTitleAndGuide": {
+                    "Project Length Centerline Miles": 0.6674, "Project Community Type": "Established Communities",
+                    "Project Unique ID": "abc-123",
+                },
+                "RPArtSGRSGR": {"Pavement Condition Index": 70, "ADT": 15000, "Complete Streets Index": 3.8},
+            }
+            with open(os.path.join(run_dir, "manifest.json"), "w", encoding="utf-8") as f:
+                json.dump(manifest, f)
+            with open(os.path.join(run_dir, "merged.json"), "w", encoding="utf-8") as f:
+                json.dump(merged, f)
+
+            out_path = render.render_report(run_dir)
+
+            self.assertTrue(os.path.isfile(out_path))
+            with open(out_path, encoding="utf-8") as f:
+                html = f.read()
+            self.assertIn("verify_run", html)
+            self.assertIn("Maintain State of Good Repair", html)
+            self.assertIn("Using This Report", html)
+            self.assertIn("Active Transportation Program", html)  # ATP intro included
 
 
 if __name__ == "__main__":

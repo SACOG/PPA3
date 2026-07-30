@@ -1,15 +1,19 @@
-"""render.py — turns a Phase-1 harness run into report.html.
-
-Task 3 introduces render_html(sections, project_title) — pure templating, no file I/O.
-Task 4 adds build_project_context/build_sections/render_report/CLI around it.
+"""render.py — turns a Phase-1 harness run into report.html. No arcpy dependency; runs
+under plain python3.
 """
 
+import json
 import os
+import sys
+from datetime import datetime
 
 import jinja2
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = os.path.join(HERE, "templates")
+sys.path.insert(0, HERE)
+import cards  # noqa: E402
+import layout_loader  # noqa: E402
 
 
 def _env():
@@ -23,4 +27,90 @@ def _env():
 
 def render_html(sections, project_title):
     template = _env().get_template("report.html.j2")
-    return template.render(sections=sections, project_title=project_title)
+    return template.render(
+        sections=sections,
+        project_title=project_title,
+        project={"name": project_title},
+        show_atp_intro=False,
+    )
+
+
+def load_run(run_dir):
+    with open(os.path.join(run_dir, "manifest.json"), encoding="utf-8") as f:
+        manifest = json.load(f)
+    with open(os.path.join(run_dir, "merged.json"), encoding="utf-8") as f:
+        merged = json.load(f)
+    return manifest, merged
+
+
+def _format_stamp(stamp):
+    dt = datetime.strptime(stamp, "%Y%m%d_%H%M%S")
+    return dt.strftime("%A, %B %d, %Y %I:%M %p")
+
+
+def build_project_context(manifest, merged, report_generated):
+    inputs = manifest["inputs"]
+    title = merged.get("RPTitleAndGuide", {})
+    length = title.get("Project Length Centerline Miles")
+    return {
+        "name": inputs.get("project_name"),
+        "jurisdiction": inputs.get("jurisdiction"),
+        "project_type": inputs.get("project_type"),
+        "funding_program": inputs.get("program"),
+        "aadt": inputs.get("aadt"),
+        "pci": inputs.get("pci"),
+        "posted_speed": inputs.get("posted_speed"),
+        "length_miles": round(length, 2) if length is not None else None,
+        "community_type": title.get("Project Community Type"),
+        "uid": title.get("Project Unique ID"),
+        "report_generated": report_generated,
+    }
+
+
+def build_sections(manifest, merged):
+    sections = []
+    for entry in manifest.get("services", []):
+        service = entry["service"]
+        if service == "RPTitleAndGuide":
+            continue
+        ok = entry.get("status") == "ok" and service in merged
+        layout_cfg = layout_loader.load_layout(service) if ok else None
+        if ok and layout_cfg is not None:
+            section = cards.build_section(layout_cfg, merged[service])
+            section["unavailable"] = False
+        else:
+            section = {
+                "service": service,
+                "section_title": entry.get("outcome", service),
+                "unavailable": True,
+                "cards": [],
+            }
+        sections.append(section)
+    return sections
+
+
+def render_report(run_dir, output_path=None):
+    manifest, merged = load_run(run_dir)
+    report_generated = _format_stamp(manifest["timestamp"])
+    project = build_project_context(manifest, merged, report_generated)
+    sections = build_sections(manifest, merged)
+    show_atp_intro = manifest["inputs"].get("program") == "Active Transportation Program"
+
+    template = _env().get_template("report.html.j2")
+    html = template.render(
+        sections=sections,
+        project_title=project["name"],
+        project=project,
+        show_atp_intro=show_atp_intro,
+    )
+
+    if output_path is None:
+        output_path = os.path.join(run_dir, "report.html")
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    return output_path
+
+
+if __name__ == "__main__":
+    out = render_report(sys.argv[1])
+    print(f"wrote {out}")

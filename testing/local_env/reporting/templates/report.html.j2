@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>PPA Report: {{ project_title }}</title>
+<title>PPA Report: {{ project.name }}</title>
 <link rel="stylesheet" href="static/report.css">
 <script src="static/chart.umd.min.js"></script>
 </head>
 <body>
-<h1 class="report-title">Project Performance Assessment Report: {{ project_title }}</h1>
+{% include "title_page.html.j2" %}
+{% if show_atp_intro %}
+{% include "boilerplate/atp_intro.html" %}
+{% endif %}
+{% include "boilerplate/using_this_report.html" %}
 {% for section in sections %}
 {% include "section.html.j2" %}
 {% endfor %}
