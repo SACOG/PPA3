@@ -117,7 +117,8 @@ def main():
                   getattr(uis, "jur"): raw["Jurisdiction"], getattr(uis, "ptype"): raw["Project_Type"],
                   getattr(uis, "perf_outcomes"): raw["PerfOutcomes"], getattr(uis, "aadt"): raw["AADT"],
                   getattr(uis, "posted_spd"): raw["Posted_Speed_Limit"], getattr(uis, "pci"): raw["PCI"],
-                  getattr(uis, "email"): raw["userEmail"]}
+                  getattr(uis, "email"): raw["userEmail"],
+                  getattr(uis, "funding_pgm"): raw.get("Funding_Program", "")}
 
     import arcpy
     # Mirror the report scripts' __main__ setup: force a FRESH scratch GDB before running.

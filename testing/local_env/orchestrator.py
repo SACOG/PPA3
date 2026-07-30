@@ -25,6 +25,7 @@ def _write_sample(inputs, out_dir):
         "Project_Line": inputs["project_line"],
         "Project_Name": inputs["project_name"],
         "Jurisdiction": inputs["jurisdiction"],
+        "Funding_Program": inputs["program"],
         "Project_Type": inputs["project_type"],
         "PerfOutcomes": "",
         "AADT": inputs["aadt"],

@@ -13,6 +13,7 @@ from manifest import SHARED_FCS
 SDE = r"\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\owner_PPA.sde"
 SRC_TIF = r"\\Arcserverppa-svr\PPA_SVR\PPA_03_01\PPA3_GIS_SVR\access_tif"
 SRC_CSV = r"\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\CSV\Agg_ppa_vals_latest.csv"
+SRC_CSV_DIR = r"\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\CSV"  # all reference CSVs (map_img_config, mix_idx_params, ...)
 SRC_JSON = r"\\Arcserverppa-svr\PPA_SVR\PPA_03_01\RegionalProgram\JSON"
 REPO_PARAMS = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
@@ -119,11 +120,14 @@ access_data:
 """
     with open(os.path.join(CFG_DIR, "data_paths.yaml"), "w") as f:
         f.write(yaml_text)
-    # stage the CSV where parameters.py expects it: rootdir\.\CSV\
+    # stage the CSVs where parameters.py expects them: rootdir\.\CSV\
+    # Copy ALL reference CSVs from the prod CSV folder (Agg_ppa_vals_latest, map_img_config,
+    # mix_idx_params, ...), not just the benchmark file — the subreports read several of them.
     csv_dir = os.path.join(ROOT, "CSV")
     os.makedirs(csv_dir, exist_ok=True)
-    shutil.copy2(os.path.join(ROOT, "Agg_ppa_vals_latest.csv"),
-                 os.path.join(csv_dir, "Agg_ppa_vals_latest.csv"))
+    for fn in os.listdir(SRC_CSV_DIR):
+        if fn.lower().endswith(".csv"):
+            shutil.copy2(os.path.join(SRC_CSV_DIR, fn), os.path.join(csv_dir, fn))
 
 
 def report_sizes():

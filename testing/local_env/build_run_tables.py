@@ -31,9 +31,24 @@ def main():
         dst = os.path.join(LOCAL_RUN_GDB, name)
         if arcpy.Exists(dst):
             arcpy.management.Delete(dst)
-        # CreateTable with a template copies the schema WITHOUT copying rows
-        arcpy.management.CreateTable(LOCAL_RUN_GDB, name, template=src)
-        print(f"  created empty {name} (schema from prod)")
+        # Create an EMPTY copy that preserves the schema without copying rows.
+        # project_master is a spatial FeatureClass (its rows carry SHAPE@ geometry and it
+        # is read via MakeFeatureLayer), so a plain CreateTable produces an unusable table
+        # that fails as Input Features / for InsertCursor with SHAPE@. Branch on whether the
+        # prod source has geometry: FeatureClass -> CreateFeatureclass (template + geometry
+        # type + spatial ref); plain table -> CreateTable.
+        d = arcpy.Describe(src)
+        if getattr(d, "shapeType", None):
+            arcpy.management.CreateFeatureclass(
+                LOCAL_RUN_GDB, name,
+                geometry_type=d.shapeType.upper(),
+                template=src,
+                spatial_reference=d.spatialReference,
+            )
+            print(f"  created empty FEATURECLASS {name} ({d.shapeType}, schema from prod)")
+        else:
+            arcpy.management.CreateTable(LOCAL_RUN_GDB, name, template=src)
+            print(f"  created empty TABLE {name} (schema from prod)")
     print("Done.")
 
 
