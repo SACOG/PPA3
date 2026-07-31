@@ -138,3 +138,4 @@ api_key.txt
 # Local Tier-1 test artifacts
 testing/local_env/out/
 testing/local_env/samples/*.local.json
+testing/local_env/_last_stamp.txt
