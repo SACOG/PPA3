@@ -4,10 +4,13 @@ orchestrator.run_report, which shells out to the Pro python per service. Run:
   & "...\arcgispro-py3\python.exe" testing\local_env\webapp\app.py   (then open http://127.0.0.1:5000)
 """
 import os
+import re
 import sys
 import json
 
 from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
+
+_STAMP_RE = re.compile(r"^\d{8}_\d{6}$")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 LOCAL_ENV = os.path.dirname(HERE)
@@ -52,6 +55,8 @@ def run():
 
 
 def _load_run(stamp):
+    if not _STAMP_RE.fullmatch(stamp):
+        return None, None
     run_dir = os.path.join(app.config["RUNS_ROOT"], stamp)
     mpath = os.path.join(run_dir, "manifest.json")
     if not os.path.isfile(mpath):
@@ -79,12 +84,14 @@ def run_detail(stamp):
 
 @app.route("/run/<stamp>/report")
 def run_report_view(stamp):
+    if not _STAMP_RE.fullmatch(stamp):
+        abort(404)
     run_dir = os.path.join(app.config["RUNS_ROOT"], stamp)
     if not os.path.isfile(os.path.join(run_dir, "manifest.json")):
         abort(404)
     try:
         out_path = report_render.render_report(run_dir)
-    except (OSError, ValueError, KeyError) as exc:
+    except Exception as exc:
         abort(500, f"report render failed: {exc}")
     return send_from_directory(run_dir, os.path.basename(out_path))
 

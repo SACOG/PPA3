@@ -1,6 +1,8 @@
 import os
+import shutil
 import sys
 import unittest
+import uuid
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(os.path.dirname(HERE), "webapp"))
@@ -53,7 +55,7 @@ class TestDashboard(unittest.TestCase):
         os.makedirs(run_dir)
         json.dump({"timestamp": "20260101_000000",
                    "inputs": {"program": "STIP", "project_type": "Non-Freeway Investment",
-                              "project_name": "t", "jurisdiction": "Sacramento",
+                              "project_name": "TruxelBridgeFixture", "jurisdiction": "Sacramento",
                               "aadt": 0, "posted_speed": 0, "pci": 0},
                    "services": [{"service": "RPTitleAndGuide", "outcome": "(title)", "status": "ok"},
                                 {"service": "RPArtExpSafety", "outcome": "Safety or Security",
@@ -82,7 +84,7 @@ class TestDashboard(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         html = resp.get_data(as_text=True)
         self.assertIn("Using This Report", html)
-        self.assertIn("t", html)  # project_name from the fixture's inputs
+        self.assertIn("TruxelBridgeFixture", html)  # project_name from the fixture's inputs
 
     def test_report_route_404s_for_unknown_stamp(self):
         resp = self.client.get("/run/nonexistent-stamp/report")
@@ -91,6 +93,54 @@ class TestDashboard(unittest.TestCase):
     def test_detail_page_links_to_report(self):
         html = self.client.get("/run/20260101_000000").get_data(as_text=True)
         self.assertIn('href="/run/20260101_000000/report"', html)
+
+    def _make_escape_target(self, name):
+        """A directory OUTSIDE self.tmp (RUNS_ROOT) that is a fully valid "run" -- i.e. it has
+        both manifest.json and merged.json, so render_report() would actually succeed and write
+        report.html into it if a traversal stamp reached it. Without this, a traversal test would
+        be vacuous: the pre-existing manifest.json-exists check would 404 it for an unrelated
+        reason before the stamp guard is ever exercised (this is exactly what happened when this
+        test was first written pointing at a nonexistent "outside" dir -- it passed even against
+        the unfixed, vulnerable code).
+
+        `name` is suffixed with a fresh uuid so re-runs never collide with a leftover directory
+        from a previous interrupted run in the shared OS temp root (self.tmp's parent).
+        """
+        outside_dir = os.path.join(os.path.dirname(self.tmp), f"{name}_{uuid.uuid4().hex}")
+        os.makedirs(outside_dir, exist_ok=True)
+        self.addCleanup(shutil.rmtree, outside_dir, True)
+        json.dump({"timestamp": "20260101_000000",
+                   "inputs": {"program": "STIP", "project_type": "Non-Freeway Investment",
+                              "project_name": "ShouldNeverRender", "jurisdiction": "Sacramento",
+                              "aadt": 0, "posted_speed": 0, "pci": 0},
+                   "services": []},
+                  open(os.path.join(outside_dir, "manifest.json"), "w"))
+        json.dump({}, open(os.path.join(outside_dir, "merged.json"), "w"))
+        return outside_dir
+
+    def test_report_route_404s_for_path_traversal_stamp_and_writes_nothing_outside_runs_root(self):
+        outside_dir = self._make_escape_target("webapp_traversal_target_1")
+        target_name = os.path.basename(outside_dir)
+        before = set(os.listdir(outside_dir))
+        resp = self.client.get(f"/run/..%5C{target_name}/report")
+        self.assertEqual(resp.status_code, 404)
+        after = set(os.listdir(outside_dir))
+        self.assertEqual(before, after,
+                          "traversal request must not write report.html outside RUNS_ROOT")
+        self.assertFalse(os.path.exists(os.path.join(outside_dir, "report.html")))
+
+    def test_report_route_404s_for_literal_backslash_traversal_stamp(self):
+        outside_dir = self._make_escape_target("webapp_traversal_target_2")
+        target_name = os.path.basename(outside_dir)
+        resp = self.client.get("/run/" + f"..\\{target_name}" + "/report")
+        self.assertEqual(resp.status_code, 404)
+        self.assertFalse(os.path.exists(os.path.join(outside_dir, "report.html")))
+
+    def test_detail_route_404s_for_path_traversal_stamp(self):
+        outside_dir = self._make_escape_target("webapp_traversal_target_3")
+        target_name = os.path.basename(outside_dir)
+        resp = self.client.get(f"/run/..%5C{target_name}")
+        self.assertEqual(resp.status_code, 404)
 
 
 if __name__ == "__main__":
