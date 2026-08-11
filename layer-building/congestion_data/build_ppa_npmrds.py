@@ -70,6 +70,7 @@ except ImportError:
 # CONFIG — edit for each annual update
 # =====================================================================
 congestion_update_path=Path(r"I:\Projects\Josh\PPA\Layer_update\Congestion")
+#congestion calc is slow on network drive so copy tt_csv_path and tmc_id_csv_path to local machine and updating the paths below to point to local copies for testing.
 local_congestion_path= Path(r"C:\Users\tenoru\Downloads\Layer_update\Congestion")  # for testing on local machine
 CONFIG = {
     # --- Input CSVs from RITIS Massive Data Downloader ---
@@ -85,13 +86,15 @@ CONFIG = {
 
     # --- Geometry inputs ---
     # NHS true-shape shapefile/feature class for the new vintage
-    "nhs_shp": local_congestion_path  / "NPMRDS_2025_NHS_SACOG.shp",
+    "nhs_shp": congestion_update_path  / "NPMRDS_2025_NHS_SACOG.shp",
     # List of older true-shape sources to try, in priority order.
     # First entry is tried first; geometries from later entries fill gaps.
     # Each entry: (path, vintage_year, dissolve_field)
     "old_shp_sources": [
+        (r"I:\Projects\Josh\Regional Monitoring\Congestion\aa_arcpro\MonthlyCongestion.gdb\NPMRDS_2024_TMC", 2024, "tmc"),
         (r"I:\Projects\Darren\PPA3_GIS\PPA3_GIS.gdb\NPMRDS_2023ppadata_final", 2023, "tmc"),
         (r"I:\Projects\Darren\PPA3_GIS\PPA3.0_archive.gdb\INRIX_SHP_2020_2021_SACOG", 2021, "Tmc"),
+        
     ],
 
     # --- Output ---
@@ -101,7 +104,7 @@ CONFIG = {
 
     # Optional: cache the metrics DataFrame to CSV so you don't have to
     # recompute on subsequent runs. Set to None to disable.
-    "metrics_cache_csv": local_congestion_path  / "cache" / "npmrds_metrics_2025.csv",
+    "metrics_cache_csv": None,
 
     # If True, load metrics from `metrics_cache_csv` if it exists, skipping
     # the ~5min DuckDB stage. Useful when iterating on Stages 2-4 and the
