@@ -1,0 +1,14 @@
+# Direct third-party dependencies for the PPA geoprocessing report tools.
+#
+# ArcPy is provided by the matching ArcGIS Pro/ArcGIS Server Python runtime and
+# must not be installed from this file. Package versions should be managed in a
+# clone of that runtime so its compiled geospatial libraries remain compatible.
+# Versions below were installation- and import-tested in a clean clone of the
+# ArcGIS Pro 3.7 default Python environment on 2026-08-13.
+
+pandas==3.0.0
+PyYAML==6.0.2
+numpy==2.3.5
+geopandas==1.1.4
+rasterio==1.5.0
+shapely==2.1.2
