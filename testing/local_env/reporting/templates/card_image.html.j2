@@ -1,0 +1,8 @@
+<div class="card card-image">
+  {% if card.caption %}<p class="table-label">{{ card.caption }}</p>{% endif %}
+  {% if card.url %}
+    <img src="{{ card.url }}" alt="{{ card.caption or '' }}">
+  {% else %}
+    <div class="map-placeholder">Map not available in local render</div>
+  {% endif %}
+</div>

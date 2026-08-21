@@ -49,6 +49,8 @@ def make_frgt_report_artexp(input_dict):
     uis = params.user_inputs
     fc_project = input_dict[uis.geom]
     project_name = input_dict[uis.name]
+    project_type = input_dict[uis.ptype]
+    output_dir = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Freight_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance

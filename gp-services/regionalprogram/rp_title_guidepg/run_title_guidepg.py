@@ -50,7 +50,8 @@ def make_title_guidepg_regpgm(input_dict):
     uis = params.user_inputs
     project_fc = input_dict[uis.geom]
     project_name = input_dict[uis.name]
-    
+    output_dir = arcpy.env.scratchFolder
+
     rpt_template_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Title_and_Guide_sample_dataSource.json")
 
     with open(rpt_template_json, "r") as j_in: # load applicable json template

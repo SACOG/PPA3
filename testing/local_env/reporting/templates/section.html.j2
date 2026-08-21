@@ -1,0 +1,37 @@
+<section class="outcome-section" id="{{ section.service }}">
+  <h1>{{ section.section_title }}</h1>
+  {% if section.unavailable %}
+    <div class="section-unavailable">
+      <strong>Section unavailable.</strong> {{ section.unavailable_reason }}
+    </div>
+  {% elif section.generic %}
+    <div class="card generic-output">
+      <h2>Service output</h2>
+      <p class="fallback-note">{{ section.fallback_reason }}</p>
+      <table>
+        <thead><tr><th>Output field</th><th>Value or shape</th></tr></thead>
+        <tbody>
+        {% for row in section.summary_rows %}
+          <tr><td>{{ row.label }}</td><td>{{ row.value_display }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <details>
+        <summary>View complete merged JSON output</summary>
+        <pre>{{ section.raw_json }}</pre>
+      </details>
+    </div>
+  {% else %}
+    {% for card in section.cards %}
+      {% if card.type == "kpi" %}
+        {% include "card_kpi.html.j2" %}
+      {% elif card.type == "table" %}
+        {% include "card_table.html.j2" %}
+      {% elif card.type == "chart" %}
+        {% include "card_chart.html.j2" %}
+      {% elif card.type == "image" %}
+        {% include "card_image.html.j2" %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</section>

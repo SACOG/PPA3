@@ -84,7 +84,8 @@ def make_mm_report_artexp(input_dict):
     fc_project = input_dict[uis.geom]
     project_name = input_dict[uis.name]
     project_type = input_dict[uis.ptype]
-    
+    output_dir = arcpy.env.scratchFolder
+
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_Multimodal_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance
     data_years = [params.base_year, params.future_year]
@@ -93,7 +94,7 @@ def make_mm_report_artexp(input_dict):
         loaded_json = json.load(j_in)
 
     # get project community type
-    project_commtype = commtype.get_proj_ctype(project_fc, params.comm_types_fc)
+    project_commtype = commtype.get_proj_ctype(fc_project, params.comm_types_fc)
 
 
     # get parcels within buffer of project, make FC of them

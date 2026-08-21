@@ -1,0 +1,15 @@
+<div class="card card-table">
+  {% if card.subtitle %}<h2>{{ card.subtitle }}</h2>{% endif %}
+  {% if card.question %}<p class="question">{{ card.question }}</p>{% endif %}
+  {% if card.label %}<p class="table-label">{{ card.label }}</p>{% endif %}
+  {% if card.missing %}
+    <p class="no-data">(no data)</p>
+  {% else %}
+  <table>
+    {% for row in card.rows %}
+    <tr><th>{{ row.label }}</th><td>{{ row.value_display }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {% if card.footnote %}<p class="footnote">{{ card.footnote }}</p>{% endif %}
+</div>

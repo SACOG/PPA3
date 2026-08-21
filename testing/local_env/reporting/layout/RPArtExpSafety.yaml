@@ -1,0 +1,53 @@
+service: RPArtExpSafety
+# Printed golden header is "Safety" -- shorter than dispatch.py's outcome checkbox label
+# "Safety or Security". Confirmed by extracting report.pdf/report transportion_test.pdf text.
+section_title: "Safety"
+cards:
+  - type: kpi
+    source: "Total collisions"
+    subtitle: "Total Collisions (2019-2023)"
+    question: "Is the corridor experiencing a high number of crashes?"
+    note: >
+      Note: Collision data only include collisions involving an injury or fatality and are
+      from UC Berkeley's Transportation Injury Mapping System (TIMS)
+
+  - type: image
+    source: "Collision heat map Image Url"
+    caption: "Collision heat map of corridor"
+
+  - type: table
+    source: "Collisions per 100 million VMT"
+    subtitle: "Collision Rate per 100M VMT"
+    question: "Is the corridor's crash rate high relative to traffic volume?"
+    row_labels:
+      Project: "On project segment*"
+      "Community Type": "Within community type"
+      Region: "Within region"
+    footnote: >
+      *The on-project collision rate will be -1.0 if the user did not provide an average
+      daily traffic value.
+
+  # Golden shows this chart's y-axis in percent; v1 keeps raw fractions (0-1) in the chart
+  # data to avoid a custom Chart.js tick-format callback -- see plan Task 6 open item.
+  - type: chart
+    source_chart: "Fatal and BikePed Collisions"
+    subtitle: "Fatal & Bike/Ped Collision Share (%)"
+    question: "Are vulnerable users disproportionately involved in severe crashes?"
+    x_field: type
+    series:
+      - field: Project
+        label: Project
+      - field: "Community Type"
+        label: "Community Type"
+      - field: Region
+        label: Region
+    y_label: "Fatal and Bike/Ped Collisions Share %"
+
+  - type: table
+    source: "Bike and Ped Collisions per Project Centerline"
+    subtitle: "Bike & Ped Collisions per CL Mile"
+    question: "Does the corridor have frequent bike/ped crashes?"
+    row_labels:
+      Project: "Project"
+      "Community Type": "Community Type"
+      Region: "Region"

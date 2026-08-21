@@ -48,9 +48,11 @@ def make_safety_report_fwyexp(input_dict):
 
     uis = params.user_inputs
     fc_project = input_dict[uis.geom]
+    project_fc = fc_project
     project_name = input_dict[uis.name]
     project_type = input_dict[uis.ptype]
     proj_aadt = input_dict[uis.aadt]
+    output_dir = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Safety_sample_dataSource.json")
 

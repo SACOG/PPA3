@@ -35,6 +35,7 @@ def make_sgr_report_artsgr(input_dict):
     project_pci = input_dict[uis.pci]
     proj_postedspd = float(input_dict[uis.posted_spd])
     proj_aadt = input_dict[uis.aadt]
+    output_dir = arcpy.env.scratchFolder
 
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_SGR}_SGR_sample_dataSource.json")

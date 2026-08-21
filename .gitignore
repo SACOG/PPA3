@@ -130,3 +130,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Local PPA test-environment artifacts (keep the checked-in golden fixture)
+testing/local_env/out/*
+!testing/local_env/out/rp_artexp_cong_GOLDEN.json
+testing/local_env/samples/*.local.json

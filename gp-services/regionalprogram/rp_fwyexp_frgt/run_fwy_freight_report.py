@@ -30,6 +30,7 @@ def make_freight_rept_fwyexp(input_dict):
     fc_project=input_dict[uis.geom]
     project_name=input_dict[uis.name]
     project_type=input_dict[uis.ptype]
+    output_dir = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_Freight_sample_dataSource.json")
 

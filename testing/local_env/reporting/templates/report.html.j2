@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PPA Report: {{ project.name }}</title>
+<style>{{ inline_css | safe }}</style>
+<!-- chart.umd.min.js vendored inline below (Fix 1: report.html must be openable fully offline
+     with no relative static/ path dependency, from any run_dir it's written into) -->
+<script>{{ inline_js | safe }}</script>
+</head>
+<body>
+{% include "title_page.html.j2" %}
+{% if show_atp_intro %}
+{% include "boilerplate/atp_intro.html" %}
+{% endif %}
+{% include "boilerplate/using_this_report.html" %}
+{% for section in sections %}
+{% include "section.html.j2" %}
+{% endfor %}
+<script>
+document.querySelectorAll('.chart-canvas').forEach(function (canvas) {
+  var spec = JSON.parse(canvas.dataset.chart);
+  new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: spec.categories,
+      datasets: spec.series.map(function (s) { return {label: s.label, data: s.data}; })
+    },
+    options: {responsive: true, plugins: {legend: {display: spec.series.length > 1}}}
+  });
+});
+</script>
+</body>
+</html>

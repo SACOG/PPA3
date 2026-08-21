@@ -1,0 +1,19 @@
+<section class="title-page">
+  <h1>Project Performance Assessment Report: {{ project.name }}</h1>
+  <h2>Project Summary</h2>
+  <div class="map-placeholder">Map not available in local render</div>
+  <table class="summary-table">
+    <tr><th>Project name</th><td>{{ project.name }}</td></tr>
+    <tr><th>Jurisdiction</th><td>{{ project.jurisdiction }}</td></tr>
+    <tr><th>Project type</th><td>{{ project.project_type }}</td></tr>
+    <tr><th>Report program</th><td>{{ project.report_program }}</td></tr>
+    <tr><th>Funding Program</th><td>{{ project.funding_program }}</td></tr>
+    <tr><th>Project AADT</th><td>{{ project.aadt }}</td></tr>
+    <tr><th>Project Pavement Condition Index (PCI)</th><td>{{ project.pci }}</td></tr>
+    <tr><th>Posted Speed Limit</th><td>{{ project.posted_speed }}</td></tr>
+    <tr><th>Project Length (Centerline Miles)</th><td>{{ project.length_miles }}</td></tr>
+    <tr><th>Project Community Type</th><td>{{ project.community_type }}</td></tr>
+    <tr><th>Project UID</th><td>{{ project.uid }}</td></tr>
+  </table>
+  <p class="report-generated">Report Generated: {{ project.report_generated }}</p>
+</section>

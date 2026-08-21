@@ -1,0 +1,60 @@
+service: RPArtExpMultiModal
+section_title: "Multimodal/Transportation Choice (Encourage Multimodal Travel)"
+cards:
+  - type: table
+    source: "Intersections per acre"
+    subtitle: "Street Connectivity (3- & 4-way intersections/acre)"
+    question: "Does the project improve connectivity for walking and biking?"
+    label: "Intersections per acre"
+    row_labels:
+      "Within 0.25mi": "Within 0.25mi of project"
+      "Community Type": "Within community type"
+      Region: "Within region"
+
+  - type: table
+    source: "Bike lanes and paths as share of total road miles"
+    subtitle: "Bike Network Coverage (% of centerline miles)"
+    question: "Does the project close gaps in the bike network?"
+    label: "Bike lanes and paths as share of total road miles"
+    value_format: percent
+    row_labels:
+      "Within 0.25mi": "Within 0.25mi of project"
+      "Community Type": "Within community type"
+      Region: "Within region"
+
+  - type: image
+    source: "Bikeway Image Url"
+    caption: "Project Area Bikeway Map"
+
+  - type: table
+    source: "Transit vehicle stops per acre"
+    subtitle: "Transit Activity (stops/acre/day)"
+    question: "Is transit service frequent enough to support multimodal goals?"
+    label: "Transit vehicle stops per acre"
+    row_labels:
+      "Within 0.25mi": "Within 0.25mi of project"
+      "Community Type": "Within community type"
+      Region: "Within region"
+
+  - type: image
+    source: "Transit Service Density Image Url"
+    caption: "Project Area Transit Service Map"
+
+  # Golden shows this chart's y-axis in percent; v1 keeps raw fractions -- same simplification
+  # noted in RPArtExpSafety.yaml.
+  - type: chart
+    source_chart: "Residential Mode Split"
+    subtitle: "Residential Mode Split (2020, 2035)"
+    question: "Do residents near the project use non-auto modes?"
+    note: >
+      NOTE - The future-year mode split shown below is based on modeled values estimated
+      for SACOG's latest regional plan. As with all other future-year values in this
+      report, they do NOT factor in the potential effects of the project for which this
+      report was generated.
+    x_field: type
+    series:
+      - field: "year 2020"
+        label: "2020"
+      - field: "year 2035"
+        label: "2035"
+    y_label: "Residential Mode Split within 0.5mi of Project Location"

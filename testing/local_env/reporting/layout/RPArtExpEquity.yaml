@@ -1,0 +1,17 @@
+service: RPArtExpEquity
+section_title: "Equity"
+cards:
+  - type: kpi
+    source: "Population"
+    subtitle: "Population near the project"
+    question: "How many people live in the project area?"
+
+  - type: table
+    source: "Share of population living in EJ community"
+    value_format: percent
+    subtitle: "Share of population in environmental-justice communities"
+    question: "What share of nearby residents live in an environmental-justice community?"
+    row_labels:
+      "Within project location": "Within project location"
+      "Within community type": "Within community type"
+      "Within region": "Within region"

@@ -38,7 +38,9 @@ def make_vmt_report_artexp(input_dict):
 
     uis = params.user_inputs
     project_fc = input_dict[uis.geom]
+    project_name = input_dict[uis.name]
     proj_type = input_dict[uis.ptype]
+    output_dir = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Arterial_or_Transit_Expasion}_ReduceVMT_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance

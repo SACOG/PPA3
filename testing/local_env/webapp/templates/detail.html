@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% if manifest.status == "running" %}<meta http-equiv="refresh" content="3">{% endif %}
+  <title>Run {{ stamp }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar"><strong>PPA3 Local Test Harness</strong><a href="/runs">Run history</a></header>
+  <main>
+    <section class="intro">
+      <h1>{{ manifest.inputs.project_name or ('Run ' ~ stamp) }}</h1>
+      <p><strong>{{ manifest.inputs.program }}</strong> · {{ manifest.inputs.project_type }} ·
+         Run status: <strong>{{ manifest.status or 'complete' }}</strong> ·
+         Report: <strong>{{ manifest.report_status or 'on demand' }}</strong></p>
+      {% if manifest.report_error %}<div class="error">Report generation failed: {{ manifest.report_error }}</div>{% endif %}
+      {% if manifest.inputs.developer_override %}
+        <div class="error">Developer override was enabled. This dispatch differs from the fixed live program.</div>
+      {% endif %}
+    </section>
+    <div class="actions">
+      <a class="secondary" href="/">New run</a>
+      <a class="secondary" href="/run/{{ stamp }}/artifact/manifest.json">Manifest</a>
+      {% if manifest.status != "running" %}
+        <a class="secondary" href="/run/{{ stamp }}/artifact/merged.json">Merged JSON</a>
+        <a class="primary" href="/run/{{ stamp }}/report">View report</a>
+      {% endif %}
+    </div>
+    <section class="card">
+      <h2>Dispatched services</h2>
+      {% if manifest.status == "running" %}<p>This page refreshes every three seconds.</p>{% endif %}
+      <div class="table-wrap"><table class="status-table">
+        <thead><tr><th>#</th><th>Service</th><th>Outcome</th><th>Status</th><th>Time</th><th>Output</th></tr></thead>
+        <tbody>{% for s in manifest.services %}<tr>
+          <td>{{ loop.index }}</td><td><code>{{ s.service }}</code></td><td>{{ s.outcome }}</td>
+          <td><span class="status status-{{ s.status }}">{{ s.status }}</span>{% if s.error %}<small>{{ s.error }}</small>{% endif %}</td>
+          <td>{% if s.duration_seconds is not none %}{{ s.duration_seconds }}s{% else %}—{% endif %}</td>
+          <td>
+            {% if s.status in ['ok', 'failed'] %}<a href="/run/{{ stamp }}/artifact/{{ s.service }}.log">log</a>{% endif %}
+            {% if outputs.get(s.service) %}<details><summary>JSON</summary><pre>{{ outputs[s.service] }}</pre></details>{% endif %}
+          </td>
+        </tr>{% endfor %}</tbody>
+      </table></div>
+    </section>
+  </main>
+</body>
+</html>

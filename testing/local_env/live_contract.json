@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "captured_at": "2026-08-12",
+  "viewer_url": "https://mapping.sacog.org/Geocortex/WebViewer/?app=3134fb5897034d63b1a096de6b393014",
+  "notes": "Normalized, reviewed snapshot of the public VertiGIS workflow definitions. Normal local runs do not require network access.",
+  "programs": {
+    "STIP": {
+      "workflow_item": "895581e2a4af4f5c8dcc45a460742c92",
+      "report_name": "STIP",
+      "form_title": "State Transportation Improvement Project",
+      "funding_programs": ["STIP"],
+      "funding_program_visible": false,
+      "project_types": {
+        "Freeway Investment": {
+          "mode": "selectable",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPFwyExpVMT"],
+            ["Multimodal/Transportation Choice (Reduce Congestion)", "RPFwyExpCongestion"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPFwyExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPFwyExpEconProsp"],
+            ["Freight Movement (Freight Mobility)", "RPFwyExpFreight"],
+            ["Safety or Security", "RPFwyExpSafety"]
+          ]
+        },
+        "Non-Freeway Investment": {
+          "mode": "selectable",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPArtExpVMT"],
+            ["Multimodal/Transportation Choice (Reduce Congestion)", "RPArtExpCongestion"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPArtExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPArtExpEconProsp"],
+            ["Freight Movement (Freight Mobility)", "RPArtExpFreight"],
+            ["Safety or Security", "RPArtExpSafety"],
+            ["Maintain State of Good Repair", "RPArtSGRSGR"],
+            ["Benefits to the Transportation Network and Impacted Communities", "RPArtExpEquity"]
+          ]
+        }
+      }
+    },
+    "CMCP US50": {
+      "workflow_item": "d30a2386e9214209bc8316b309e030b7",
+      "report_name": "CMCP US50",
+      "form_title": "US 50 Comprehensive Multimodal Corridor Plan",
+      "funding_programs": ["CMCP US50"],
+      "funding_program_visible": true,
+      "project_types": {
+        "Freeway Investment": {
+          "mode": "selectable",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPFwyExpVMT"],
+            ["Multimodal/Transportation Choice (Reduce Congestion)", "RPFwyExpCongestion"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPFwyExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPFwyExpEconProsp"],
+            ["Freight Movement (Freight Mobility)", "RPFwyExpFreight"],
+            ["Safety or Security", "RPFwyExpSafety"]
+          ]
+        },
+        "Non-Freeway Investment": {
+          "mode": "selectable",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPArtExpVMT"],
+            ["Multimodal/Transportation Choice (Reduce Congestion)", "RPArtExpCongestion"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPArtExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPArtExpEconProsp"],
+            ["Freight Movement (Freight Mobility)", "RPArtExpFreight"],
+            ["Safety or Security", "RPArtExpSafety"],
+            ["Maintain State of Good Repair", "RPArtSGRSGR"],
+            ["Benefits to the Transportation Network and Impacted Communities", "RPArtExpEquity"]
+          ]
+        }
+      }
+    },
+    "Active Transportation Program": {
+      "workflow_item": "d1308df9402d49de8f2c0a7e190128b6",
+      "report_name": "Active Transportation Program",
+      "form_title": "Active Transportation Program",
+      "funding_programs": ["Active Transportation"],
+      "funding_program_visible": true,
+      "project_types": {
+        "Non-Freeway Investment": {
+          "mode": "fixed",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPArtExpVMT"],
+            ["Safety or Security", "RPArtExpSafety"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPArtExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPArtExpEconProsp"],
+            ["Maintain State of Good Repair", "RPArtSGRSGR"],
+            ["Benefits to the Transportation Network and Impacted Communities", "RPArtExpEquity"]
+          ]
+        }
+      }
+    },
+    "Regional Federal Funding Program": {
+      "workflow_items": {
+        "Non-Freeway Investment": "7d3ad08fa08545b0a55795a53c4b0cce",
+        "Freeway Investment": "f93256ed92ca4f1393f7790fc30ae822"
+      },
+      "report_name": "Regional Federal Funding Program",
+      "form_title": "Federal Funding Regional Program",
+      "funding_programs": [
+        "Next Generation Solutions and Clean Air Program",
+        "System Performance Program",
+        "System Preservation Program"
+      ],
+      "funding_program_visible": true,
+      "project_types": {
+        "Freeway Investment": {
+          "mode": "fixed",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPFwyExpVMT"],
+            ["Multimodal/Transportation Choice (Reduce Congestion)", "RPFwyExpCongestion"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPFwyExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPFwyExpEconProsp"],
+            ["Freight Movement (Freight Mobility)", "RPFwyExpFreight"],
+            ["Safety or Security", "RPFwyExpSafety"]
+          ]
+        },
+        "Non-Freeway Investment": {
+          "mode": "fixed",
+          "outcomes": [
+            ["Multimodal/Transportation Choice (Reduce VMT)", "RPArtExpVMT"],
+            ["Multimodal/Transportation Choice (Reduce Congestion)", "RPArtExpCongestion"],
+            ["Multimodal/Transportation Choice (Encourage Multimodal Travel)", "RPArtExpMultiModal"],
+            ["Freight Movement (Economic Prosperity)", "RPArtExpEconProsp"],
+            ["Freight Movement (Freight Mobility)", "RPArtExpFreight"],
+            ["Safety or Security", "RPArtExpSafety"],
+            ["Maintain State of Good Repair", "RPArtSGRSGR"],
+            ["Benefits to the Transportation Network and Impacted Communities", "RPArtExpEquity"]
+          ]
+        }
+      }
+    }
+  }
+}

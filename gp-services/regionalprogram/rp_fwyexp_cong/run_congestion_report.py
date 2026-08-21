@@ -69,9 +69,11 @@ def make_congestion_rpt_fwyexp(input_dict):
 
     uis = params.user_inputs
     fc_project = input_dict[uis.geom]
+    project_fc = fc_project
     project_name = input_dict[uis.name]
     project_type = input_dict[uis.ptype] 
     aadt = input_dict[uis.aadt]
+    output_dir = arcpy.env.scratchFolder
     
     in_json = os.path.join(params.json_templates_dir, "SACOG_{Regional Program}_{Freeway}_ReduceCongestion_sample_dataSource.json")
     lu_buffdist_ft = params.ilut_sum_buffdist # land use buffer distance

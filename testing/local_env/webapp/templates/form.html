@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PPA3 Local Test Harness</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div><strong>PPA3 Local Test Harness</strong><span class="sandbox">LOCAL SANDBOX</span></div>
+    <a href="/runs">Run history</a>
+  </header>
+  <main>
+    <section class="intro">
+      <h1>Run a project performance assessment</h1>
+      <p>This developer tool mirrors the live PPA input and dispatch contract. Choose a registered
+         candidate line instead of drawing on the map. No production workflow is submitted.</p>
+    </section>
+    {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="/run" id="run-form">
+      <section class="card">
+        <h2>Report setup</h2>
+        <div class="grid">
+          <label>Report program <span>*</span>
+            <select name="program" id="program" required></select>
+          </label>
+          <label>Project type <span>*</span>
+            <select name="project_type" id="project_type" required></select>
+          </label>
+          <label id="funding-wrap">Funding program <span>*</span>
+            <select name="funding_program" id="funding_program"></select>
+          </label>
+          <label>Candidate project line <span>*</span>
+            <select name="project_line" id="project_line" required>
+              {% for name, line in lines.items() %}
+              <option value="{{ name }}" data-types='{{ line.valid_project_types|tojson }}'>{{ line.display_name }} ({{ name }})</option>
+              {% endfor %}
+            </select>
+            <small>Replaces “Draw Project Line” in the live tool.</small>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Project information</h2>
+        <div class="grid">
+          <label>Project name <span>*</span>
+            <input name="project_name" required pattern="[A-Za-z0-9 ]+">
+            <small>Letters, numbers, and spaces only.</small>
+          </label>
+          <label>Jurisdiction <span>*</span>
+            <input name="jurisdiction" value="Sacramento" required>
+          </label>
+          <label>Email <span>*</span>
+            <input name="email" type="email" value="test@example.com" required>
+          </label>
+          <label>Confirm Email <span>*</span>
+            <input name="confirm_email" type="email" value="test@example.com" required>
+          </label>
+          <label>Average Daily Traffic (ADT) <span>*</span>
+            <input name="aadt" type="number" min="0" value="0" required>
+            <small id="adt-help"></small>
+          </label>
+          <label>Posted speed limit <span>*</span>
+            <input name="posted_speed" type="number" min="0" value="0" required>
+          </label>
+          <label>PCI <span>*</span>
+            <input name="pci" type="number" min="0" value="0" required>
+            <small>Pavement Condition Index.</small>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-heading">
+          <div><h2>Performance outcomes</h2><p id="mode-note"></p></div>
+          <label class="override" id="override-wrap">
+            <input type="checkbox" name="developer_override" id="developer_override" value="1">
+            Developer override
+          </label>
+        </div>
+        <div class="outcome-actions" id="outcome-actions">
+          <button type="button" id="select-all">Select all</button>
+          <button type="button" id="select-none">Select none</button>
+        </div>
+        <div id="outcomes" class="outcomes"></div>
+      </section>
+
+      <section class="card preview">
+        <h2>Dispatch preview</h2>
+        <p>The title service always runs first. Outcome services follow in production order.</p>
+        <ol id="dispatch-list"><li>Loading…</li></ol>
+      </section>
+
+      <div class="actions">
+        <button class="primary" type="submit">Run locally</button>
+        <a class="secondary" href="/runs">View previous runs</a>
+      </div>
+    </form>
+  </main>
+  <script>
+    const PROGRAMS = {{ programs_json|safe }};
+    const program = document.getElementById("program");
+    const projectType = document.getElementById("project_type");
+    const funding = document.getElementById("funding_program");
+    const fundingWrap = document.getElementById("funding-wrap");
+    const outcomes = document.getElementById("outcomes");
+    const modeNote = document.getElementById("mode-note");
+    const override = document.getElementById("developer_override");
+    const overrideWrap = document.getElementById("override-wrap");
+    const outcomeActions = document.getElementById("outcome-actions");
+
+    Object.keys(PROGRAMS).forEach(name => program.add(new Option(name, name)));
+
+    function refreshProgram() {
+      const cfg = PROGRAMS[program.value];
+      projectType.innerHTML = "";
+      Object.keys(cfg.project_types).forEach(name => projectType.add(new Option(name, name)));
+      funding.innerHTML = "";
+      cfg.funding_programs.forEach(name => funding.add(new Option(name, name)));
+      fundingWrap.hidden = !cfg.funding_program_visible;
+      projectType.classList.toggle("fixed-control", Object.keys(cfg.project_types).length === 1);
+      projectType.setAttribute("aria-disabled", Object.keys(cfg.project_types).length === 1 ? "true" : "false");
+      override.checked = false;
+      refreshOutcomes();
+    }
+
+    function refreshOutcomes() {
+      const cfg = PROGRAMS[program.value].project_types[projectType.value];
+      const fixed = cfg.mode === "fixed";
+      outcomes.innerHTML = "";
+      cfg.outcomes.forEach(([name]) => {
+        const label = document.createElement("label");
+        label.className = "outcome";
+        const input = document.createElement("input");
+        input.type = "checkbox"; input.name = "outcomes"; input.value = name; input.checked = true;
+        input.disabled = fixed && !override.checked;
+        label.append(input, document.createTextNode(name));
+        outcomes.append(label);
+      });
+      overrideWrap.hidden = !fixed;
+      outcomeActions.hidden = fixed && !override.checked;
+      modeNote.textContent = fixed
+        ? "Fixed by the live PPA program. Enable Developer override to test a non-production subset."
+        : "Selectable in the live PPA tool.";
+      document.getElementById("adt-help").textContent = program.value === "Active Transportation Program"
+        ? "For a Class 1 project, use the ADT for the nearest street." : "";
+      filterLines();
+      updatePreview();
+    }
+
+    function selectedOutcomes() {
+      return [...outcomes.querySelectorAll("input:checked")].map(input => input.value);
+    }
+
+    async function updatePreview() {
+      const response = await fetch("/api/dispatch-preview", {
+        method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({program: program.value, project_type: projectType.value,
+          selected_outcomes: selectedOutcomes(), developer_override: override.checked})
+      });
+      const data = await response.json();
+      const list = document.getElementById("dispatch-list"); list.innerHTML = "";
+      (data.services || []).forEach(service => {
+        const item = document.createElement("li");
+        item.innerHTML = `<code>${service.service}</code><span>${service.outcome}</span>`;
+        list.append(item);
+      });
+    }
+
+    function filterLines() {
+      const lineSelect = document.getElementById("project_line");
+      [...lineSelect.options].forEach(option => {
+        const valid = JSON.parse(option.dataset.types || "[]");
+        option.hidden = valid.length && !valid.includes(projectType.value);
+      });
+      if (lineSelect.selectedOptions[0]?.hidden) {
+        const first = [...lineSelect.options].find(option => !option.hidden);
+        if (first) lineSelect.value = first.value;
+      }
+    }
+
+    program.addEventListener("change", refreshProgram);
+    projectType.addEventListener("change", refreshOutcomes);
+    override.addEventListener("change", refreshOutcomes);
+    outcomes.addEventListener("change", updatePreview);
+    document.getElementById("select-all").addEventListener("click", () => {
+      outcomes.querySelectorAll("input").forEach(input => input.checked = true); updatePreview();
+    });
+    document.getElementById("select-none").addEventListener("click", () => {
+      outcomes.querySelectorAll("input").forEach(input => input.checked = false); updatePreview();
+    });
+    refreshProgram();
+  </script>
+</body>
+</html>

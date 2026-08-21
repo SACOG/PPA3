@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PPA3 Test Harness — Run history</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div><strong>PPA3 Local Test Harness</strong><span class="sandbox">LOCAL SANDBOX</span></div>
+    <a href="/">New run</a>
+  </header>
+  <main>
+    <section class="intro"><h1>Run history</h1><p>Local evidence from previous assessments.</p></section>
+    <section class="card">
+      {% if runs %}
+      <div class="table-wrap"><table class="status-table">
+        <thead><tr><th>Run</th><th>Project</th><th>Program / type</th><th>Status</th><th>Report</th></tr></thead>
+        <tbody>{% for run in runs %}<tr>
+          <td><a href="/run/{{ run.stamp }}"><code>{{ run.stamp }}</code></a></td>
+          <td>{{ run.project_name }}</td>
+          <td>{{ run.program }}<small>{{ run.project_type }}</small></td>
+          <td><span class="status status-{{ run.status }}">{{ run.status }}</span></td>
+          <td>{{ run.report_status }}</td>
+        </tr>{% endfor %}</tbody>
+      </table></div>
+      {% else %}<p><em>No runs yet.</em></p>{% endif %}
+    </section>
+  </main>
+</body>
+</html>
